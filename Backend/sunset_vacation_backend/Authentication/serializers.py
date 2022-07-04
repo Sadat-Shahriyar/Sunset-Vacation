@@ -2,10 +2,10 @@ from rest_framework import serializers
 from .models import User
 
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['name', 'email', 'phone_no', 'password', 'address', 'country', 'city']
+        fields = ['id', 'name', 'email', 'phone_no', 'password', 'address', 'country', 'city']
 
     def save(self):
         user = User(
