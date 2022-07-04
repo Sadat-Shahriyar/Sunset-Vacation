@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'sunset_vacation_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sunset_vacations',
+        'NAME': 'sunset-vacations',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
