@@ -3,11 +3,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Abstra
 from rest_framework.authentication import TokenAuthentication
 
 
-# Create your models here.
-
-# Class UserAccountManager(BaseUserManager):
-#     def create_user(self, **kwargs):
-#         if
 class BearerTokenAuthentication(TokenAuthentication):
     TokenAuthentication.keyword = 'Bearer'
 

@@ -1,15 +1,13 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, renderer_classes, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 from .models import User
-from .serializers import UserSerializer, TokenSerializer
+from .serializers import UserSerializer
 from rest_framework import status
-from django.core import serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
 
-# Create your views here.
 @api_view(['POST'])
 def signup(request):
     print(request.data)
@@ -36,7 +34,6 @@ def login(request):
     token = str(Token.objects.get_or_create(user=user)[0])
     user = UserSerializer(user).data
     return Response({"user": user, "token": token, "success": True}, status=status.HTTP_200_OK)
-
 
 
 @authentication_classes([TokenAuthentication])
