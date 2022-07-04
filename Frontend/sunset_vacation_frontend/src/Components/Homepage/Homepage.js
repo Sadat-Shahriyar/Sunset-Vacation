@@ -27,6 +27,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import RestoreIcon from '@mui/icons-material/Restore';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DateRangeIcon from '@mui/icons-material/DateRange';
+import { Button } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -78,38 +79,43 @@ export default function PrimarySearchAppBar(props) {
     setValue(newValue);
   };
 
-  fetch("http://localhost:8000/hosting/", {
-    method:"GET",
-    headers: {
-      'Content-type': 'application/json'
-    }
-  })
-  .then((response) => {
-    if(response.ok){
-      return response
-    }
-    else{
-      let err = new Error(response.status + ":" + response.statusText)
-      throw err;
-    }
-  })
-  .then((response) => {return response.json()})
-  .then((response) => {
-    console.log(response);
-    // setProperty(response.property);
-    props.helloWorld(response)
-  })
-  .catch((err) => {
-    alert(err.message);
-  })
+  // fetch("http://localhost:8000/hosting/", {
+  //   method:"GET",
+  //   headers: {
+  //     'Content-type': 'application/json'
+  //   }
+  // })
+  // .then((response) => {
+  //   if(response.ok){
+  //     return response
+  //   }
+  //   else{
+  //     let err = new Error(response.status + ":" + response.statusText)
+  //     throw err;
+  //   }
+  // })
+  // .then((response) => {return response.json()})
+  // .then((response) => {
+  //   console.log(response);
+  //   // setProperty(response.property);
+  //   props.helloWorld(response)
+  // })
+  // .catch((err) => {
+  //   alert(err.message);
+  // })
 
-  console.log(props.hiWorld);
-    const navigate = useNavigate();
+  // console.log(props.hiWorld);
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+
+  const becomeAHostButton = (event) => {
+    navigate("/hosting");
+  }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -205,7 +211,7 @@ export default function PrimarySearchAppBar(props) {
   
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" color='inherit'>
         <Toolbar>
           {/* <IconButton
             size="large"
@@ -260,7 +266,7 @@ export default function PrimarySearchAppBar(props) {
               </Badge>
             </IconButton>
           
-            <p>become a host</p>
+            <Button variant="outlined" color="secondary" onClick={becomeAHostButton}>Become a host</Button>
             <IconButton
               size="large"
               aria-label="show 19 new notifications"
