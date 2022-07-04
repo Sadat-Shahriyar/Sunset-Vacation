@@ -1,10 +1,15 @@
 from django.db import models
 
 
-# Create your models here.
+#Create your models here.
+
+# Class UserAccountManager(BaseUserManager):
+#     def create_user(self, **kwargs):
+#         if
+
 
 class User(models.Model):
-    user_id = models.AutoField(
+    id = models.AutoField(
         primary_key=True
     )
 
