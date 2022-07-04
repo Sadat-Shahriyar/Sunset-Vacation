@@ -1,14 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser
+from rest_framework.authentication import TokenAuthentication
 
 
-#Create your models here.
-
-# Class UserAccountManager(BaseUserManager):
-#     def create_user(self, **kwargs):
-#         if
+class BearerTokenAuthentication(TokenAuthentication):
+    TokenAuthentication.keyword = 'Bearer'
 
 
-class User(models.Model):
+class User(AbstractBaseUser):
     id = models.AutoField(
         primary_key=True
     )
@@ -62,3 +61,8 @@ class User(models.Model):
         blank=False,
         null=True
     )
+
+    last_login = models.DateTimeField(auto_now=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
