@@ -43,8 +43,15 @@ INSTALLED_APPS = [
     'Hosting',
     'Booking',
     'Messaging',
-    'QAForum'
+    'QAForum',
+    'rest_framework.authtoken'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
