@@ -1,14 +1,15 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser
 
 
-#Create your models here.
+# Create your models here.
 
 # Class UserAccountManager(BaseUserManager):
 #     def create_user(self, **kwargs):
 #         if
 
 
-class User(models.Model):
+class User(AbstractBaseUser):
     id = models.AutoField(
         primary_key=True
     )
@@ -62,3 +63,7 @@ class User(models.Model):
         blank=False,
         null=True
     )
+
+    last_login = models.DateTimeField(auto_now=True)
+
+    USERNAME_FIELD = 'email'

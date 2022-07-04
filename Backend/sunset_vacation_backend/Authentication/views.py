@@ -2,21 +2,22 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.authtoken.models import Token
 from .models import User
-from .serializers import UserRegistrationSerializer
+from .serializers import UserSerializer, TokenSerializer
 from rest_framework import status
+from django.core import serializers
 
 
 # Create your views here.
 @api_view(['POST'])
 def signup(request):
-    serializer = UserRegistrationSerializer(data=request.data)
+    serializer = UserSerializer(data=request.data)
     if not serializer.is_valid():
-        return Response({"message": serializer.error_messages, "success": False},
+        return Response({"message": serializer.errors, "success": False},
                         status=status.HTTP_201_CREATED)
     user = serializer.save()
-    request.user = user
-    request.auth = 123
-    return Response({"user": request.user.id, "token": request.auth, "success": True}, status=status.HTTP_201_CREATED)
+    request.user = UserSerializer(user).data
+    request.auth = str(Token.objects.get_or_create(user=user)[0])
+    return Response({"user": request.user, "token": request.auth, "success": True}, status=status.HTTP_201_CREATED)
 
 # @api_view(['POST'])
 # def login(request):
