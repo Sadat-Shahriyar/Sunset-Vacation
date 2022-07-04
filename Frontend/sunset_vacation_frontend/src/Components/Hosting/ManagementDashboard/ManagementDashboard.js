@@ -14,6 +14,9 @@ export default function ManagementDashboard(props) {
     const useHandleHostNewPropertyButton = (event) => {
         navigate("/hostproperty");
     }
+    const useShowProperty=(event)=>{
+      navigate("/showProperties")
+    }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -31,6 +34,7 @@ export default function ManagementDashboard(props) {
             SUNSET
           </Typography>
           <Button color="inherit" onClick={useHandleHostNewPropertyButton}>Host new property</Button>
+          <Button color="inherit" onClick={useShowProperties}>Show Property list</Button>
         </Toolbar>
       </AppBar>
     </Box>

@@ -78,7 +78,7 @@ class Property(models.Model):
         null=True
     )
 
-
+    published=models.BooleanField(default=False)
 
 
 class Catagory(models.Model):
@@ -225,3 +225,15 @@ class UserGiftCardList(models.Model):
 
 
 
+class PropertyPhotos(models.Model):
+    property_id = models.ForeignKey(
+        Property,
+        on_delete=models.CASCADE
+    )
+
+    photo_url=models.CharField(
+        max_length=500,
+        default=None,
+        blank=False,
+        null=False
+    )

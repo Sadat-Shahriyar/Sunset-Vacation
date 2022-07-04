@@ -16,6 +16,7 @@ class PropertySerializer(serializers.ModelSerializer):
     checkInTime=serializers.DateTimeField(required=False)
     checkOutTime=serializers.DateTimeField(required=False)
     maxDaysRefund=serializers.IntegerField(required=False)
+    published=serializers.BooleanField(required=False)
     owner_id=serializers.PrimaryKeyRelatedField(read_only=True)
 
     # def create(self,data):
@@ -179,4 +180,11 @@ class UserGiftCardListSerializer(serializers.ModelSerializer):
 
 
 
+class PropertyPhotoSerializer(serializers.ModelSerializer):
+    photo_url = serializers.CharField(max_length=500, required=False)
+    property_id = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = PropertyPhotos
+        fields = '__all__'
     

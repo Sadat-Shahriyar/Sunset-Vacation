@@ -15,6 +15,7 @@ function App() {
         <Route path='/login' element={<SignInSide setLoggedIn = {(value)=>{setLoggedIn(value)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl isLoggedin={loggedIn} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn}/>} />
+        <Route path='/showProperties' element={<HostNewProperty isLoggedin = {loggedIn}/>} />
         <Route
           path="*"
           element={<Navigate to="/" replace />}

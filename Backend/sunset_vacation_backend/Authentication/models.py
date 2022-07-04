@@ -64,5 +64,10 @@ class User(AbstractBaseUser):
 
     last_login = models.DateTimeField(auto_now=True)
 
+    photo=models.CharField(max_length=500,
+        default=None,
+        blank=False,
+        null=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
