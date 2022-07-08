@@ -74,6 +74,7 @@ export default function PrimarySearchAppBar(props) {
 
   const [property, setProperty] = React.useState({})
   const [value, setValue] = React.useState(0);
+  const [selectedProperty, setSelectedProperty] = React.useState('');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -211,7 +212,7 @@ export default function PrimarySearchAppBar(props) {
   
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color='inherit'>
+      <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
         <Toolbar>
           {/* <IconButton
             size="large"
@@ -222,7 +223,7 @@ export default function PrimarySearchAppBar(props) {
           >
             <MenuIcon />
           </IconButton> */}
-           <Tabs value={value} onChange={handleChange} textColor="white" size="25px"
+           <Tabs value={value} onChange={handleChange} textColor="inherit" size="25px"
         aria-label="icon tabs example">
       <Tab icon={< WbTwilightIcon />} aria-label="phone" />
       
@@ -233,10 +234,10 @@ export default function PrimarySearchAppBar(props) {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            <p style={{"font-family": "Jokerman","font-size":"25px"}}>SUNSET VACATION</p>
+            <p style={{"fontFamily": "Jokerman","fontSize":"25px"}}>SUNSET VACATION</p>
            
           </Typography>
-          <Tabs  textColor='white' value={value} onChange={handleChange}  aria-label="icon label tabs example">
+          <Tabs  textColor='inherit' value={value} onChange={handleChange}  aria-label="icon label tabs example">
             <Tab/>
             <Tab/>
             <Tab/>
@@ -266,7 +267,7 @@ export default function PrimarySearchAppBar(props) {
               </Badge>
             </IconButton>
           
-            <Button variant="outlined" color="secondary" onClick={becomeAHostButton}>Become a host</Button>
+            <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>
             <IconButton
               size="large"
               aria-label="show 19 new notifications"
