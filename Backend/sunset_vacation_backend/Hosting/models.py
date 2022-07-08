@@ -1,5 +1,7 @@
 from django.db import models
 from Authentication.models import User
+from django.conf import settings
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
@@ -9,7 +11,7 @@ class Property(models.Model):
         primary_key=True
     )
 
-    owner_id=models.ForeignKey(User,on_delete=models.CASCADE,default=None)
+    owner_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE,default=None)
 
     title=models.CharField(
         max_length=100,
@@ -158,12 +160,12 @@ class PropertyFacilities(models.Model):
         null=True
     )
 class Ratings(models.Model):
-    user_id=models.ForeignKey(User,on_delete=models.CASCADE)
+    user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
     propertyID=models.ForeignKey(Property,on_delete=models.CASCADE)
     rating=models.FloatField(default=None,null=True)
 
 class Reviews(models.Model):
-    user_id=models.ForeignKey(User,on_delete=models.CASCADE)
+    user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
     propertyID=models.ForeignKey(Property,on_delete=models.CASCADE)
     review=models.CharField(
         max_length=100,
@@ -172,7 +174,7 @@ class Reviews(models.Model):
         null=True
     )
 class Notification(models.Model):
-    user_id=models.ForeignKey(User,on_delete=models.CASCADE)
+    user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
     text=models.CharField(
         max_length=100,
         default=None,
@@ -193,8 +195,8 @@ class Notification(models.Model):
 
 class Messaging(models.Model):
     msg_id=models.AutoField(primary_key=True)
-    sender_id=models.ForeignKey(User,on_delete=models.CASCADE,related_name="sender")
-    receiver_id=models.ForeignKey(User,on_delete=models.CASCADE,related_name="receiver")
+    sender_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE,related_name="sender")
+    receiver_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE,related_name="receiver")
     message=models.CharField(
         max_length=100,
         default=None,
@@ -219,7 +221,7 @@ class GiftCard(models.Model):
     expiry_date=models.DateTimeField(default=None,null=True)
 
 class UserGiftCardList(models.Model):
-    user_id=models.ForeignKey(User,on_delete=models.CASCADE)
+    user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
     giftcard_id=models.ForeignKey(GiftCard,on_delete=models.CASCADE)
     used_flag=models.BooleanField(default=False)
 
