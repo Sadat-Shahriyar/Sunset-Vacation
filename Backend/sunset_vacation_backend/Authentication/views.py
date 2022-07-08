@@ -1,5 +1,6 @@
 from distutils.command import check
 from lib2to3.pgen2 import token
+from os import stat
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
@@ -26,7 +27,7 @@ def signup(request):
                         status=status.HTTP_201_CREATED)
     user = serializer.save()
     token = str(Token.objects.get_or_create(user=user)[0])
-    return Response({"user": serializer.data, "token": token, "success": True}, status=status.HTTP_201_CREATED)
+    return Response({"email": serializer.data['email'], "token": token, "success": True}, status=status.HTTP_201_CREATED)
     # return Response({"success": True}, status=status.HTTP_201_CREATED)
 
 
@@ -34,8 +35,14 @@ def signup(request):
 @permission_classes([AllowAny])
 def login(request):
     """Return a message"""
+    print(request.data)
     email = request.data["email"]
     password =hashlib.sha256(request.data['password'].encode('utf-8')).hexdigest()
+    print(password)
+    # email = request.POST.get('email', '')
+    # password = hashlib.sha256(request.POST.get('password', '').encode('utf-8')).hexdigest()
+    # print(request.POST)
+    # print(email)
     # password = request.data['password']
     try:
         user = User.objects.get(email=email)
@@ -96,3 +103,13 @@ def token_creation_time_valid(token):
         return False
     else:
         return True
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def verifyToken(request):
+    token = request.user.auth_token
+    if token_creation_time_valid(token):
+        return Response({"token": str(token), "valid": True}, status=status.HTTP_200_OK)
+    else:
+        return Response({"token": "", "valid": False}, status=status.HTTP_401_UNAUTHORIZED)

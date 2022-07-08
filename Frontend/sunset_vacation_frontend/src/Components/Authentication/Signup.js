@@ -13,13 +13,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import {useState} from 'react'
+import { BASE_URL } from '../../Utils';
+import { axios_api } from '../../App';
+
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Sunset Vacation
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -29,19 +33,68 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignInSide(props) {
+export default function Signup(props) {
   let navigate = useNavigate()
-  const handleSubmit = (event) => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  React.useEffect(() => {
+    if (props.isLoggedin){
+         navigate("/")   
+    }
+  },[])
+
+  const gotoLoginPage = () => {
+    navigate("/login");
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
+      name: data.get('name'),
+      Address: data.get('Address'),
+      PhoneNo: data.get('Phone no'),
+      country: data.get('Country'),
+      city: data.get('City'),      
     });
 
-    // implement login logic here
-    props.setLoggedIn(true);
-    navigate("/");
+    try{
+      let body = {
+        email: data.get('email'),
+        password: data.get('password'),
+        name: data.get('name'),
+        Address: data.get('Address'),
+        PhoneNo: data.get('Phone no'),
+        country: data.get('Country'),
+        city: data.get('City'),      
+      };
+      let response = await axios_api.post("users/signup/", body);
+
+      console.log(response)
+      if(response.status === 201){
+        props.setUser(response.data);
+        props.setToken(response.data.token);
+        props.setLoggedIn(true);
+        navigate("/")
+      }
+      else{
+        props.setUser({});
+        props.setToken("");
+        props.setLoggedIn(false);
+        alert("Invalid email or password");
+      }
+      console.log(response.data);
+    }
+    catch(err){
+      console.log(err);
+      alert(err)
+    }
+    
+
   };
 
   return (
@@ -76,9 +129,19 @@ export default function SignInSide(props) {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Sign up
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                label="Name"
+                name="name"
+                autoComplete="name"
+                autoFocus
+              />
               <TextField
                 margin="normal"
                 required
@@ -87,7 +150,48 @@ export default function SignInSide(props) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="Address"
+                label="Address"
+                name="Address"
+                autoComplete="Address"
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="Phone no"
+                label="Phone no"
+                name="Phone no"
+                autoComplete="Phone no"
+              />
+              <TextField
+                margin="normal"
+                required
+                id="Country"
+                label="Country"
+                name="Country"
+                autoComplete="Country"
+                sx={{
+                  width: 270,
+                }}
+              />
+              {/* <CountrySelector /> */}
+              <TextField
+                margin="normal"
+                required
+                id="City"
+                label="City"
+                name="City"
+                autoComplete="City"
+                sx={{
+                  width: 270,
+                  ml: 3.5
+                }}
               />
               <TextField
                 margin="normal"
@@ -99,10 +203,6 @@ export default function SignInSide(props) {
                 id="password"
                 autoComplete="current-password"
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
               <Button
                 type="submit"
                 fullWidth
@@ -112,15 +212,16 @@ export default function SignInSide(props) {
                 Sign In
               </Button>
               <Grid container>
-                <Grid item xs>
+                {/* <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
                   </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
+                </Grid> */}
+                <Grid item sx={{ml: 17}}>
+                  <Button onClick={()=>{gotoLoginPage()}} variant="text">Already have an account? Sign in</Button>
+                  {/* <Link href="#" variant="body2">
                     {"Don't have an account? Sign Up"}
-                  </Link>
+                  </Link> */}
                 </Grid>
               </Grid>
               <Copyright sx={{ mt: 5 }} />

@@ -6,7 +6,7 @@ export default function ManagementDashboardAccessControl(props){
     let navigate = useNavigate();
 
     console.log(props.isLoggedin);
-
+    console.log(props.token);
     React.useEffect(() => {
         if (!props.isLoggedin){
              navigate("/login")   

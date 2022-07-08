@@ -14,7 +14,7 @@ export default function ManagementDashboard(props) {
     const useHandleHostNewPropertyButton = (event) => {
         navigate("/hostproperty");
     }
-    const useShowProperty=(event)=>{
+    const useShowProperties=(event)=>{
       navigate("/showProperties")
     }
   return (
