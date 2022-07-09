@@ -4,7 +4,11 @@ import Homepage from './Components/Homepage/Homepage';
 import { useState } from 'react';
 import ManagementDashboardAccessControl from './Components/Hosting/ManagementDashboard/ManagementDashboardAccessControl';
 import HostNewProperty from './Components/Hosting/NewProperty/HostNewProperty';
-
+import ShowCatagory from './Components/Hosting/ShowProperty/ShowCatagory';
+import ShowDescription from './Components/Hosting/ShowProperty/ShowDescription';
+import ShowFacility from './Components/Hosting/ShowProperty/ShowFacility';
+import ShowFaq from './Components/Hosting/ShowProperty/ShowFaq';
+import ShowLocation from './Components/Hosting/ShowProperty/ShowLocation';
 import ShowPropertyList from './Components/Hosting/ShowProperty/ShowPropertyList';
 import ShowPropertyDetails from './Components/Hosting/ShowProperty/ShowPropertyDetails';
 
@@ -39,7 +43,12 @@ function App() {
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn}/>} />
   
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}}/>} />
-        <Route path='/showPropertyDetails' element={<ShowPropertyDetails property={property}/>}/>
+        <Route path='/showPropertyDetails' element={<ShowPropertyDetails property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
+        <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>
+        <Route path='/showPropertyDetails/description' element={<ShowDescription property={property}/>}/>
+        <Route path='/showPropertyDetails/faq' element={<ShowFaq property={property}/>}/>
+        <Route path='/showPropertyDetails/facility' element={<ShowFacility property={property}/>}/>
+        <Route path='/showPropertyDetails/catagory' element={<ShowCatagory property={property}/>}/>
         <Route
           path="*"
           element={<Navigate to="/" replace />}
