@@ -14,10 +14,12 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DesktopMacIcon from '@mui/icons-material/DesktopMac';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import DescriptionIcon from '@mui/icons-material/Description';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
 export default function ShowDescription(props) {
   let navigate = useNavigate();
   const [prop, setProp] = React.useState({});
-
+  const [edit, setEdit] = React.useState(false);
 
   const useLocation = (event) => {
     navigate("/showPropertyDetails/location");
@@ -58,16 +60,23 @@ export default function ShowDescription(props) {
         alert(err.message);
       })
   })
+  function changePerNightCost(event) {
+    props.property.perNightCost = event.target.value;
+
+  }
   function changeDescription(event) {
     props.property.description = event.target.value;
 
   }
-  function changeTitle(event) {
 
-    props.property.title = event.target.value;
-
+  function changeMaxDaysRefund(event) {
+    props.property.maxDaysRefund = event.target.value;
   }
-  
+  function editClicked(event){
+    console.log("edit value ", edit)
+    setEdit(!edit);
+    console.log("edit value change ", edit)
+  }
  
   function handleSubmit(event) {
     const requestOptions = {
@@ -96,7 +105,8 @@ export default function ShowDescription(props) {
               sx={{ display: { xs: 'none', sm: 'block' } }}
             >
               <p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "25px", "color": "black" }}>{prop.title}
-                &nbsp;&nbsp;&nbsp;<IconButton><EditIcon /></IconButton></p>
+                &nbsp;&nbsp;&nbsp;
+                <IconButton><EditIcon onClick={editClicked}/></IconButton></p>
             </Typography>
           </Toolbar>
         </AppBar>
@@ -114,7 +124,7 @@ export default function ShowDescription(props) {
     )
   }
   function showDetails(props) {
-    console.log("show details:" + props.property.description)
+    // console.log("show details:" + props.property.description)
     //   return (
     //       <div>
     //           <form onSubmit={handleSubmit}>
@@ -131,10 +141,46 @@ export default function ShowDescription(props) {
     //       </div>
     return (
       <div>
-
-
-
-
+        <Box
+            component="form"
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '40ch' },
+            }}
+            noValidate
+            m={2}
+            p={2}
+            autoComplete="off"
+        >
+          <Grid container>
+            <Grid item xs={1}/>
+            <Grid item xs={5}>
+            <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "15px", "color": "black" }}>Description</p></label>
+          <TextField
+              id="outlined-textarea"
+              multiline
+              rows={10}
+              defaultValue={props.property.description}
+              disabled={!edit}
+              onChange={changeDescription}/>
+            </Grid>
+            <Grid item xs={6}>
+            <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "15px", "color": "black" }}>Per Night Cost</p></label>
+        <TextField
+            id="outlined-disabled"
+            disabled={!edit}
+            defaultValue={props.property.perNightCost}
+            onChange={changePerNightCost}/>
+          <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "15px", "color": "black" }}>Maximum Days for Refund</p></label>
+          <TextField
+              id="outlined-disabled"
+              disabled={!edit}
+              defaultValue={props.property.maxDaysRefund}
+              onChange={changeMaxDaysRefund}/>
+              <br></br>
+              <Button variant="contained" onClick={handleSubmit} sx={{ bgcolor:'#282c34', marginTop:2, marginLeft: 15}}>Update</Button>
+            </Grid>
+          </Grid>
+        </Box>
       </div>
     )
 
@@ -145,6 +191,8 @@ export default function ShowDescription(props) {
       <ManagementDashboard />
 
       {showPropertyNavbar(props)}
+
+      {showDetails(props)}
 
     </div>
   );
