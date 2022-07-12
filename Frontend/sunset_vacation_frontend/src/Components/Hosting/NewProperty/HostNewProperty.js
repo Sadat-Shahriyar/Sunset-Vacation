@@ -16,6 +16,7 @@ export default function HostNewProperty(props){
 
     const [pageNo, setPageNo] = React.useState(1);
     const [selectedCategory, setSelectedCategory] = React.useState("");
+    const [entirePrivateOrShared, setEntirePrivateOrShared] = React.useState("");
 
     let navigate = useNavigate();
     React.useEffect(() => {
@@ -32,12 +33,21 @@ export default function HostNewProperty(props){
             setSelectedCategory(val);
         }
     }
+
+    const handleEntirePrivateOrShared = (val) => {
+        if(entirePrivateOrShared === val){
+            setEntirePrivateOrShared("");
+        }
+        else{
+            setEntirePrivateOrShared(val);
+        }
+    }
     const handlePage = () => {
         if(pageNo === 1){
             return (<CategoryPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token} selectedCategory={selectedCategory} setSelectedCategory={(val) => {handleSelectedCategory(val)}}/>);
         }
         else if(pageNo === 2){
-            return (<EntirePrivateOrSharePage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+            return (<EntirePrivateOrSharePage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token} entirePrivateOrShared={entirePrivateOrShared} setEntirePrivateOrShared={(val) => {handleEntirePrivateOrShared(val)}}/>);
         }
 
         else if(pageNo === 3){
