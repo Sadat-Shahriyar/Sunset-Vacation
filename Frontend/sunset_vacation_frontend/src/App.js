@@ -40,7 +40,7 @@ function App() {
         <Route path='/login' element={<Login isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/signup' element={<Signup isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
-        <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn}/>} />
+        <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
   
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}}/>} />
         <Route path='/showPropertyDetails' element={<ShowPropertyDetails property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>

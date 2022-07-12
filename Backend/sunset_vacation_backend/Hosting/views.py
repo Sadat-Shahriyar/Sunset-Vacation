@@ -7,7 +7,8 @@ from .models import *
 from .serializer import *
 from Authentication.models import *
 from Authentication.serializers import *
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 @api_view(["GET"])
@@ -79,6 +80,14 @@ def deleteProperty(request,property_id):
     propertyInfo=Property.objects.get(propertyID=property_id)
     propertyInfo.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getCategoryList(request):
+    allCategories = Catagory.objects.values_list("description")
+    categorySerializer = CatagorySerializer(allCategories)
+    print(allCategories)
+    return Response({"categories": allCategories, "success": True}, status=status.HTTP_200_OK)
     
 # class Property(
 #     APIView,
