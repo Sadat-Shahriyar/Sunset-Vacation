@@ -23,36 +23,6 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
-
-function ShowCategoryList(props){
-
-    let listItems = props.categories.map((category) => {
-      let bg = 'white';
-    //   console.log("hello1")
-      if(category === props.entirePrivateOrShared){
-        // console.log("hello")
-        bg = 'yellow';
-      }
-      return(
-        <ListItem disablePadding sx={{mt:1}}>
-          <Paper style={{width: "100%", marginLeft: 5, marginRight: 5}}>
-            <ListItemButton sx={{ textAlign: 'center', background: bg}} onClick={() => {props.setEntirePrivateOrShared(category)}}>
-              <ListItemText primary={category}  />
-            </ListItemButton>
-          </Paper>
-        </ListItem>
-      );
-    })
-
-    return (
-      <Paper elevation={0} style={{height: "99%", overflow: 'auto'}}>
-        <List>
-          {listItems}
-        </List>
-      </Paper>
-    );
-}
-
 function ViewRender(props){
   return(
     <Grid container>
@@ -226,22 +196,6 @@ function ViewRender(props){
       </Grid>
     </Grid>
   );
-  // return(
-  //   <Paper elevation={0}>
-  //     <Paper sx={{mt:5, mx:5,height: "6vh", textAlign:'center', justifyContent:'center', alignContent:'center', alignItems: 'center'}}>
-  //       <Typography variant='h4'>Guest no: </Typography>
-  //     </Paper>
-  //     <Paper sx={{mt:5}}>
-  //       <Typography>Beds: </Typography>
-  //     </Paper>
-  //     <Paper sx={{mt:5}}>
-  //       <Typography>Bedrooms: </Typography>
-  //     </Paper>
-  //     <Paper sx={{mt:5}}>
-  //       <Typography>Bathrooms: </Typography>
-  //     </Paper>
-  //   </Paper>
-  // );
 }
 
 
@@ -275,12 +229,6 @@ export default function GuestNoPage(props){
                 </Paper>
               </Item>
               <Item sx={{ height:'80%', mt: 1, ml:1}}>
-                {/* <ShowCategoryList 
-                  categories = {categories} 
-                  entirePrivateOrShared={props.entirePrivateOrShared}
-                  setEntirePrivateOrShared = {(val) => {props.setEntirePrivateOrShared(val)}}
-                /> */}
-                {/* {"hello"} */}
                 <ViewRender 
                   guestNo = {props.guestNo}
                   bed = {props.bed}

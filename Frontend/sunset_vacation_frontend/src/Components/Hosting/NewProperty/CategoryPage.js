@@ -43,7 +43,7 @@ function ShowCategoryList(props){
     })
 
     return (
-      <Paper elevation={0} style={{height: "99%", overflow: 'auto'}}>
+      <Paper elevation={0} style={{maxHeight: 520, overflow: 'auto'}}>
         <List>
           {listItems}
         </List>

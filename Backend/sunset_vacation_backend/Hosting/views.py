@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.mixins import UpdateModelMixin,DestroyModelMixin
@@ -89,6 +90,31 @@ def getCategoryList(request):
     print(allCategories)
     return Response({"categories": allCategories, "success": True}, status=status.HTTP_200_OK)
     
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getFacilityList(request):
+    amenities = Facility.objects.filter(catagory="Amenity").values_list("facility_name")
+    guestsFavourite = Facility.objects.filter(catagory="Guests favourite").values_list("facility_name")
+    safetyItems = Facility.objects.filter(catagory="Safety item").values_list("facility_name")
+    print(amenities)
+    print(guestsFavourite)
+    print(safetyItems)
+    if amenities.exists() and guestsFavourite.exists() and safetyItems.exists():
+        return Response({"amenities": amenities,"guestsFavourite": guestsFavourite,"safetyItems": safetyItems, "success": True}, status=status.HTTP_200_OK)
+
+    else:
+        return Response({"success": False, "error" : "error 404 OT FOUND"}, status = status.HTTP_404_NOT_FOUND)
+
+# @api_view(["GET"])
+# @permission_classes([IsAuthenticated])
+# def getSafetyItemList(request):
+#     safetyItems = Facility.objects.filter(category="safetyitem").values_list("facility_name")
+#     print(safetyItems)
+#     return Response({ "safetyItems": safetyItems, "success": True}, status=status.HTTP_200_OK)
+
+
+
 # class Property(
 #     APIView,
 #     UpdateModelMixin,

@@ -43,7 +43,7 @@ function ShowCategoryList(props){
     })
 
     return (
-      <Paper elevation={0} style={{height: "99%", overflow: 'auto'}}>
+      <Paper elevation={0} style={{maxHeight: 520, overflow: 'auto'}}>
         <List>
           {listItems}
         </List>
@@ -56,27 +56,6 @@ export default function EntirePrivateOrSharePage(props){
 
     let navigate = useNavigate();
     const [categories, setCategories] = React.useState(["An entire place", "A private room", "A shared room"]);
-
-    
-    // React.useEffect(() => {
-
-    //   const fethCategories = async() => {
-    //       let response = await axios_api.get("hosting/getallcategory/", 
-    //       {
-    //           headers: {
-    //               'Authorization' : `Bearer ${props.token}`
-    //           }
-    //       });
-
-    //       console.log(response);
-    //       if(response.data.success){
-    //         // console.log(response.data.categories[1][0])
-    //         setCategories(response.data.categories)
-    //       }
-    //   }
-      
-    //   fethCategories();
-    // }, [])
 
     const handleCancel = () => {
       navigate('/hosting');

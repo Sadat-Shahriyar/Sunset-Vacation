@@ -9,5 +9,7 @@ urlpatterns = [
     path('deleteProperty/<int:property_id>',views.deleteProperty),
     path('getProperty/<int:property_id>',views.getProperty),
     path('getallcategory/', views.getCategoryList, name="getcategorylist"),
+    path('getfacilities/',views.getFacilityList, name="getfacilitylist" ),
+    # path('getsafetyitems/', views.getSafetyItemList, name="getsafetyitemlist"),
     # path('propertylist/', views.getPropertyDetails),
 ]

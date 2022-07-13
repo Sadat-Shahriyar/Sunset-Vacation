@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import * as React from 'react'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -22,31 +22,115 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
 
 
-function ShowCategoryList(props){
+function ViewRender(props){
+    console.log(props.selectedAmenityList);
+    console.log(props.selectedGuestsFavouriteItemList);
+    console.log(props.selectedSafetyItemList);
 
-    let listItems = props.categories.map((category) => {
-      let bg = 'white';
-    //   console.log("hello1")
-      if(category === props.entirePrivateOrShared){
-        // console.log("hello")
-        bg = 'yellow';
-      }
+    let amenities = props.amenities.map((amenity) => {
+        let bg = "white";
+        let idx = props.selectedAmenityList.indexOf(amenity[0]);
+        if(idx > -1){
+          bg="yellow"
+        }
+        return(
+          <Grid item xs={4}>
+            <Paper elevation={3} style={{marginLeft:1, background: bg}}>
+              <Box
+                display="flex" 
+                width={200} height={80} 
+                ml={2}
+                mt={2}
+              >
+                  <Box m="auto">
+                    {/* <Typography variant='body1'>{amenity[0]}</Typography> */}
+                    <Button variant='text' sx={{color: 'black'}} onClick={() => {props.setSelectedAmenityList(amenity[0])}}>{amenity[0]}</Button>
+                  </Box>
+              </Box>
+            </Paper>
+          </Grid>
+        );
+    });
+
+    let guestsFavourite = props.guestsFavourite.map((fav) => {
+        let bg = "white";
+        let idx = props.selectedGuestsFavouriteItemList.indexOf(fav[0]);
+        if(idx > -1){
+          bg="yellow"
+        }
       return(
-        <ListItem disablePadding sx={{mt:1}}>
-          <Paper style={{width: "100%", marginLeft: 5, marginRight: 5}}>
-            <ListItemButton sx={{ textAlign: 'center', background: bg}} onClick={() => {props.setEntirePrivateOrShared(category)}}>
-              <ListItemText primary={category}  />
-            </ListItemButton>
+        <Grid item xs={4}>
+          <Paper elevation={3} style={{marginLeft:1, background: bg}}>
+            <Box
+              display="flex" 
+              width={200} height={80} 
+              ml={2}
+              mt={2}
+            >
+                <Box m="auto">
+                  {/* <Typography variant='body1'>{fav[0]}</Typography> */}
+                  <Button variant='text' sx={{color: 'black'}} onClick={() => {props.setSelectedGuestsFavouriteItemList(fav[0])}}>{fav[0]}</Button>
+                </Box>
+            </Box>
           </Paper>
-        </ListItem>
+        </Grid>
       );
-    })
+    });
 
-    return (
-      <Paper elevation={0} style={{height: "99%", overflow: 'auto'}}>
-        <List>
-          {listItems}
-        </List>
+    let safetyItems = props.safetyItems.map((sItem) => {
+        let bg = "white";
+        let idx = props.selectedSafetyItemList.indexOf(sItem[0]);
+        if(idx > -1){
+          bg="yellow"
+        }
+        
+      return(
+        <Grid item xs={4}>
+          <Paper elevation={3} style={{marginLeft:1, background: bg}}>
+            <Box
+              display="flex" 
+              width={200} height={80} 
+              ml={2}
+              mt={2}
+            >
+                <Box m="auto">
+                  {/* <Typography variant='body1'>{sItem[0]}</Typography> */}
+                  <Button 
+                  variant='text' 
+                  sx={{color: 'black'}} 
+                  onClick={() => {console.log(sItem[0]);props.setSelectedSafetyItemList(sItem[0])}}
+                  >
+                    {sItem[0]}
+                  </Button>
+                </Box>
+            </Box>
+          </Paper>
+          
+        </Grid>
+      );
+    });
+
+    return(
+      <Paper elevation={0} style={{maxHeight: 520, overflow: 'auto'}}>
+        <Grid container>
+          <Grid item xs={12}>
+            <Typography variant='h5' marginTop={5}>Amenities: </Typography>
+          </Grid>
+
+          {amenities}
+
+          <Grid item xs={12}>
+            <Typography variant='h5' marginTop={5}>Guests favourite: </Typography>
+          </Grid>
+
+          {guestsFavourite}
+
+          <Grid item xs={12}>
+            <Typography variant='h5' marginTop={5}>Safety items: </Typography>
+          </Grid>
+
+          {safetyItems}
+        </Grid>
       </Paper>
     );
 }
@@ -55,35 +139,47 @@ function ShowCategoryList(props){
 export default function FacilitiesPage(props){
 
     let navigate = useNavigate();
-    const [categories, setCategories] = React.useState(["An entire place", "A private room", "A shared room"]);
 
+    const [amenities, setAmenities] = React.useState([]);
+    const [guestsFavourites, setGuestsFavourites] = React.useState([]);
+    const [safetyItems, setSafetyItems] = React.useState([]);
     
-    // React.useEffect(() => {
+    React.useEffect(() => {
 
-    //   const fethCategories = async() => {
-    //       let response = await axios_api.get("hosting/getallcategory/", 
-    //       {
-    //           headers: {
-    //               'Authorization' : `Bearer ${props.token}`
-    //           }
-    //       });
+      const fetchFacilityList = async() => {
+        try{
+          let response = await axios_api.get("hosting/getfacilities/", 
+          {
+              headers: {
+                  'Authorization' : `Bearer ${props.token}`
+              }
+          });
 
-    //       console.log(response);
-    //       if(response.data.success){
-    //         // console.log(response.data.categories[1][0])
-    //         setCategories(response.data.categories)
-    //       }
-    //   }
-      
-    //   fethCategories();
-    // }, [])
+          console.log(response);
+          if(response.data.success){
+            setAmenities(response.data.amenities);
+            setGuestsFavourites(response.data.guestsFavourite);
+            setSafetyItems(response.data.safetyItems);
+          }
+          else{
+            alert(response.data.error);
+          }
+        }
+        catch(err){
+          alert(err);
+        }
+          
+      }
+
+      fetchFacilityList();
+    }, [])
 
     const handleCancel = () => {
       navigate('/hosting');
     }
 
     let getButton = () => {
-      if(props.entirePrivateOrShared === "") {
+      if(props.selectedAmenityList.length === 0 && props.selectedGuestsFavouriteItemList.length === 0 && props.selectedSafetyItemList.length === 0) {
         return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
       else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
@@ -103,12 +199,17 @@ export default function FacilitiesPage(props){
                 </Paper>
               </Item>
               <Item sx={{ height:'80%', mt: 1, ml:1}}>
-                {/* <ShowCategoryList 
-                  categories = {categories} 
-                  entirePrivateOrShared={props.entirePrivateOrShared}
-                  setEntirePrivateOrShared = {(val) => {props.setEntirePrivateOrShared(val)}}
-                /> */}
-                {"hello"}
+                <ViewRender 
+                  amenities = {amenities}
+                  guestsFavourite = {guestsFavourites}
+                  safetyItems = {safetyItems}
+                  selectedAmenityList = {props.selectedAmenityList}
+                  selectedGuestsFavouriteItemList = {props.selectedGuestsFavouriteItemList}
+                  selectedSafetyItemList = {props.selectedSafetyItemList}
+                  setSelectedAmenityList = {(val) => {props.setSelectedAmenityList(val)}}
+                  setSelectedGuestsFavouriteItemList = {(val) => {props.setSelectedGuestsFavouriteItemList(val)}}
+                  setSelectedSafetyItemList = {(val) => {props.setSelectedSafetyItemList(val)}}
+                />
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>

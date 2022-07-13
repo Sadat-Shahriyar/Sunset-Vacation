@@ -23,61 +23,10 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
 
 
-function ShowCategoryList(props){
-
-    let listItems = props.categories.map((category) => {
-      let bg = 'white';
-    //   console.log("hello1")
-      if(category === props.entirePrivateOrShared){
-        // console.log("hello")
-        bg = 'yellow';
-      }
-      return(
-        <ListItem disablePadding sx={{mt:1}}>
-          <Paper style={{width: "100%", marginLeft: 5, marginRight: 5}}>
-            <ListItemButton sx={{ textAlign: 'center', background: bg}} onClick={() => {props.setEntirePrivateOrShared(category)}}>
-              <ListItemText primary={category}  />
-            </ListItemButton>
-          </Paper>
-        </ListItem>
-      );
-    })
-
-    return (
-      <Paper elevation={0} style={{height: "99%", overflow: 'auto'}}>
-        <List>
-          {listItems}
-        </List>
-      </Paper>
-    );
-}
-
-
 export default function LocationPage(props){
 
     let navigate = useNavigate();
-    const [categories, setCategories] = React.useState(["An entire place", "A private room", "A shared room"]);
 
-    
-    // React.useEffect(() => {
-
-    //   const fethCategories = async() => {
-    //       let response = await axios_api.get("hosting/getallcategory/", 
-    //       {
-    //           headers: {
-    //               'Authorization' : `Bearer ${props.token}`
-    //           }
-    //       });
-
-    //       console.log(response);
-    //       if(response.data.success){
-    //         // console.log(response.data.categories[1][0])
-    //         setCategories(response.data.categories)
-    //       }
-    //   }
-      
-    //   fethCategories();
-    // }, [])
 
     const handleCancel = () => {
       navigate('/hosting');

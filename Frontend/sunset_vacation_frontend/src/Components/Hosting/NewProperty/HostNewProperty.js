@@ -27,6 +27,14 @@ export default function HostNewProperty(props){
     const [bedrooms, setBedrooms] = React.useState(0);
     const [bathrooms, setBathrooms] = React.useState(0);
 
+    const [selectedAmenityList, setSelectedAmenityList] = React.useState([]);
+    const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = React.useState([]);
+    const [selectedSafetyItemList, setSelectedSafetyItemList] = React.useState([]);
+
+    const [description, setDescription] = React.useState("");
+    const [dos, setDos] = React.useState([]);
+    const [donts, setDonts] = React.useState([]);
+
     let navigate = useNavigate();
     React.useEffect(() => {
         if (!props.isLoggedin){
@@ -75,12 +83,67 @@ export default function HostNewProperty(props){
         }
     }
 
+    const handleSetSelectedAmenityList = (val) => {
+        let amenities = [...selectedAmenityList];
+        let idx = amenities.indexOf(val);
+        if(idx === -1){
+            amenities.push(val);
+            setSelectedAmenityList(amenities);
+        }
+        else{
+            amenities.splice(idx, 1);
+            setSelectedAmenityList(amenities);
+        }
+    }
+
+    const handleSelectedGuestsFavouriteItemList = (val) => {
+        let favs = [...selectedGuestsFavouriteItemList];
+        let idx = favs.indexOf(val);
+        if(idx === -1){
+            favs.push(val);
+            setSelectedGuestsFavouriteItemList(favs);
+        }
+        else{
+            favs.splice(idx,1);
+            setSelectedGuestsFavouriteItemList(favs);
+        }
+    }
+
+    const handleSetSelectedSafetyItemList = (val) => {
+        let safetyItem = [...selectedSafetyItemList];
+        let idx = safetyItem.indexOf(val);
+        if(idx === -1){
+            safetyItem.push(val);
+            setSelectedSafetyItemList(safetyItem);
+        }
+        else{
+            safetyItem.splice(idx, 1);
+            setSelectedSafetyItemList(safetyItem);
+        }
+    }
+
     const handlePage = () => {
         if(pageNo === 1){
-            return (<CategoryPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token} selectedCategory={selectedCategory} setSelectedCategory={(val) => {handleSelectedCategory(val)}}/>);
+            return (
+                <CategoryPage 
+                    pageNo={pageNo} 
+                    setPageNo={(val) => {setPageNo(val)}} 
+                    token = {props.token} 
+                    selectedCategory={selectedCategory} 
+                    setSelectedCategory={(val) => {handleSelectedCategory(val)}}
+                />
+            );
         }
         else if(pageNo === 2){
-            return (<EntirePrivateOrSharePage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token} entirePrivateOrShared={entirePrivateOrShared} setEntirePrivateOrShared={(val) => {handleEntirePrivateOrShared(val)}}/>);
+            return (
+                <EntirePrivateOrSharePage
+                     pageNo={pageNo} 
+                    setPageNo={(val) => {setPageNo(val)}}
+                     token = {props.token} 
+                     entirePrivateOrShared={entirePrivateOrShared} 
+                     setEntirePrivateOrShared={(val) => {handleEntirePrivateOrShared(val)}}
+                />
+            );
         }
 
         else if(pageNo === 3){
@@ -118,24 +181,48 @@ export default function HostNewProperty(props){
             );
         }
         else if(pageNo === 5){
-            return (<FacilitiesPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+            return (
+                <FacilitiesPage 
+                    pageNo={pageNo} 
+                    setPageNo={(val) => {setPageNo(val)}}
+                    token = {props.token}
+                    selectedAmenityList = {selectedAmenityList}
+                    selectedGuestsFavouriteItemList = {selectedGuestsFavouriteItemList}
+                    selectedSafetyItemList = {selectedSafetyItemList}
+                    setSelectedAmenityList = {(val) => {handleSetSelectedAmenityList(val)}}
+                    setSelectedGuestsFavouriteItemList = {(val) => {handleSelectedGuestsFavouriteItemList(val)}}
+                    setSelectedSafetyItemList = {(val) => {handleSetSelectedSafetyItemList(val)}}
+                />
+            );
         }
-        else if(pageNo === 6) {
-            return (<SafetyItemsPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
-        }
-        else if(pageNo === 7){
+        // else if(pageNo === 6) {
+        //     return (<SafetyItemsPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+        // }
+        else if(pageNo === 6){
             return (<PhotosPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
         }
-        else if(pageNo === 8){
-            return (<DescriptionPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+        else if(pageNo === 7){
+            return (
+                <DescriptionPage
+                     pageNo={pageNo} 
+                     setPageNo={(val) => {setPageNo(val)}} 
+                     token = {props.token}
+                     description = {description}
+                     setDescription = {(val) => {setDescription(val)}}
+                     dos = {dos}
+                     setDos = {(val) => {setDos(val)}}
+                     donts = {donts}
+                     setDonts = {(val) => {setDonts(val)}}
+                />
+            );
         }
-        else if(pageNo === 9){
+        else if(pageNo === 8){
             return (<TitlePage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
         }
-        else if(pageNo === 10){
+        else if(pageNo === 9){
             return (<PricePage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
         }
-        else if(pageNo === 11) {
+        else if(pageNo === 10) {
             return (<PublishPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
         }
     }
