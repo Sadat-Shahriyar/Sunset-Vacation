@@ -35,6 +35,8 @@ export default function HostNewProperty(props){
     const [dos, setDos] = React.useState([]);
     const [donts, setDonts] = React.useState([]);
 
+    const [title, setTitle] = React.useState("");
+
     let navigate = useNavigate();
     React.useEffect(() => {
         if (!props.isLoggedin){
@@ -195,9 +197,7 @@ export default function HostNewProperty(props){
                 />
             );
         }
-        // else if(pageNo === 6) {
-        //     return (<SafetyItemsPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
-        // }
+        
         else if(pageNo === 6){
             return (<PhotosPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
         }
@@ -217,7 +217,15 @@ export default function HostNewProperty(props){
             );
         }
         else if(pageNo === 8){
-            return (<TitlePage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+            return (
+                <TitlePage 
+                    pageNo={pageNo} 
+                    setPageNo={(val) => {setPageNo(val)}} 
+                    token = {props.token}
+                    title={title}
+                    setTitle = {(val) => {setTitle(val)}}
+                />
+            );
         }
         else if(pageNo === 9){
             return (<PricePage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);

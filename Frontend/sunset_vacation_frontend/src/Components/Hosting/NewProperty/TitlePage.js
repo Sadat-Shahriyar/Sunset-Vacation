@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import { Button, TextField, Typography } from '@mui/material'
 import * as React from 'react'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -22,68 +22,44 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
 
 
-function ShowCategoryList(props){
-
-    let listItems = props.categories.map((category) => {
-      let bg = 'white';
-    //   console.log("hello1")
-      if(category === props.entirePrivateOrShared){
-        // console.log("hello")
-        bg = 'yellow';
-      }
-      return(
-        <ListItem disablePadding sx={{mt:1}}>
-          <Paper style={{width: "100%", marginLeft: 5, marginRight: 5}}>
-            <ListItemButton sx={{ textAlign: 'center', background: bg}} onClick={() => {props.setEntirePrivateOrShared(category)}}>
-              <ListItemText primary={category}  />
-            </ListItemButton>
-          </Paper>
-        </ListItem>
-      );
-    })
-
-    return (
-      <Paper elevation={0} style={{height: "99%", overflow: 'auto'}}>
-        <List>
-          {listItems}
-        </List>
-      </Paper>
-    );
+function ViewRender(props){
+  let lengthField = `${props.title.length}/100`;
+  return(
+    <Grid container>
+      <Grid item xs={12}>
+        <Typography variant='h5' sx={{ml:10, mt:22}}>Create your title: </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          multiline
+          rows={4}
+          placeholder='Lovely 1 bedroom rental unit with pool'
+          inputProps={{maxLength: 100,style: {fontSize: 28}}}
+          onChange={(event) => {props.setTitle(event.target.value)}}
+          sx={{
+            ml:10,
+            mt:1,
+            width: '75%',
+          }}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant='body1' sx={{ml:11, mt:1}}>{lengthField}</Typography>
+      </Grid>
+    </Grid>
+  );
 }
-
 
 export default function TitlePage(props){
 
     let navigate = useNavigate();
-    const [categories, setCategories] = React.useState(["An entire place", "A private room", "A shared room"]);
-
-    
-    // React.useEffect(() => {
-
-    //   const fethCategories = async() => {
-    //       let response = await axios_api.get("hosting/getallcategory/", 
-    //       {
-    //           headers: {
-    //               'Authorization' : `Bearer ${props.token}`
-    //           }
-    //       });
-
-    //       console.log(response);
-    //       if(response.data.success){
-    //         // console.log(response.data.categories[1][0])
-    //         setCategories(response.data.categories)
-    //       }
-    //   }
-      
-    //   fethCategories();
-    // }, [])
 
     const handleCancel = () => {
       navigate('/hosting');
     }
 
     let getButton = () => {
-      if(props.entirePrivateOrShared === "") {
+      if(props.title === "") {
         return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
       else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
@@ -102,13 +78,11 @@ export default function TitlePage(props){
                   <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={() => {handleCancel()}}>Cancel</Button>
                 </Paper>
               </Item>
-              <Item sx={{ height:'80%', mt: 1, ml:1}}>
-                {/* <ShowCategoryList 
-                  categories = {categories} 
-                  entirePrivateOrShared={props.entirePrivateOrShared}
-                  setEntirePrivateOrShared = {(val) => {props.setEntirePrivateOrShared(val)}}
-                /> */}
-                {"hello"}
+              <Item sx={{ height:'80%', mt: 1, ml:1,textAlign: 'start'}}>
+                <ViewRender 
+                  title = {props.title}
+                  setTitle = {(val) => {props.setTitle(val)}}
+                />
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>
