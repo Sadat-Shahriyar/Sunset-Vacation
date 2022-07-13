@@ -22,6 +22,11 @@ export default function HostNewProperty(props){
     const [address, setAddress] = React.useState("Dhaka Division, Bangladesh");
     const [locationHasBeenSet, setLocationHasBeenSet] = React.useState(false);
 
+    const [guestNo, setGuestNo] = React.useState(0);
+    const [bed, setBeds] = React.useState(0);
+    const [bedrooms, setBedrooms] = React.useState(0);
+    const [bathrooms, setBathrooms] = React.useState(0);
+
     let navigate = useNavigate();
     React.useEffect(() => {
         if (!props.isLoggedin){
@@ -46,6 +51,30 @@ export default function HostNewProperty(props){
             setEntirePrivateOrShared(val);
         }
     }
+
+    const handleSetGuestNo = (val) => {
+        if(guestNo >= 0 && val >= 0){
+            setGuestNo(val);
+        }
+    }
+
+    const handleSetBeds = (val) => {
+        if(bed >= 0 && val >= 0){
+            setBeds(val);
+        }
+    }
+
+    const handleSetBedrooms = (val) => {
+        if(bedrooms >= 0 && val >=0){
+            setBedrooms(val);
+        }
+    }
+    const handleSetBathRomms = (val) => {
+        if(bathrooms >= 0 && val >= 0){
+            setBathrooms(val);
+        }
+    }
+
     const handlePage = () => {
         if(pageNo === 1){
             return (<CategoryPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token} selectedCategory={selectedCategory} setSelectedCategory={(val) => {handleSelectedCategory(val)}}/>);
@@ -72,7 +101,21 @@ export default function HostNewProperty(props){
             );
         }
         else if(pageNo === 4){
-            return (<GuestNoPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+            return (
+                <GuestNoPage 
+                    pageNo={pageNo} 
+                    setPageNo={(val) => {setPageNo(val)}} 
+                    token = {props.token}
+                    guestNo = {guestNo}
+                    setGuestNo = {(val) => {handleSetGuestNo(val)}}
+                    bed = {bed}
+                    setBeds = {(val) => {handleSetBeds(val)}}
+                    bedrooms = {bedrooms}
+                    setBedrooms = {(val) => {handleSetBedrooms(val)}}
+                    bathrooms = {bathrooms}
+                    setBathrooms = {(val) => {handleSetBathRomms(val)}}
+                />
+            );
         }
         else if(pageNo === 5){
             return (<FacilitiesPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
