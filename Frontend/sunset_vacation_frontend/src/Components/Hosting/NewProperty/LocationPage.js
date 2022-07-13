@@ -11,6 +11,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from 'react-router-dom';
+import MapComponent from './Map';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -83,7 +84,7 @@ export default function LocationPage(props){
     }
 
     let getButton = () => {
-      if(props.entirePrivateOrShared === "") {
+      if(props.locationHasBeenSet === false) {
         return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
       else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
@@ -103,12 +104,20 @@ export default function LocationPage(props){
                 </Paper>
               </Item>
               <Item sx={{ height:'80%', mt: 1, ml:1}}>
-                {/* <ShowCategoryList 
-                  categories = {categories} 
-                  entirePrivateOrShared={props.entirePrivateOrShared}
-                  setEntirePrivateOrShared = {(val) => {props.setEntirePrivateOrShared(val)}}
-                /> */}
-                {"hello"}
+                <Paper elevation={0} >
+                  <Paper elevation={0} style={{marginLeft: "15%", marginTop: "5%"}}>
+                    <MapComponent
+                      latitude = {props.latitude}
+                      longitude = {props.longitude}
+                      address = {props.address}
+                      setLatitude = {(val) => {props.setLatitude(val)}}
+                      setLongitude = {(val) => {props.setLongitude(val)}}
+                      setAddress = {(val) => {props.setAddress(val)}}
+                      setLocationHasBeenSet = {(val) => {props.setLocationHasBeenSet(val)}}
+                      locationHasBeenSet = {props.locationHasBeenSet}
+                    />
+                  </Paper>
+                </Paper>
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>

@@ -17,6 +17,10 @@ export default function HostNewProperty(props){
     const [pageNo, setPageNo] = React.useState(1);
     const [selectedCategory, setSelectedCategory] = React.useState("");
     const [entirePrivateOrShared, setEntirePrivateOrShared] = React.useState("");
+    const [latitude, setLatitude] = React.useState(23.8103);
+    const [longitude, setLongitude] = React.useState(90.4125);
+    const [address, setAddress] = React.useState("Dhaka Division, Bangladesh");
+    const [locationHasBeenSet, setLocationHasBeenSet] = React.useState(false);
 
     let navigate = useNavigate();
     React.useEffect(() => {
@@ -51,7 +55,21 @@ export default function HostNewProperty(props){
         }
 
         else if(pageNo === 3){
-            return (<LocationPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+            return (
+            <LocationPage 
+                pageNo={pageNo} 
+                setPageNo={(val) => {setPageNo(val)}} 
+                token = {props.token}
+                latitude = {latitude}
+                longitude = {longitude}
+                address = {address}
+                setLatitude = {(val) => {setLatitude(val)}}
+                setLongitude = {(val) => {setLongitude(val)}}
+                setAddress = {(val) => {setAddress(val)}}
+                locationHasBeenSet = {locationHasBeenSet}
+                setLocationHasBeenSet = {(val) => {setLocationHasBeenSet(val)}}
+                />
+            );
         }
         else if(pageNo === 4){
             return (<GuestNoPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
