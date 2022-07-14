@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom';
+import { axios_api } from '../../../App';
 import CategoryPage from './CategoryPage';
 import DescriptionPage from './DescriptionPage';
 import EntirePrivateOrSharePage from './EntirePrivateOrSharedPage';
@@ -47,6 +48,86 @@ export default function HostNewProperty(props){
              navigate("/login")   
         }
     },[navigate, props.isLoggedin])
+
+    
+    const handlePublish = async() => {
+        
+        let imageUrls = [];
+        for(let i=0; i<images.length; i++){
+            let imageFormData = new FormData();
+            imageFormData.append("image", images[i], images[i].name);
+            console.log(images[i].name);
+            console.log(images[i]);
+            console.log(imageFormData.get("image"));
+            let res = await axios_api.post("hosting/photouploadhelper/", imageFormData, {
+                headers: {
+                  "content-type": "multipart/form-data",
+                },
+              })
+            //   .then((res) => {
+            //     if(res.status === 201) return res.data;
+            //     else{
+            //         let err = new Error("Error " + res.status + ": " + res.statusText);
+            //         err.res = res;
+            //         throw err;
+            //     }
+            //   })
+            //   .then((response) => {
+            //         imageUrls.push("http://127.0.0.1:8000" + response.uploaded_photo.image);
+            //         console.log(imageUrls);
+            //     })
+
+            if(res.status === 201){
+                imageUrls.push("http://127.0.0.1:8000" + res.data.uploaded_photo.image);
+            }
+        }
+
+        
+        let formData = new FormData();
+        formData.append("catagory", selectedCategory);
+        formData.append("entirePrivateOrshared", entirePrivateOrShared);
+        formData.append("latitude", latitude);
+        formData.append("longitude", longitude);
+        formData.append("address", address);
+        formData.append("noOfGuests", guestNo);
+        formData.append("noOfBeds", bed);
+        formData.append("noOfBedrooms", bedrooms);
+        formData.append("noOfBathrooms", bathrooms);
+        formData.append("amenityList", selectedAmenityList);
+        formData.append("guestFavs", selectedGuestsFavouriteItemList);
+        formData.append("safetyItems", selectedSafetyItemList);
+        formData.append("description", description);
+        formData.append("dos", dos);
+        formData.append("donts", donts);
+        formData.append("title", title);
+        formData.append("images", imageUrls);
+        formData.append("perNightCost", price);
+        formData.append("maxDaysRefund", maxRefund);
+        // let body = {catagory: selectedCategory, entirePrivateOrshared: entirePrivateOrShared, latitude:latitude, longitude:longitude,
+        //             address: address, guests: guestNo, beds: bed, bedrooms:bedrooms, bathrooms: bathrooms, amenityList: selectedAmenityList,
+        //             guestFavs: selectedGuestsFavouriteItemList, safetyItems: selectedSafetyItemList, description: description,
+        //             dos: dos, donts: donts, title:title, images: imageData, price: price, refund: maxRefund};
+        // console.log(body);
+        try{
+            let response = await axios_api.post("hosting/property/publish/" , formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    'Authorization' : `Bearer ${props.token}`
+                }
+            });
+    
+            if(response.status === 200){
+                alert("complete");
+            }
+            else{
+                alert(response.status + ": " + response.statusText);
+            }
+        }
+        catch(err){
+            alert(err);
+        }
+        
+    }
 
     const handleSelectedCategory = (val) => {
         if(selectedCategory === val){
@@ -139,7 +220,7 @@ export default function HostNewProperty(props){
         console.log(temp);
         setImages(temp);
     }
-
+    
     const handlePage = () => {
         if(pageNo === 1){
             return (
@@ -281,6 +362,7 @@ export default function HostNewProperty(props){
                     price = {price}
                     catagory = {selectedCategory}
                     address = {address}
+                    handlePublish = {() => {handlePublish()}}
                 />
             );
         }

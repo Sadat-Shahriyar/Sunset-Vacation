@@ -148,14 +148,14 @@ function ViewRender(props){
         />
       </Grid>
       <Grid item xs={12} sx={{ml:5}}>
-        <Typography variant='h5' sx={{mt:2}}>Metion do's for your place:</Typography>
+        <Typography variant='h5' sx={{mt:2}}>Mention do's for your place:</Typography>
       </Grid>
       <Grid item xs={12} sx={{ml:3}}>
         {dosTextFields}
       </Grid>
 
       <Grid item xs={12} sx={{ml:5}}>
-        <Typography variant='h5' sx={{mt:2}}>Metion dont's for your place:</Typography>
+        <Typography variant='h5' sx={{mt:2}}>Mention dont's for your place:</Typography>
       </Grid>
       <Grid item xs={12} sx={{ml:3}}>
         {dontsTextFields}

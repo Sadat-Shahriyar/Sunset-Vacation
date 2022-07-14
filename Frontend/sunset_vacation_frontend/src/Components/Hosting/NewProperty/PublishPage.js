@@ -29,7 +29,7 @@ export default function PublishPage(props){
     }
 
     let getButton = () => {
-      return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Publish</Button>
+      return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.handlePublish()}}>Publish</Button>
     }
 
     let button = getButton()
