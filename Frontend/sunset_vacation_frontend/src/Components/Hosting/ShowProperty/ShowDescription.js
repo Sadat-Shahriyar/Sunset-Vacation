@@ -62,11 +62,9 @@ export default function ShowDescription(props) {
   })
   function changePerNightCost(event) {
     props.property.perNightCost = event.target.value;
-
   }
   function changeDescription(event) {
     props.property.description = event.target.value;
-
   }
 
   function changeMaxDaysRefund(event) {
@@ -123,22 +121,7 @@ export default function ShowDescription(props) {
       </Box>
     )
   }
-  function showDetails(props) {
-    // console.log("show details:" + props.property.description)
-    //   return (
-    //       <div>
-    //           <form onSubmit={handleSubmit}>
-    //   <label>
-    //     title:
-    //     <input  type="text" placeholder={props.property.title} onChange={changeTitle} />
-    //   </label>
-    //   <label>
-    //     Description:
-    //     <input type="textarea" placeholder={props.property.description} onChange={changeDescription} />
-    //   </label>
-    //   <input type="submit" value="Submit" />
-    // </form>
-    //       </div>
+  function showDescription(props) {
     return (
       <div>
         <Box
@@ -183,7 +166,6 @@ export default function ShowDescription(props) {
         </Box>
       </div>
     )
-
   }
   return (
     <div>
@@ -192,7 +174,7 @@ export default function ShowDescription(props) {
 
       {showPropertyNavbar(props)}
 
-      {showDetails(props)}
+      {showDescription(props)}
 
     </div>
   );

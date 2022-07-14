@@ -61,12 +61,31 @@ class Property(models.Model):
         default=None,
         null=True
     )
+    noOfBedrooms = models.IntegerField(
+        default=None,
+        null=True
+    )
     address=models.CharField(
         max_length=500,
         default=None,
         blank=False,
         null=True
     )
+
+    conciseType = models.CharField(
+        max_length=500,
+        default=None,
+        blank=False,
+        null=True
+    )
+
+    entirePrivateOrShared = models.CharField(
+        max_length=500,
+        default=None,
+        blank=False,
+        null=True
+    )
+
     latitude=models.CharField(
          max_length=500,
         default=None,
