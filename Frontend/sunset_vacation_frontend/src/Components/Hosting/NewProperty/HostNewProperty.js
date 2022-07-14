@@ -9,7 +9,6 @@ import LocationPage from './LocationPage';
 import PhotosPage from './PhotosPage';
 import PricePage from './PricePage';
 import PublishPage from './PublishPage';
-import SafetyItemsPage from './SafetyItems';
 import TitlePage from './TitlePage';
 
 export default function HostNewProperty(props){
@@ -37,12 +36,17 @@ export default function HostNewProperty(props){
 
     const [title, setTitle] = React.useState("");
 
+    const [images, setImages] = React.useState([]);
+
+    const [price, setPrice] = React.useState(0);
+    const [maxRefund, setMaxRefund] = React.useState(5);
+
     let navigate = useNavigate();
     React.useEffect(() => {
         if (!props.isLoggedin){
              navigate("/login")   
         }
-    },[])
+    },[navigate, props.isLoggedin])
 
     const handleSelectedCategory = (val) => {
         if(selectedCategory === val){
@@ -124,6 +128,18 @@ export default function HostNewProperty(props){
         }
     }
 
+    const handleSetImages = (val) => {
+        let temp = [...images, ...val];
+        setImages(temp);
+        // console.log(images[2].name);
+    }
+
+    const hadleDeleteImage = (name) => {
+        let temp = images.filter((image) => image.name !== name);
+        console.log(temp);
+        setImages(temp);
+    }
+
     const handlePage = () => {
         if(pageNo === 1){
             return (
@@ -199,7 +215,16 @@ export default function HostNewProperty(props){
         }
         
         else if(pageNo === 6){
-            return (<PhotosPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+            return (
+                <PhotosPage 
+                    pageNo={pageNo}
+                    setPageNo={(val) => {setPageNo(val)}} 
+                    token = {props.token}
+                    images = {images}
+                    setImages = {(val) => {handleSetImages(val)}}
+                    hadleDeleteImage = {(name) => {hadleDeleteImage(name)}}
+                />
+            );
         }
         else if(pageNo === 7){
             return (
@@ -228,10 +253,36 @@ export default function HostNewProperty(props){
             );
         }
         else if(pageNo === 9){
-            return (<PricePage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+            return (
+                <PricePage 
+                    pageNo={pageNo} 
+                    setPageNo={(val) => {setPageNo(val)}}
+                    token = {props.token}
+                    price = {price}
+                    setPrice = {(val) => {setPrice(val)}}
+                    maxRefund = {maxRefund}
+                    setMaxRefund = {(val) => {setMaxRefund(val)}}
+                />
+            );
         }
         else if(pageNo === 10) {
-            return (<PublishPage pageNo={pageNo} setPageNo={(val) => {setPageNo(val)}} token = {props.token}/>);
+            return (
+                <PublishPage 
+                    pageNo={pageNo} 
+                    setPageNo={(val) => {setPageNo(val)}} 
+                    token = {props.token}
+                    images = {images}
+                    title = {title}
+                    guestNo = {guestNo}
+                    bed = {bed}
+                    bedrooms = {bedrooms}
+                    bathrooms = {bathrooms}
+                    description = {description}
+                    price = {price}
+                    catagory = {selectedCategory}
+                    address = {address}
+                />
+            );
         }
     }
 

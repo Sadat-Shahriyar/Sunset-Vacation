@@ -1,16 +1,16 @@
-import { Button } from '@mui/material'
+import { Button, TextField,IconButton, Typography } from '@mui/material'
 import * as React from 'react'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import LeftSideCard from './LeftSideCard';
-import { axios_api } from '../../../App';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from 'react-router-dom';
+import InputAdornment from '@mui/material/InputAdornment';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+
+import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -21,69 +21,102 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
+function ViewRender(props){
+  return(
+    <div>
+      <Grid container>
+        <Grid item xs={12}>
+          <TextField
+            id="input-with-icon-textfield"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AttachMoneyIcon />
+                </InputAdornment>
+              ),
+              inputProps: {min: 0 }
+            }}
+            variant="outlined"
+            sx={{
+              mt:15
+            }}
+            type='number'
+            defaultValue={props.price}
+            onChange={(event) => {props.setPrice(event.target.value)}}
+          />
 
-function ShowCategoryList(props){
+          {/* <InputLabel htmlFor="standard-adornment-amount">Amount</InputLabel> */}
+          {/* <Input
+            id="standard-adornment-amount"
+            defaultValue={0}
+            onChange={() => {}}
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            type='number'
+          /> */}
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant='h5'>Per night cost</Typography>
+        </Grid>
 
-    let listItems = props.categories.map((category) => {
-      let bg = 'white';
-    //   console.log("hello1")
-      if(category === props.entirePrivateOrShared){
-        // console.log("hello")
-        bg = 'yellow';
-      }
-      return(
-        <ListItem disablePadding sx={{mt:1}}>
-          <Paper style={{width: "100%", marginLeft: 5, marginRight: 5}}>
-            <ListItemButton sx={{ textAlign: 'center', background: bg}} onClick={() => {props.setEntirePrivateOrShared(category)}}>
-              <ListItemText primary={category}  />
-            </ListItemButton>
-          </Paper>
-        </ListItem>
-      );
-    })
 
-    return (
-      <Paper elevation={0} style={{height: "99%", overflow: 'auto'}}>
-        <List>
-          {listItems}
-        </List>
-      </Paper>
-    );
+        <Grid item xs={6}>
+        <Box
+            display="flex" 
+            width={300} height={80} 
+            bgcolor="white"
+            ml={20}
+            mt={20}
+          >
+            <Box m="auto">
+              <Typography variant='h6'>Maximum number of days before arrival to cancel reservation: </Typography>
+            </Box>
+        </Box>
+      </Grid>
+
+      <Grid item xs={6}>
+        <Box
+            display="flex" 
+            width={200} height={80} 
+            bgcolor="white"
+            ml={10}
+            mt={20}
+          >
+            <Box m="auto">
+              <Grid container>
+                <Grid item xs={4}>
+                  <IconButton color="primary" aria-label="Decrease guest no" sx={{mr:2}} onClick={()=>{props.setMaxRefund(props.maxRefund-1)}}>
+                    <RemoveCircleOutlineRoundedIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={4}>
+                  <Typography variant='h5' marginTop={0.5}>{props.maxRefund}</Typography>
+                </Grid>
+                <Grid item xs={4}>
+                  <IconButton color="primary" aria-label="Increase guest no" onClick={()=>{props.setMaxRefund(props.maxRefund+1)}}>
+                    <AddCircleOutlineRoundedIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </Box>
+        </Box>
+      </Grid>
+
+      </Grid>
+    </div>
+  );
 }
 
 
 export default function PricePage(props){
 
     let navigate = useNavigate();
-    const [categories, setCategories] = React.useState(["An entire place", "A private room", "A shared room"]);
-
     
-    // React.useEffect(() => {
-
-    //   const fethCategories = async() => {
-    //       let response = await axios_api.get("hosting/getallcategory/", 
-    //       {
-    //           headers: {
-    //               'Authorization' : `Bearer ${props.token}`
-    //           }
-    //       });
-
-    //       console.log(response);
-    //       if(response.data.success){
-    //         // console.log(response.data.categories[1][0])
-    //         setCategories(response.data.categories)
-    //       }
-    //   }
-      
-    //   fethCategories();
-    // }, [])
-
     const handleCancel = () => {
       navigate('/hosting');
     }
 
     let getButton = () => {
-      if(props.entirePrivateOrShared === "") {
+      if(props.price <= 0) {
         return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
       else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
@@ -103,12 +136,12 @@ export default function PricePage(props){
                 </Paper>
               </Item>
               <Item sx={{ height:'80%', mt: 1, ml:1}}>
-                {/* <ShowCategoryList 
-                  categories = {categories} 
-                  entirePrivateOrShared={props.entirePrivateOrShared}
-                  setEntirePrivateOrShared = {(val) => {props.setEntirePrivateOrShared(val)}}
-                /> */}
-                {"hello"}
+                <ViewRender
+                  price = {props.price}
+                  setPrice = {(val) => {props.setPrice(val)}}
+                  maxRefund = {props.maxRefund}
+                  setMaxRefund = {(val) => {props.setMaxRefund(val)}}
+                />
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>

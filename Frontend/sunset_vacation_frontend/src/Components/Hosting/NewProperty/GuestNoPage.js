@@ -5,11 +5,6 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import LeftSideCard from './LeftSideCard';
-import { axios_api } from '../../../App';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from 'react-router-dom';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
@@ -202,7 +197,6 @@ function ViewRender(props){
 export default function GuestNoPage(props){
 
     let navigate = useNavigate();
-    const [categories, setCategories] = React.useState(["An entire place", "A private room", "A shared room"]);
 
     const handleCancel = () => {
       navigate('/hosting');

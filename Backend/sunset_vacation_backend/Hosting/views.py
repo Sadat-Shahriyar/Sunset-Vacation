@@ -106,6 +106,7 @@ def getFacilityList(request):
     else:
         return Response({"success": False, "error" : "error 404 OT FOUND"}, status = status.HTTP_404_NOT_FOUND)
 
+
 # @api_view(["GET"])
 # @permission_classes([IsAuthenticated])
 # def getSafetyItemList(request):

@@ -76,7 +76,7 @@ export default function CategoryPage(props){
       }
       
       fethCategories();
-    }, [])
+    }, [props.token])
 
     const handleCancel = () => {
       navigate('/hosting');
@@ -112,7 +112,6 @@ export default function CategoryPage(props){
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>
                   {button}
-                  {/* <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> */}
                 </Paper>
               </Item>
             </Grid>

@@ -5,11 +5,6 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import LeftSideCard from './LeftSideCard';
-import { axios_api } from '../../../App';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from 'react-router-dom';
 import MapComponent from './Map';
 
@@ -24,10 +19,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 export default function LocationPage(props){
-
     let navigate = useNavigate();
-
-
     const handleCancel = () => {
       navigate('/hosting');
     }

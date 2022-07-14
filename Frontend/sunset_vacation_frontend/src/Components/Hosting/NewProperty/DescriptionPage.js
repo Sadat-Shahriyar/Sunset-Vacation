@@ -170,10 +170,7 @@ export default function DescriptionPage(props){
     let navigate = useNavigate();
 
     const [dosArrayIdx, setDosArrayIdx] = React.useState([0]);
-    const [dos, setDos] = React.useState([]);
-
     const [dontsArrayIdx, setDontsArrayIdx] = React.useState([0]);
-    const [donts, setDonts] = React.useState([]);
     
     const handleCancel = () => {
       navigate('/hosting');

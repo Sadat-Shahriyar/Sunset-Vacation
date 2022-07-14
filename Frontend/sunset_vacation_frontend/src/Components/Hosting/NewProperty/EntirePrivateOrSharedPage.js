@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import LeftSideCard from './LeftSideCard';
-import { axios_api } from '../../../App';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -26,9 +25,7 @@ function ShowCategoryList(props){
 
     let listItems = props.categories.map((category) => {
       let bg = 'white';
-    //   console.log("hello1")
       if(category === props.entirePrivateOrShared){
-        // console.log("hello")
         bg = 'yellow';
       }
       return(

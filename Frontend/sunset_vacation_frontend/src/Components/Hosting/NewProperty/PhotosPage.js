@@ -1,17 +1,16 @@
-import { Button } from '@mui/material'
+import { Button, Card, CardContent, Typography } from '@mui/material'
 import * as React from 'react'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import LeftSideCard from './LeftSideCard';
-import { axios_api } from '../../../App';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { useNavigate } from 'react-router-dom';
-
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -21,69 +20,140 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
+function ViewRender(props){
+  const handleUploadButton = (event) => {
+    let imageFiles = event.target.files;
+    let urls = []
+    for(let i=0; i<imageFiles.length; i++){
+      let url = URL.createObjectURL(imageFiles[i]);
+      urls.push({img: url, title: imageFiles[i].name});
+    }
+    console.log(urls);
+    props.setImgSrc(urls);
+    props.setImages(imageFiles);
+  }
 
-function ShowCategoryList(props){
+  const handlDelete = (name) => {
+    props.hadleDeleteImage(name);
+    // let temp = props.imgSrc.filter((img) => img.title !==name);
+    props.handleDeleteImageSrc(name);
+  }
 
-    let listItems = props.categories.map((category) => {
-      let bg = 'white';
-    //   console.log("hello1")
-      if(category === props.entirePrivateOrShared){
-        // console.log("hello")
-        bg = 'yellow';
-      }
-      return(
-        <ListItem disablePadding sx={{mt:1}}>
-          <Paper style={{width: "100%", marginLeft: 5, marginRight: 5}}>
-            <ListItemButton sx={{ textAlign: 'center', background: bg}} onClick={() => {props.setEntirePrivateOrShared(category)}}>
-              <ListItemText primary={category}  />
-            </ListItemButton>
-          </Paper>
-        </ListItem>
-      );
-    })
+  if(props.images.length === 0){
+    return(
+      <Grid container>
+        <Grid item xs={12}>
+          {/* <TextField 
+            multiline
+            rows={12}
+            variant='filled'
+            disabled
+            placeholder='Upload at least 5 images'
+            inputProps={{style: {fontSize: 32}}}
+            sx={{
+              width:500,
+              height: 397,
+              mt: 10
+            }}
+          /> */}
 
-    return (
-      <Paper elevation={0} style={{height: "99%", overflow: 'auto'}}>
-        <List>
-          {listItems}
-        </List>
-      </Paper>
+          <Card elevation={3} sx={{width: 500, height: 450, ml: 15, mt:2}}>
+            <CardContent>
+              <Typography variant='h4' color="text.secondary" gutterBottom sx={{mt:20}}>
+                Upload at least 5 Photos
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            component="label"
+            sx={{
+              mt:1.5
+            }}
+          >
+            Upload Image
+            <input
+              type="file"
+              id='image-upload'
+              multiple
+              accept="image/*"
+              hidden
+              onChange={handleUploadButton}
+            />
+          </Button>
+        </Grid>
+    </Grid>
     );
+  }
+
+  return(
+    <div>
+      <ImageList sx={{ width: 500, height: 450, ml:17 }}>
+      {props.imgSrc.map((item) => (
+        <ImageListItem key={item.img}>
+          <img
+            src={item.img}
+            loading="lazy"
+            alt={item.title}
+          />
+          <ImageListItemBar
+            actionIcon={
+              <IconButton
+                sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                onClick={() => {handlDelete(item.title)}}
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+          />
+        </ImageListItem>
+      ))}
+    </ImageList>
+      <Button
+        variant="contained"
+        component="label"
+
+      >
+        Upload Image
+        <input
+          type="file"
+          id='image-upload'
+          multiple
+          accept="image/*"
+          hidden
+          onChange={handleUploadButton}
+        />
+      </Button>
+    </div>
+  );
 }
+
 
 
 export default function PhotosPage(props){
 
     let navigate = useNavigate();
-    const [categories, setCategories] = React.useState(["An entire place", "A private room", "A shared room"]);
 
+    const [imgSrc, setImgSrc] = React.useState([]);
     
-    // React.useEffect(() => {
+    const handleSelectImage = (val) => {
+      let temp = [...imgSrc, ...val];
+      setImgSrc(temp);
+    }
 
-    //   const fethCategories = async() => {
-    //       let response = await axios_api.get("hosting/getallcategory/", 
-    //       {
-    //           headers: {
-    //               'Authorization' : `Bearer ${props.token}`
-    //           }
-    //       });
-
-    //       console.log(response);
-    //       if(response.data.success){
-    //         // console.log(response.data.categories[1][0])
-    //         setCategories(response.data.categories)
-    //       }
-    //   }
-      
-    //   fethCategories();
-    // }, [])
+    const handleDeleteImageSrc = (name) => {
+      let temp = imgSrc.filter((img) => img.title !== name);
+      setImgSrc(temp);
+    }
 
     const handleCancel = () => {
       navigate('/hosting');
     }
 
     let getButton = () => {
-      if(props.entirePrivateOrShared === "") {
+      if(props.images.length < 5) {
         return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
       else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
@@ -103,12 +173,14 @@ export default function PhotosPage(props){
                 </Paper>
               </Item>
               <Item sx={{ height:'80%', mt: 1, ml:1}}>
-                {/* <ShowCategoryList 
-                  categories = {categories} 
-                  entirePrivateOrShared={props.entirePrivateOrShared}
-                  setEntirePrivateOrShared = {(val) => {props.setEntirePrivateOrShared(val)}}
-                /> */}
-                {"hello"}
+                <ViewRender 
+                  imgSrc = {imgSrc}
+                  setImgSrc = {(val) => {handleSelectImage(val)}}
+                  images = {props.images}
+                  setImages = {(val) => {props.setImages(val)}}
+                  hadleDeleteImage = {(name) => {props.hadleDeleteImage(name)}}
+                  handleDeleteImageSrc = {(name) => {handleDeleteImageSrc(name)}}
+                />
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>
