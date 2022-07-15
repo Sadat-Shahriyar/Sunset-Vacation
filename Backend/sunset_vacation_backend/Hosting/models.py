@@ -1,3 +1,4 @@
+from distutils.command.upload import upload
 from django.db import models
 from Authentication.models import User
 from django.conf import settings
@@ -57,6 +58,10 @@ class Property(models.Model):
         default=None,
         null=True
     )
+    noOfBedrooms=models.IntegerField(
+        default=1,
+        null=True
+    )
     noOfBathrooms=models.IntegerField(
         default=None,
         null=True
@@ -67,6 +72,21 @@ class Property(models.Model):
         blank=False,
         null=True
     )
+
+    conciseType = models.CharField(
+        max_length=500,
+        default=None,
+        blank=False,
+        null=True
+    )
+
+    entirePrivateOrShared = models.CharField(
+        max_length=500,
+        default=None,
+        blank=False,
+        null=True
+    )
+
     latitude=models.CharField(
          max_length=500,
         default=None,
@@ -237,5 +257,12 @@ class PropertyPhotos(models.Model):
         max_length=500,
         default=None,
         blank=False,
-        null=False
+        null=True
     )
+
+
+class PropertyPhotoUploadHelper(models.Model):
+    image = models.ImageField(upload_to='property')
+    
+    def __str__(self):
+        return self.title

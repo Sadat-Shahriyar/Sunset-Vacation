@@ -19,23 +19,22 @@ class PropertySerializer(serializers.ModelSerializer):
     published=serializers.BooleanField(required=False)
     owner_id=serializers.PrimaryKeyRelatedField(read_only=True)
 
-    # def create(self,data):
-    #     return Property.objects.create(
-    #         title=data.get('title')
-    #         description=data.get('description')
-    #         catagory=data.get('catagory')
-    #         perNightCost=data.get('perNightCost')
-    #         noOfBathrooms=data.get('noOfBathrooms')
-    #         noOfBeds=data.get('noOfBeds')
-    #         noOfGuests=data.get('noOfGuests')
-    #         maxDaysRefund=data.get('maxDaysRefund')
-    #         latitude=data.get('latitude')
-    #         longitude=data.get('longitude')
-    #         address=data.get('address')
-    #         checkInTime=data.get('checkInTime')
-    #         checkOutTime=data.get('checkOutTime')
-    #         maxDaysRefund=data.get('maxDaysRefund')
-    #     )
+    def create(self,validate_data):
+        return Property.objects.create(
+            title=validate_data.get('title'),
+            description=validate_data.get('description'),
+            catagory=validate_data.get('catagory'),
+            perNightCost=validate_data.get('perNightCost'),
+            noOfBathrooms=validate_data.get('noOfBathrooms'),
+            noOfBeds=validate_data.get('noOfBeds'),
+            noOfGuests=validate_data.get('noOfGuests'),
+            maxDaysRefund=validate_data.get('maxDaysRefund'),
+            latitude=validate_data.get('latitude'),
+            longitude=validate_data.get('longitude'),
+            address=validate_data.get('address'),
+            checkInTime=validate_data.get('checkInTime'),
+            checkOutTime=validate_data.get('checkOutTime'),
+        )
 
     class Meta:
         model=Property
@@ -181,10 +180,11 @@ class UserGiftCardListSerializer(serializers.ModelSerializer):
 
 
 class PropertyPhotoSerializer(serializers.ModelSerializer):
-    photo_url = serializers.CharField(max_length=500, required=False)
-    property_id = serializers.PrimaryKeyRelatedField(read_only=True)
-
     class Meta:
         model = PropertyPhotos
         fields = '__all__'
     
+class PropertyPhotoUploadHelperSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertyPhotoUploadHelper
+        fields = '__all__'

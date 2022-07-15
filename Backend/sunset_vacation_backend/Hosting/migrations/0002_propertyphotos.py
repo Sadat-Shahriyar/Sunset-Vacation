@@ -11,12 +11,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='PropertyPhotos',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('photo_url', models.CharField(default=None, max_length=500)),
-                ('property_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Hosting.property')),
-            ],
-        ),
     ]
