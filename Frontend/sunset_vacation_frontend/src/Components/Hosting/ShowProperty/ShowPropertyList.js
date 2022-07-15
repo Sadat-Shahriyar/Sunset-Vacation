@@ -39,7 +39,7 @@ export default function ShowPropertyList(props) {
             .then((response) => response.json())
             .then((response) => {
                 setProperties(response.properties)
-                
+                console.log(response)
             })
             .catch((err) => {
                 alert(err.message);

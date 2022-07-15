@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { axios_api } from '../../../App';
 import ManagementDashboard from './ManagementDashboard';
 
 export default function ManagementDashboardAccessControl(props){
@@ -7,10 +8,34 @@ export default function ManagementDashboardAccessControl(props){
 
     console.log(props.isLoggedin);
     console.log(props.token);
+    
     React.useEffect(() => {
-        if (!props.isLoggedin){
-             navigate("/login")   
+        const tokenVerifier = async() => {
+            try{
+                let response = await axios_api.get("users/verify/", 
+                {
+                    headers: {
+                        'Authorization' : `Bearer ${props.token}`
+                    }
+                })
+
+
+                if(props.isLoggedin && response.data.valid){
+                    console.log(response)
+                }
+                else{
+                    alert("Unauthorized");
+                    navigate("/login");
+                }
+                
+            }
+            catch(error){
+                navigate("/login");
+            }
         }
+        
+        tokenVerifier();
+
     },[])
    
     return (<ManagementDashboard isLoggedin={props.isLoggedin} />);
