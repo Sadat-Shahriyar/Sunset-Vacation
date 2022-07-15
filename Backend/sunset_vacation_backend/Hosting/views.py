@@ -13,11 +13,12 @@ from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getProperties(request):
     try:
-        
-        user=User.objects.get(id=1)
-        
+        user = UserSerializer(request.user).data
+        # user=User.objects.get(id=1)
+        user = User.objects.get(id=user['id'])
         property=Property.objects.filter(owner_id_id=user)
 
        
