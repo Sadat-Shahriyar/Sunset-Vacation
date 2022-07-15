@@ -26,7 +26,13 @@ export default function ShowPropertyList(props) {
         //     'Content-type': 'application/json'
         //     }
         // })
-        fetch(`http://localhost:8000/hosting/propertylist/`)
+        fetch(`http://localhost:8000/hosting/propertylist/`, {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json' ,
+                'Authorization' : `Bearer ${props.token}`
+            }
+        })
             .then((response) => {
                 if (response.ok) {
                     return response

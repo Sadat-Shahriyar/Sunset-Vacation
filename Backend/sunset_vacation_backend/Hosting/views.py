@@ -10,14 +10,35 @@ from Authentication.models import *
 from Authentication.serializers import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+
+
+
 # Create your views here.
 
+
 @api_view(["GET"])
+def getPropertyPhoto(request, property_id):
+    photos = PropertyPhotos.objects.filter(property_id=property_id)
+    print(photos)
+    photoSerializer = PropertyPhotoSerializer(photos, many=True)
+    print(photoSerializer.data)
+    return Response({"photos": photoSerializer.data, "success": True}, status=status.HTTP_200_OK)
+
+
+@api_view(["DELETE"])
+def deletePropertyPhoto(request, photo_id):
+    photo = PropertyPhotos.objects.filter(id=photo_id)
+    photo.delete()
+    return Response({"success": True}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getProperties(request):
     try:
-        
-        user=User.objects.get(id=1)
-        
+        user = UserSerializer(request.user).data
+        # user=User.objects.get(id=1)
+        user = User.objects.get(id=user['id'])
         property=Property.objects.filter(owner_id_id=user)
 
        
@@ -340,10 +361,16 @@ def addNewFacility(request):
     return Response(status=status.HTTP_201_CREATED)
 @api_view(['POST'])
 def photoUpload(request):
-    print(request.data)
+    print("hello")
+    print(request)
     photos_serializer = PropertyPhotoUploadHelperSerializer(data=request.data)
     if photos_serializer.is_valid():
         photos_serializer.save()
+        print("hello")
+        property = Property.objects.get(propertyID=int(request.data["property_id"]))
+        photo = PropertyPhotos(property_id=property, photo_url=photos_serializer.data["image"])
+        photo.save()
+        photos_serializer = PropertyPhotoSerializer(photo)
         return Response({"uploaded_photo": photos_serializer.data, "success": True}, status=status.HTTP_201_CREATED)
     else:
         print('error', photos_serializer.errors)
@@ -375,3 +402,5 @@ def photoUpload(request):
 #                 return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 #         except Property.DoesNotExist:
 #             return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+

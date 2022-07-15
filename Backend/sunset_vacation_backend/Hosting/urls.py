@@ -10,6 +10,9 @@ urlpatterns = [
     path('deleteProperty/<int:property_id>',views.deleteProperty),
    
     path('deleteFacility/<int:fac_id>',views.deleteFacility),
+    path('photos/<int:photo_id>', views.deletePropertyPhoto),
+    path('getPropertyPhoto/<int:property_id>', views.getPropertyPhoto, name="getPropertyPhoto"),
+    path('deleteFaq/<int:faq_id>',views.deleteFaq),
     path('getProperty/<int:property_id>',views.getProperty),
     path('getFaqs/<int:property_id>',views.getFaqs),
     path('insertFaq/',views.insertFaq),
