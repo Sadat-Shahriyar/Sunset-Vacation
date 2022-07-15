@@ -13,10 +13,16 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DesktopMacIcon from '@mui/icons-material/DesktopMac';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import DescriptionIcon from '@mui/icons-material/Description';
+import Chip from '@mui/material/Chip';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import Fab from '@mui/material/Fab';
 export default function ShowFacility(props) {
   let navigate = useNavigate();
 
-  const [prop, setProp] = React.useState({});
+  var [facilities, setFacilities] = React.useState([]);
 
 
   const useLocation = (event) => {
@@ -38,7 +44,7 @@ export default function ShowFacility(props) {
     navigate('/showPropertyDetails');
   }
   React.useEffect(() => {
-    fetch(`http://localhost:8000/hosting/getProperty/` + `${props.property.propertyID}`)
+    fetch(`http://localhost:8000/hosting/getPropertyFacilities/` + `${props.property.propertyID}`)
       .then((response) => {
         if (response.ok) {
           return response
@@ -50,8 +56,8 @@ export default function ShowFacility(props) {
       })
       .then((response) => response.json())
       .then((response) => {
-        
-        setProp(response.property)
+        setFacilities(response.pfacilities)
+      
         
       })
       .catch((err) => {
@@ -95,7 +101,7 @@ export default function ShowFacility(props) {
               component="div"
               sx={{ display: { xs: 'none', sm: 'block' } }}
             >
-              <p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "25px", "color": "black" }}>{prop.title}
+              <p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "25px", "color": "black" }}>{props.property.title}
                 &nbsp;&nbsp;&nbsp;<IconButton><EditIcon /></IconButton></p>
             </Typography>
           </Toolbar>
@@ -114,13 +120,43 @@ export default function ShowFacility(props) {
     )
   }
   
+  function showPropertyFacilities(porps){
+    return(
+      <div>
+        {facilities.map((fac) => (
+          <div>
+            <BottomNavigation showLabels>
+            <Chip
+  label={fac.facility_name}
+  deleteIcon={<DeleteIcon />}
+  variant="outlined"
+/>
+            </BottomNavigation>
+            <p>{fac.catagory}</p>
+            {fac.list.map((f) =>(
+            <Fab variant="extended">
+            {f.facility_name}
+            <DeleteIcon sx={{ mr: 1 }} />
+          </Fab>
+          ))}
+          </div>
+            
+          
+        ))}
+        
+         
+      </div>
+    )
+  }
+
+
   return (
     <div>
 
       <ManagementDashboard />
 
       {showPropertyNavbar(props)}
-
+      {showPropertyFacilities(props)}
     </div>
   );
 }
