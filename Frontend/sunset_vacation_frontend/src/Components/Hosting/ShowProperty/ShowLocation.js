@@ -57,7 +57,7 @@ export default function ShowLocation(props) {
       .catch((err) => {
         alert(err.message);
       })
-  })
+  }, [])
   function changeDescription(event) {
     props.property.description = event.target.value;
 

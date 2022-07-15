@@ -63,7 +63,7 @@ export default function ShowFacility(props) {
       .catch((err) => {
         alert(err.message);
       })
-  })
+  }, [])
   function changeDescription(event) {
     props.property.description = event.target.value;
 
@@ -127,9 +127,9 @@ export default function ShowFacility(props) {
           <div>
             <BottomNavigation showLabels>
             <Chip
-  label={f.facility_name}
-  onClick={handleClick}
-  onDelete={handleDelete}
+  // label={f.facility_name}
+  // onClick={handleClick}
+  // onDelete={handleDelete}
   deleteIcon={<DeleteIcon />}
   variant="outlined"
 />
@@ -158,7 +158,7 @@ export default function ShowFacility(props) {
       <ManagementDashboard />
 
       {showPropertyNavbar(props)}
-      {showPropertyFacilities(props)}
+      {/* {showPropertyFacilities(props)} */}
     </div>
   );
 }

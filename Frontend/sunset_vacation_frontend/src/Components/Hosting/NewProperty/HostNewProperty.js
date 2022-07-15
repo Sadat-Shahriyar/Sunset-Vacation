@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { axios_api } from '../../../App';
 import CategoryPage from './CategoryPage';
+import ConfirmationPage from './ConfirmationPage';
 import DescriptionPage from './DescriptionPage';
 import EntirePrivateOrSharePage from './EntirePrivateOrSharedPage';
 import FacilitiesPage from './FacilitiesPage';
@@ -117,14 +118,17 @@ export default function HostNewProperty(props){
             });
     
             if(response.status === 200){
-                alert("complete");
+                // alert("complete");
+                setPageNo(11);
             }
             else{
                 alert(response.status + ": " + response.statusText);
+                navigate("/hosting");
             }
         }
         catch(err){
             alert(err);
+            navigate("/hosting");
         }
         
     }
@@ -364,6 +368,11 @@ export default function HostNewProperty(props){
                     address = {address}
                     handlePublish = {() => {handlePublish()}}
                 />
+            );
+        }
+        else if(pageNo === 11){
+            return(
+                <ConfirmationPage />
             );
         }
     }

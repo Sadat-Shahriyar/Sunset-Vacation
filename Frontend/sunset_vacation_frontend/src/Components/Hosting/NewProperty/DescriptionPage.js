@@ -145,6 +145,7 @@ function ViewRender(props){
             width: '95%',
             mt:2
           }}
+          value={props.description}
         />
       </Grid>
       <Grid item xs={12} sx={{ml:5}}>
@@ -178,9 +179,9 @@ export default function DescriptionPage(props){
 
     let getButton = () => {
       if(props.description === "") {
-        return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
+        return <Button disabled variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
-      else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
+      else return <Button variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
     }
 
     let button = getButton()
@@ -207,11 +208,19 @@ export default function DescriptionPage(props){
                   setDontsArrayIdx = {(val) => {setDontsArrayIdx(val)}}
                   donts = {props.donts}
                   setDonts = {(val) => {props.setDonts(val)}}
+                  description = {props.description}
                 />
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>
-                  {button}
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <Button variant='outlined' color='secondary' sx={{mr:"50%"}} onClick={() => {props.setPageNo(props.pageNo - 1)}}>Back</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                      {button}
+                    </Grid>
+                  </Grid>
                 </Paper>
               </Item>
             </Grid>

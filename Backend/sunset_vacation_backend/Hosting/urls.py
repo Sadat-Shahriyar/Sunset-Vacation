@@ -17,6 +17,7 @@ urlpatterns = [
     path('getfacilities/',views.getFacilityList, name="getfacilitylist" ),
     path('property/publish/', views.publishProperty, name="publishProperty"),
     path('photouploadhelper/', views.photoUpload, name="photouploadhelper"),
+    path('getallpropertiesforhomepage/', views.getAllPropertiesForHomePage, name='getallproperties'),
     # path('getsafetyitems/', views.getSafetyItemList, name="getsafetyitemlist"),
     # path('propertylist/', views.getPropertyDetails),
 ]

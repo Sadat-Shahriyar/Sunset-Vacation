@@ -27,7 +27,8 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import RestoreIcon from '@mui/icons-material/Restore';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DateRangeIcon from '@mui/icons-material/DateRange';
-import { Button } from '@mui/material';
+import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
+import { axios_api } from '../../App';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -70,9 +71,46 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-export default function PrimarySearchAppBar(props) {
+function ViewAllProperties(props){
+  console.log(props.properties);
+  let propertyData = [];
+  if(props.properties.data != undefined)
+    propertyData = props.properties.data;
 
-  const [property, setProperty] = React.useState({})
+  let properties = propertyData.map((property) => {
+    return(
+      <Grid item xs={3} key={property.propertyID}>
+        <Card sx={{ maxWidth: 345, maxHeight:500, m:3}}>
+        <CardMedia
+          component="img"
+          height="140"
+          image={property.images[0].photo_url}
+          alt={property.title}
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {property.title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {property.description}
+          </Typography>
+        </CardContent>
+        </Card>
+      </Grid>
+    );
+  })
+  // let properties = "hello"
+  return(
+    <Grid container>
+      {properties}
+    </Grid>
+  );
+}
+
+
+export default function Homepage(props) {
+
+  const [properties, setProperties] = React.useState([])
   const [value, setValue] = React.useState(0);
   const [selectedProperty, setSelectedProperty] = React.useState('');
 
@@ -80,32 +118,25 @@ export default function PrimarySearchAppBar(props) {
     setValue(newValue);
   };
 
-  // fetch("http://localhost:8000/hosting/", {
-  //   method:"GET",
-  //   headers: {
-  //     'Content-type': 'application/json'
-  //   }
-  // })
-  // .then((response) => {
-  //   if(response.ok){
-  //     return response
-  //   }
-  //   else{
-  //     let err = new Error(response.status + ":" + response.statusText)
-  //     throw err;
-  //   }
-  // })
-  // .then((response) => {return response.json()})
-  // .then((response) => {
-  //   console.log(response);
-  //   // setProperty(response.property);
-  //   props.helloWorld(response)
-  // })
-  // .catch((err) => {
-  //   alert(err.message);
-  // })
+  React.useEffect(()=>{
+    const fethProperties = async() => {
+      try{
+        let res = await axios_api.get("hosting/getallpropertiesforhomepage/");
 
-  // console.log(props.hiWorld);
+        if(res.status === 200){
+          setProperties(res.data);
+        }
+        else{
+          alert(res.status+": " + res.statusText);
+        }
+      }
+      catch(err){
+        alert(err);
+      }
+    }
+
+    fethProperties();
+  }, [])
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -304,8 +335,11 @@ export default function PrimarySearchAppBar(props) {
           </Box>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      {/* {renderMobileMenu}
+      {renderMenu} */}
+      <ViewAllProperties 
+        properties={properties}
+      />
     </Box>
   );
 }

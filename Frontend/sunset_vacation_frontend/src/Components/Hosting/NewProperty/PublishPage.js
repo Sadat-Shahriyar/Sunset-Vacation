@@ -29,7 +29,7 @@ export default function PublishPage(props){
     }
 
     let getButton = () => {
-      return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.handlePublish()}}>Publish</Button>
+      return <Button variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.handlePublish()}}>Publish</Button>
     }
 
     let button = getButton()
@@ -75,7 +75,14 @@ export default function PublishPage(props){
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>
-                  {button}
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <Button variant='outlined' color='secondary' sx={{mr:"50%"}} onClick={() => {props.setPageNo(props.pageNo - 1)}}>Back</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                      {button}
+                    </Grid>
+                  </Grid>
                 </Paper>
               </Item>
             </Grid>

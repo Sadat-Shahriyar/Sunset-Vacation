@@ -66,7 +66,7 @@ export default function ShowCatagory(props) {
       .catch((err) => {
         alert(err.message);
       })
-  })
+  },[])
 
   function editClicked(event){
     console.log("edit value ", edit)

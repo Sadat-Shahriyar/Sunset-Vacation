@@ -217,6 +217,7 @@ def publishProperty(request):
         address=request.data['address'],
         latitude=request.data['latitude'],
         longitude=request.data['longitude'],
+        entirePrivateOrShared=request.data['entirePrivateOrshared'],
         published=True
     )
     
@@ -303,6 +304,38 @@ def photoUpload(request):
     else:
         print('error', photos_serializer.errors)
         return Response({"error": photos_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def getAllPropertiesForHomePage(request):
+    properites = Property.objects.filter(published=True)
+    propertySerializer = PropertySerializer(properites, many=True)
+    # print(propertySerializer.data)
+    propertyData = propertySerializer.data
+
+    for property in propertyData:
+        photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
+        photoSerializer = PropertyPhotoSerializer(photos, many=True)
+        property['images'] = photoSerializer.data
+
+        dos = House_Rules.objects.filter(propertyID=property['propertyID']).filter(do_dont_flag=1)
+        dos = House_RulesSerializer(dos, many=True).data
+        property['dos'] = dos
+
+        donts = House_Rules.objects.filter(propertyID=property['propertyID']).filter(do_dont_flag=0)
+        donts = House_RulesSerializer(donts, many=True).data
+        property['donts'] = donts
+
+        faqs = FAQ.objects.filter(propertyID=property['propertyID'])
+        faqSerializer = FAQSerializer(faqs, many=True)
+        property['faqs'] = faqSerializer.data
+
+        #TODO need to implement facilities
+
+
+
+    return Response({"data": propertyData}, status=status.HTTP_200_OK)
+
 # @api_view(["GET"])
 # @permission_classes([IsAuthenticated])
 # def getSafetyItemList(request):

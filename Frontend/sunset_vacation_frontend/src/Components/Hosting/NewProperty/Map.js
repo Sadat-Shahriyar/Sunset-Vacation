@@ -99,11 +99,12 @@ const SearchField = (props) => {
   return null;
 };
 
-function MapComponent(props) {
+export default function MapComponent(props) {
     const [search, setSearch] = useState(true)
     const [showInitMarker, setShowInitMarker] = useState(true);
     const getMarker = () => {
-      if(showInitMarker){
+      // if(showInitMarker){
+      if(props.latitude !== 23.8103 && props.longitude !==90.4125){
         return(
           <Marker position={[props.latitude, props.longitude]}>
           </Marker>
@@ -115,10 +116,11 @@ function MapComponent(props) {
         );
       }
     }
+    console.log(showInitMarker);
 
     let marker = getMarker();
   return (
-    <MapContainer center={[props.latitude, props.longitude]} zoom={13}>
+    <MapContainer center={[23.8103, 90.4125]} zoom={13} >
         <SearchField  
           setLatitude = {(val) => {props.setLatitude(val)}}
           setLongitude = {(val) => {props.setLongitude(val)}}
@@ -130,10 +132,8 @@ function MapComponent(props) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {marker}
+      {/* {marker} */}
       {/* <DraggableMarker /> */}
     </MapContainer>
   )
 }
-
-export default MapComponent;

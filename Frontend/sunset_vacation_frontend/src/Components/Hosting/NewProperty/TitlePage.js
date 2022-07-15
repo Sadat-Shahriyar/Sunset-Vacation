@@ -36,6 +36,7 @@ function ViewRender(props){
             mt:1,
             width: '75%',
           }}
+          value={props.title}
         />
       </Grid>
       <Grid item xs={12}>
@@ -55,9 +56,9 @@ export default function TitlePage(props){
 
     let getButton = () => {
       if(props.title === "") {
-        return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
+        return <Button disabled variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
-      else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
+      else return <Button variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
     }
 
     let button = getButton()
@@ -81,7 +82,14 @@ export default function TitlePage(props){
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>
-                  {button}
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <Button variant='outlined' color='secondary' sx={{mr:"50%"}} onClick={() => {props.setPageNo(props.pageNo - 1)}}>Back</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                      {button}
+                    </Grid>
+                  </Grid>
                 </Paper>
               </Item>
             </Grid>

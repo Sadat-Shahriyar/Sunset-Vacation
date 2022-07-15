@@ -87,6 +87,16 @@ function ViewRender(props){
     </Grid>
     );
   }
+  // else if(props.images.length > 0){
+  //   let imageFiles = props.images;
+  //   let urls = []
+  //   for(let i=0; i<imageFiles.length; i++){
+  //     let url = URL.createObjectURL(imageFiles[i]);
+  //     urls.push({img: url, title: imageFiles[i].name});
+  //   }
+  //   console.log(urls);
+  //   props.setImgSrc(urls);
+  // }
 
   return(
     <div>
@@ -137,11 +147,26 @@ export default function PhotosPage(props){
     let navigate = useNavigate();
 
     const [imgSrc, setImgSrc] = React.useState([]);
-    
+
     const handleSelectImage = (val) => {
       let temp = [...imgSrc, ...val];
       setImgSrc(temp);
     }
+
+    React.useEffect(()=> {
+      if(props.images.length > 0 && imgSrc.length === 0){
+        let imageFiles = props.images;
+        let urls = []
+        for(let i=0; i<imageFiles.length; i++){
+          let url = URL.createObjectURL(imageFiles[i]);
+          urls.push({img: url, title: imageFiles[i].name});
+        }
+        console.log(urls);
+        handleSelectImage(urls);
+      }
+    },[props.images,handleSelectImage])
+
+    
 
     const handleDeleteImageSrc = (name) => {
       let temp = imgSrc.filter((img) => img.title !== name);
@@ -154,9 +179,9 @@ export default function PhotosPage(props){
 
     let getButton = () => {
       if(props.images.length < 5) {
-        return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
+        return <Button disabled variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
-      else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
+      else return <Button variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
     }
 
     let button = getButton()
@@ -184,7 +209,14 @@ export default function PhotosPage(props){
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>
-                  {button}
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <Button variant='outlined' color='secondary' sx={{mr:"50%"}} onClick={() => {props.setPageNo(props.pageNo - 1)}}>Back</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                      {button}
+                    </Grid>
+                  </Grid>
                 </Paper>
               </Item>
             </Grid>

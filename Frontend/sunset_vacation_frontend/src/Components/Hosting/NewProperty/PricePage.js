@@ -84,7 +84,11 @@ function ViewRender(props){
             <Box m="auto">
               <Grid container>
                 <Grid item xs={4}>
-                  <IconButton color="primary" aria-label="Decrease guest no" sx={{mr:2}} onClick={()=>{props.setMaxRefund(props.maxRefund-1)}}>
+                  <IconButton color="primary" aria-label="Decrease guest no" sx={{mr:2}} onClick={()=>{
+                    if(props.maxRefund > 0){
+                      props.setMaxRefund(props.maxRefund-1)
+                    }
+                  }}>
                     <RemoveCircleOutlineRoundedIcon />
                   </IconButton>
                 </Grid>
@@ -117,9 +121,9 @@ export default function PricePage(props){
 
     let getButton = () => {
       if(props.price <= 0) {
-        return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
+        return <Button disabled variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
       }
-      else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
+      else return <Button variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
     }
 
     let button = getButton()
@@ -145,7 +149,14 @@ export default function PricePage(props){
               </Item>
               <Item sx={{height:'5%', ml:1, mt: 1}}>
                 <Paper elevation={0}>
-                  {button}
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <Button variant='outlined' color='secondary' sx={{mr:"50%"}} onClick={()=>{props.setPageNo(props.pageNo - 1)}}>Back</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                      {button}
+                    </Grid>
+                  </Grid>
                 </Paper>
               </Item>
             </Grid>

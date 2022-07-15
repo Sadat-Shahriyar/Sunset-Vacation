@@ -59,7 +59,7 @@ export default function ShowDescription(props) {
       .catch((err) => {
         alert(err.message);
       })
-  })
+  }, [])
   function changePerNightCost(event) {
     props.property.perNightCost = event.target.value;
   }
