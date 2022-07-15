@@ -146,6 +146,8 @@ export default function ShowDescription(props) {
 
       {showPropertyNavbar(props)}
 
+      
+
     </div>
   );
 }
