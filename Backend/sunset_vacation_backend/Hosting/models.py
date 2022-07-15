@@ -38,10 +38,12 @@ class Property(models.Model):
         default=None,
         null=True
     )
+
     checkInTime=models.DateTimeField(
         default=None,
         null=True
     )
+
     checkOutTime=models.DateTimeField(
         default=None,
         null=True
