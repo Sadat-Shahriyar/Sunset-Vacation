@@ -170,6 +170,12 @@ class Facility(models.Model):
         blank=False,
         null=True
     )
+    subcatagory=models.CharField(
+        max_length=100,
+        default=None,
+        blank=False,
+        null=True
+    )
 class PropertyFacilities(models.Model):
     propertyID=models.ForeignKey(Property,on_delete=models.CASCADE)
     facility_name=models.ForeignKey(Facility,on_delete=models.CASCADE)

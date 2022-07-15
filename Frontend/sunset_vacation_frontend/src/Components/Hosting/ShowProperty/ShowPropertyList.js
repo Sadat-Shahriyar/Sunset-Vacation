@@ -44,7 +44,7 @@ export default function ShowPropertyList(props) {
             .catch((err) => {
                 alert(err.message);
             })
-    })
+    },[])
 
     function getSelectedProperty(property) {
         props.setProperty(property)

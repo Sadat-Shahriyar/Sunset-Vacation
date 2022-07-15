@@ -13,17 +13,99 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DesktopMacIcon from '@mui/icons-material/DesktopMac';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import DescriptionIcon from '@mui/icons-material/Description';
-import Chip from '@mui/material/Chip';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import { axios_api } from '../../../App';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Grid from '@mui/material/Grid';
+
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import ImageIcon from '@mui/icons-material/Image';
+import WorkIcon from '@mui/icons-material/Work';
+import BeachAccessIcon from '@mui/icons-material/BeachAccess';
+
+
+import { styled } from '@mui/material/styles';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import Fab from '@mui/material/Fab';
+
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(2),
+ 
+  textAlign: 'center',
+  color: "black",
+  fontFamily: "Lucida Handwriting"
+}));
+const style = {
+  width: '20%',
+  bgcolor: 'background.paper',
+  marginTop: "10px",
+  marginLeft: "auto",
+  marginRight: "auto"
+
+};
+const button= {
+  marginTop: "20px",
+   fontFamily: "Lucida Handwriting",
+   bgcolor:"#EAA49B",
+  '&:hover': {
+    backgroundColor: '#EAA49B',
+    boxShadow: 'none',
+  },
+  '&:active': {
+    boxShadow: 'none',
+    backgroundColor: '#EAA49B',
+  },
+}
 export default function ShowFacility(props) {
   let navigate = useNavigate();
 
-  var [facilities, setFacilities] = React.useState([]);
 
+  // const [amenities, setAmenities] = React.useState([]);
+  // const [guestsFavourites, setGuestsFavourites] = React.useState([]);
+  // const [safetyItems, setSafetyItems] = React.useState([]);
+
+  var [facilities,setFacilities]=React.useState([]);
+
+
+
+  React.useEffect(() => {
+
+    fetch(`http://localhost:8000/hosting/getPropertyFacilities/` + `${props.property.propertyID}`,
+    {
+          method:"GET",
+          headers: {
+          'Content-type': 'application/json',
+          'Authorization':  `Bearer ${props.token}`,
+          
+          }
+      })
+      .then((response) => {
+        if (response.ok) {
+          return response
+        }
+        else {
+          let err = new Error(response.status + ": " + response.text);
+          throw err;
+        }
+      })
+      .then((response) => response.json())
+      .then((response) => {
+          setFacilities(response.pfacilities);
+        
+      })
+      .catch((err) => {
+        alert(err.message);
+      })
+    
+  },[])
 
   const useLocation = (event) => {
     navigate("/showPropertyDetails/location");
@@ -43,52 +125,7 @@ export default function ShowFacility(props) {
   const useHome = (event) => {
     navigate('/showPropertyDetails');
   }
-  React.useEffect(() => {
-    fetch(`http://localhost:8000/hosting/getPropertyFacilities/` + `${props.property.propertyID}`)
-      .then((response) => {
-        if (response.ok) {
-          return response
-        }
-        else {
-          let err = new Error(response.status + ": " + response.text);
-          throw err;
-        }
-      })
-      .then((response) => response.json())
-      .then((response) => {
-        setFacilities(response.pfacilities)
-      
-        
-      })
-      .catch((err) => {
-        alert(err.message);
-      })
-  })
-  function changeDescription(event) {
-    props.property.description = event.target.value;
 
-  }
-  function changeTitle(event) {
-
-    props.property.title = event.target.value;
-
-  }
-  
- 
-  function handleSubmit(event) {
-    const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(props.property)
-    };
-    fetch(`http://localhost:8000/hosting/updateProperty/` + `${props.property.propertyID}`, requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        console.log("updated successsfully")
-      });
-
-
-  }
   function showPropertyNavbar(props) {
     return (
       <Box sx={{ flexGrow: 1 }}>
@@ -119,35 +156,67 @@ export default function ShowFacility(props) {
       </Box>
     )
   }
-  
-  function showPropertyFacilities(porps){
-    return(
-      <div>
-        {facilities.map((fac) => (
-          <div>
-            <BottomNavigation showLabels>
-            <Chip
-  label={f.facility_name}
-  onClick={handleClick}
-  onDelete={handleDelete}
-  deleteIcon={<DeleteIcon />}
-  variant="outlined"
-/>
-            </BottomNavigation>
-            <p>{fac.catagory}</p>
-            {fac.list.map((f) =>(
-            <Fab variant="extended">
-            {f.facility_name}
-            <DeleteIcon sx={{ mr: 1 }} />
-          </Fab>
-          ))}
-          </div>
-            
-          
-        ))}
+
+  function DeleteFacility(fac) {
+    console.log("delete button pressed")
+    const requestOptions = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' ,
+                'Authorization':  `Bearer ${props.token}`,
+    },
+      body: JSON.stringify(fac)
+    };
+    fetch(`http://localhost:8000/hosting/deleteFacility/` + `${fac.id}`, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log("delete successsfully")
         
-         
-      </div>
+      });
+
+      navigate('/showPropertyDetails/facility');
+  }
+  function showPropertyFacilities(props) {
+    return (
+     
+
+    <Box sx={{flexGrow: 1 , width:"60%",marginLeft:"100px",marginRight: "auto"}}>
+      <Button  sx={button} 
+      onClick={()=>{navigate('/addnewfacility')}}
+      variant="contained">ADD new Facility</Button>
+    {facilities.map((fac)=>(
+     <div>
+       <Typography sx={{ marginTop: "30px", marginLeft:"auto",marginRight:"auto",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
+      {fac.catagory}
+     </Typography>
+    <Grid container spacing={2}>
+    {fac.list.map((f)=>(
+     <Grid item xs={4}>
+       <List  sx={{
+        width: '80%',
+        maxWidth: 360,
+        bgcolor: 'background.paper',
+        border: "2px solid #EAA49B",
+        boxShadow: "2px 2px 2px 2px #EADBD9",
+        marginTop: "10px",
+        fontFamily: "Lucida Handwriting",
+      }}>
+            
+            <ListItem>
+        
+        <ListItemText  primary={f.facility_name} secondary={f.description} />
+      <IconButton><DeleteIcon onClick={() => DeleteFacility(f)}/></IconButton>
+      </ListItem>
+           
+            
+
+          </List>
+      </Grid >
+     ))}
+    </Grid>
+     </div>
+    ))}
+
+</Box>
     )
   }
 

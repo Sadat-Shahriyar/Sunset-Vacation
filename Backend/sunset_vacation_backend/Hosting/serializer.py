@@ -87,6 +87,11 @@ class FacilitySerializer(serializers.ModelSerializer):
         max_length=100,
        required=False
     )
+    subcatagory=serializers.CharField(
+        max_length=100,
+       required=False
+    )
+
     class Meta:
         model=Facility
         fields = '__all__'

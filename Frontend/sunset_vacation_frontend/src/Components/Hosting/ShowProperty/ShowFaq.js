@@ -83,7 +83,7 @@ export default function ShowFaq(props) {
       .catch((err) => {
         alert(err.message);
       })
-  })
+  },[])
   function changeQuestion(event) {
     setQuestion(event.target.value)
 
