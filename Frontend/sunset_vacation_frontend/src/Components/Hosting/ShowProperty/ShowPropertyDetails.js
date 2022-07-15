@@ -13,9 +13,24 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DesktopMacIcon from '@mui/icons-material/DesktopMac';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import DescriptionIcon from '@mui/icons-material/Description';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
+import { red } from '@mui/material/colors';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 export default function ShowPropertyDetails(props) {
-  var [prop,setProp]=React.useState({})
-  var [title,setTitle]=React.useState('new title')
+    const [prop, setProp] = React.useState({});
+  const [title,setTitle]=React.useState('new title');
+  const [edit, setEdit] = React.useState(false);
 
   React.useEffect(() => {
     fetch(`http://localhost:8000/hosting/getProperty/` + `${props.property.propertyID}`)
@@ -66,9 +81,14 @@ export default function ShowPropertyDetails(props) {
   function changeTitle(event) {
    setTitle(event.target.value);   
   }
-  
- 
-  function handleSubmit(event) {
+
+    function editClicked(event){
+        console.log("edit value ", edit)
+        setEdit(!edit);
+        console.log("edit value change ", edit)
+    }
+
+    function handleSubmit(event) {
    prop.title=title;
    
     const requestOptions = {
@@ -97,7 +117,7 @@ export default function ShowPropertyDetails(props) {
               sx={{ display: { xs: 'none', sm: 'block' } }}
             >
               <p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "25px", "color": "black" }}>{prop.title}
-                &nbsp;&nbsp;&nbsp;<IconButton><EditIcon /></IconButton></p>
+                &nbsp;&nbsp;&nbsp;<IconButton><EditIcon onClick={editClicked}/></IconButton></p>
             </Typography>
           </Toolbar>
         </AppBar>
@@ -116,22 +136,24 @@ export default function ShowPropertyDetails(props) {
   }
   function showDetails(props) {
       return (
-          <div>
-          
-      <label>
-        title:
-        <input sx={{color:"blue"}}  type="text" placeholder={prop.title} onChange={changeTitle} />
-      </label>
-      <label>
-        Description:
-        <input 
-        type="textarea" placeholder={prop.description} onChange={changeDescription} />
-      </label>
+          <Box m={2} pt={3}>
+              <Card sx={{ maxWidth: 200 }} m={2} p={2}>
+                  <CardMedia
+                      component="img"
+                      height="100"
+                      image="/static/images/cards/paella.jpg"
+                  />
+                  <CardContent>
+                  </CardContent>
+                  <CardActions disableSpacing>
+                      <IconButton>
+                          <DeleteIcon />
+                      </IconButton>
+                  </CardActions>
       <input onClick={handleSubmit}  type="submit" value="Submit" />
-      
-          </div>
-      );
-
+              </Card>
+          </Box>
+    )
   }
   return (
     <div>

@@ -61,10 +61,6 @@ class Property(models.Model):
         default=None,
         null=True
     )
-    noOfBedrooms = models.IntegerField(
-        default=None,
-        null=True
-    )
     address=models.CharField(
         max_length=500,
         default=None,
