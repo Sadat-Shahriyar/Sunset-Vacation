@@ -38,10 +38,12 @@ class Property(models.Model):
         default=None,
         null=True
     )
+
     checkInTime=models.DateTimeField(
         default=None,
         null=True
     )
+
     checkOutTime=models.DateTimeField(
         default=None,
         null=True
@@ -165,6 +167,12 @@ class Facility(models.Model):
         default=None,
         blank=False)
     catagory=models.CharField(
+        max_length=100,
+        default=None,
+        blank=False,
+        null=True
+    )
+    subcatagory=models.CharField(
         max_length=100,
         default=None,
         blank=False,

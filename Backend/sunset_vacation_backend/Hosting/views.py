@@ -10,7 +10,27 @@ from Authentication.models import *
 from Authentication.serializers import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+
+
+
 # Create your views here.
+
+
+@api_view(["GET"])
+def getPropertyPhoto(request, property_id):
+    photos = PropertyPhotos.objects.filter(property_id=property_id)
+    print(photos)
+    photoSerializer = PropertyPhotoSerializer(photos, many=True)
+    print(photoSerializer.data)
+    return Response({"photos": photoSerializer.data, "success": True}, status=status.HTTP_200_OK)
+
+
+@api_view(["DELETE"])
+def deletePropertyPhoto(request, photo_id):
+    photo = PropertyPhotos.objects.filter(id=photo_id)
+    photo.delete()
+    return Response({"success": True}, status=status.HTTP_200_OK)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -83,6 +103,13 @@ def deleteProperty(request,property_id):
     propertyInfo.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def deleteFacility(request,fac_id):
+    facility=PropertyFacilities.objects.get(id=fac_id)
+    facility.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
 @api_view(["GET"])   
 def getFaqs(request,property_id):
     try:
@@ -117,6 +144,7 @@ def getFacilities(request):
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getPropertyFacilities(request,property_id):
     try:
         property=Property.objects.get(propertyID=property_id)
@@ -133,20 +161,23 @@ def getPropertyFacilities(request,property_id):
         catagorySerializer = FacilitySerializer(catagories,many=True)
         
         pfacilities=[]
+        
         for f in catagorySerializer.data:
             l=0
             catagoryBasedfacilityList=[]
-            emptyCatagory=[]
-            for p in fac:
-                if p["catagory"] == f["catagory"]:
-                    catagoryBasedfacilityList.append(p)
+            
+            for i in range(len(fac)):
+                if fac[i]["catagory"] == f["catagory"]:
+                    catagoryBasedfacilityList.append(propertyFacilitiesSerializer.data[i])
                     l=l+1
                 
-            list={"catagory":f["catagory"],"list":catagoryBasedfacilityList,"length":l}
-            pfacilities.append(list) 
+            
+            if l !=0 :
+                list={"catagory":f["catagory"],"list":catagoryBasedfacilityList}
+                pfacilities.append(list) 
             
            
-        
+        print(pfacilities)
         return Response({"pfacilities": pfacilities},status=status.HTTP_200_OK)
     except PropertyFacilities.DoesNotExist:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -184,9 +215,9 @@ def getCategoryList(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def getFacilityList(request):
-    amenities = Facility.objects.filter(catagory="Amenity").values_list("facility_name")
-    guestsFavourite = Facility.objects.filter(catagory="Guests favourite").values_list("facility_name")
-    safetyItems = Facility.objects.filter(catagory="Safety item").values_list("facility_name")
+    amenities = Facility.objects.filter(catagory="amenity").values_list("facility_name")
+    guestsFavourite = Facility.objects.filter(catagory="guestFav").values_list("facility_name")
+    safetyItems = Facility.objects.filter(catagory="safety").values_list("facility_name")
     print(amenities)
     print(guestsFavourite)
     print(safetyItems)
@@ -195,6 +226,9 @@ def getFacilityList(request):
 
     else:
         return Response({"success": False, "error" : "error 404 OT FOUND"}, status = status.HTTP_404_NOT_FOUND)
+
+
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -293,13 +327,51 @@ def publishProperty(request):
     return Response({"property": PropertySerializer(newProperty).data, "success": True}, status=status.HTTP_200_OK)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addNewFacility(request):
+    propertyinfo=Property.objects.get(proertyID=request.data["propertyID"])
+    amenityList = request.data['amenityList'].strip().split(",")
 
+    for amenity in amenityList:
+        facility = Facility.objects.get(facility_name=amenity)
+        PropertyFacilities.objects.create(
+            propertyID=propertyinfo,
+            facility_name=facility,
+            description='amenity'
+        )
+    
+    guestFavs = request.data['guestFavs'].strip().split(",")
+    for fav in guestFavs:
+        facility = Facility.objects.get(facility_name=fav)
+        PropertyFacilities.objects.create(
+            propertyID=propertyinfo,
+            facility_name=facility,
+            description='Guests favourite'
+        )
+    
+
+    safetyItems = request.data['safetyItems'].strip().split(",")
+    for item in safetyItems:
+        facility = Facility.objects.get(facility_name=item)
+        PropertyFacilities.objects.create(
+            propertyID=propertyinfo,
+            facility_name=facility,
+            description='Safety item'
+        )
+    return Response(status=status.HTTP_201_CREATED)
 @api_view(['POST'])
 def photoUpload(request):
-    print(request.data)
+    print("hello")
+    print(request)
     photos_serializer = PropertyPhotoUploadHelperSerializer(data=request.data)
     if photos_serializer.is_valid():
         photos_serializer.save()
+        print("hello")
+        property = Property.objects.get(propertyID=int(request.data["property_id"]))
+        photo = PropertyPhotos(property_id=property, photo_url=photos_serializer.data["image"])
+        photo.save()
+        photos_serializer = PropertyPhotoSerializer(photo)
         return Response({"uploaded_photo": photos_serializer.data, "success": True}, status=status.HTTP_201_CREATED)
     else:
         print('error', photos_serializer.errors)
@@ -363,3 +435,5 @@ def getAllPropertiesForHomePage(request):
 #                 return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 #         except Property.DoesNotExist:
 #             return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
