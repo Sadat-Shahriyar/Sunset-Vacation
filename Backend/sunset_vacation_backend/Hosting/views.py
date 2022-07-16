@@ -98,17 +98,18 @@ def updatePropertyDetails(request,property_id):
     return Response({"error":"error 404"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
 def deleteProperty(request,property_id):
     propertyInfo=Property.objects.get(propertyID=property_id)
     propertyInfo.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response({"msg","deleted facility successfully"},status=status.HTTP_200_OK)
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def deleteFacility(request,fac_id):
     facility=PropertyFacilities.objects.get(id=fac_id)
     facility.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response({"msg":"deleted facility successfully"},status=status.HTTP_200_OK)
 
 @api_view(["GET"])   
 def getFaqs(request,property_id):
@@ -126,10 +127,11 @@ def getFaqs(request,property_id):
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["DELETE"])
-def deleteFaq(request,faq_id):
+@permission_classes([IsAuthenticated])
+def deleteFaq(request,faq_id):    
     faq=FAQ.objects.get(faq_id=faq_id)
     faq.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response({"msg":"successfully deleted faq"},status=status.HTTP_200_OK)
 
 @api_view(["GET"])   
 def getFacilities(request):
@@ -154,10 +156,10 @@ def getPropertyFacilities(request,property_id):
         for p in propertyFacilitiesSerializer.data:
             facility=Facility.objects.get(facility_name=p["facility_name"])
             facilitySerializer=FacilitySerializer(facility)
-            p["catagory"]=facilitySerializer.data["catagory"]
+            p["subcatagory"]=facilitySerializer.data["subcatagory"]
             fac.append(p)
         
-        catagories=Facility.objects.values('catagory').distinct().order_by()
+        catagories=Facility.objects.values('subcatagory').distinct().order_by()
         catagorySerializer = FacilitySerializer(catagories,many=True)
         
         pfacilities=[]
@@ -167,13 +169,13 @@ def getPropertyFacilities(request,property_id):
             catagoryBasedfacilityList=[]
             
             for i in range(len(fac)):
-                if fac[i]["catagory"] == f["catagory"]:
+                if fac[i]["subcatagory"] == f["subcatagory"]:
                     catagoryBasedfacilityList.append(propertyFacilitiesSerializer.data[i])
                     l=l+1
                 
             
             if l !=0 :
-                list={"catagory":f["catagory"],"list":catagoryBasedfacilityList}
+                list={"catagory":f["subcatagory"],"list":catagoryBasedfacilityList}
                 pfacilities.append(list) 
             
            
@@ -183,15 +185,15 @@ def getPropertyFacilities(request,property_id):
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["POST"])
-def insertFaq(request):
-    print(request.data)
-    
-    
-    serializer = FAQSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@permission_classes([IsAuthenticated])
+def insertFaq(request,property_id):
+    propertyInfo=Property.objects.get(propertyID=property_id)
+    newfaq= FAQ.objects.create(
+    propertyID=propertyInfo,
+    question= request.data["question"],
+    answer= request.data["answer"]
+    )
+    return Response({"msg":"faq inserted"},status=status.HTTP_201_CREATED)
    
 
 @api_view(["PUT"])
@@ -251,6 +253,7 @@ def publishProperty(request):
         address=request.data['address'],
         latitude=request.data['latitude'],
         longitude=request.data['longitude'],
+        entirePrivateOrShared=request.data['entirePrivateOrshared'],
         published=True
     )
     
@@ -296,42 +299,48 @@ def publishProperty(request):
     
     amenityList = request.data['amenityList'].strip().split(",")
 
-    for amenity in amenityList:
-        facility = Facility.objects.get(facility_name=amenity)
-        PropertyFacilities.objects.create(
-            propertyID=newProperty,
-            facility_name=facility,
-            description='amenity'
-        )
+    if(len(amenityList) >0):
+        for amenity in amenityList:
+            facility = Facility.objects.get(facility_name=amenity)
+            PropertyFacilities.objects.create(
+                propertyID=newProperty,
+                facility_name=facility,
+                description='amenity'
+            )
+    
     
     guestFavs = request.data['guestFavs'].strip().split(",")
-    for fav in guestFavs:
-        facility = Facility.objects.get(facility_name=fav)
-        PropertyFacilities.objects.create(
-            propertyID=newProperty,
-            facility_name=facility,
-            description='Guests favourite'
-        )
+    if(len(guestFavs) >0):
+        print("print:",len(guestFavs))
+        for fav in guestFavs:
+            facility = Facility.objects.get(facility_name=fav)
+            PropertyFacilities.objects.create(
+                propertyID=newProperty,
+                facility_name=facility,
+                description='Guests favourite'
+            )
+   
     
 
     safetyItems = request.data['safetyItems'].strip().split(",")
-    for item in safetyItems:
-        facility = Facility.objects.get(facility_name=item)
-        PropertyFacilities.objects.create(
-            propertyID=newProperty,
-            facility_name=facility,
-            description='Safety item'
-        )
+    if(len(safetyItems) >0 ):
+        for item in safetyItems:
+            facility = Facility.objects.get(facility_name=item)
+            PropertyFacilities.objects.create(
+                propertyID=newProperty,
+                facility_name=facility,
+                description='Safety item'
+            )
 
     return Response({"property": PropertySerializer(newProperty).data, "success": True}, status=status.HTTP_200_OK)
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def addNewFacility(request):
-    propertyinfo=Property.objects.get(proertyID=request.data["propertyID"])
-    amenityList = request.data['amenityList'].strip().split(",")
-
+def addNewFacility(request,property_id):
+    print(request.data)
+    propertyinfo=Property.objects.get(propertyID=property_id)
+    amenityList = request.data['amenityList']#.strip().split(",")
+    
     for amenity in amenityList:
         facility = Facility.objects.get(facility_name=amenity)
         PropertyFacilities.objects.create(
@@ -340,7 +349,7 @@ def addNewFacility(request):
             description='amenity'
         )
     
-    guestFavs = request.data['guestFavs'].strip().split(",")
+    guestFavs = request.data['guestFavs']#.strip().split(",")
     for fav in guestFavs:
         facility = Facility.objects.get(facility_name=fav)
         PropertyFacilities.objects.create(
@@ -350,7 +359,7 @@ def addNewFacility(request):
         )
     
 
-    safetyItems = request.data['safetyItems'].strip().split(",")
+    safetyItems = request.data['safetyItems']#.strip().split(",")
     for item in safetyItems:
         facility = Facility.objects.get(facility_name=item)
         PropertyFacilities.objects.create(
@@ -358,23 +367,24 @@ def addNewFacility(request):
             facility_name=facility,
             description='Safety item'
         )
-    return Response(status=status.HTTP_201_CREATED)
-@api_view(['POST'])
-def photoUpload(request):
-    print("hello")
-    print(request)
-    photos_serializer = PropertyPhotoUploadHelperSerializer(data=request.data)
-    if photos_serializer.is_valid():
-        photos_serializer.save()
-        print("hello")
-        property = Property.objects.get(propertyID=int(request.data["property_id"]))
-        photo = PropertyPhotos(property_id=property, photo_url=photos_serializer.data["image"])
-        photo.save()
-        photos_serializer = PropertyPhotoSerializer(photo)
-        return Response({"uploaded_photo": photos_serializer.data, "success": True}, status=status.HTTP_201_CREATED)
-    else:
-        print('error', photos_serializer.errors)
-        return Response({"error": photos_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"msg":"inserted facilities successfully"},status=status.HTTP_201_CREATED)
+# @api_view(['POST'])
+# def photoUpload(request):
+#     print("hello")
+#     print(request)
+#     photos_serializer = PropertyPhotoUploadHelperSerializer(data=request.data)
+#     if photos_serializer.is_valid():
+#         photos_serializer.save()
+#         print("hello")
+#         propertyinfo = Property.objects.get(propertyID=request.data["property_id"])
+#         photo = PropertyPhotos(property_id_id=propertyinfo, photo_url=photos_serializer.data["image"])
+#         photo.save()
+#         photos_serializer = PropertyPhotoSerializer(photo)
+        
+#         return Response({"uploaded_photo": photos_serializer, "success": True}, status=status.HTTP_201_CREATED)
+#     else:
+#         print('error', photos_serializer.errors)
+#         return Response({"error": photos_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 # @api_view(["GET"])
 # @permission_classes([IsAuthenticated])
 # def getSafetyItemList(request):
@@ -382,6 +392,16 @@ def photoUpload(request):
 #     print(safetyItems)
 #     return Response({ "safetyItems": safetyItems, "success": True}, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+def photoUpload(request):
+    print(request.data)
+    photos_serializer = PropertyPhotoUploadHelperSerializer(data=request.data)
+    if photos_serializer.is_valid():
+        photos_serializer.save()
+        return Response({"uploaded_photo": photos_serializer.data, "success": True}, status=status.HTTP_201_CREATED)
+    else:
+        print('error', photos_serializer.errors)
+        return Response({"error": photos_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # class Property(

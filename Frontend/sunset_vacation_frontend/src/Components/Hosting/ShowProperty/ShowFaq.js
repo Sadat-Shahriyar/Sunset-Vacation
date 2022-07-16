@@ -25,6 +25,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { axios_api } from '../../../App';
 import PublishOutlinedIcon from '@mui/icons-material/PublishOutlined';
+
 const style = {
   width: '60%',
   bgcolor: 'background.paper',
@@ -99,41 +100,52 @@ export default function ShowFaq(props) {
       alert("empty value not accepted")
     } else {
       const body = {
-        "propertyID_id"  : props.property.propertyID,
         "question" : ques,
        "answer" : ans,
         
       };
-      console.log(body)
+      
       
     const requestOptions = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+      'Authorization':  `Bearer ${props.token}` },
       body: JSON.stringify(body)
     };
-    fetch(`http://localhost:8000/hosting/insertFaq/`, requestOptions)
+    fetch(`http://localhost:8000/hosting/insertFaq/` + `${props.property.propertyID}`, requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log("insert successsfully")
+        
+        props.setflags("faq");
+        navigate('/showProperty/Redirect');
       });
     }
-    navigate('/hosting')
+   
 
 
   }
   function DeleteFaq(faq) {
     console.log("delete button pressed")
+    console.log(faq)
+    const body={
+      faq_id:faq.faq_id,
+      question:faq.question,
+      answer:faq.answer
+      
+    }
     const requestOptions = {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+      'Authorization':  `Bearer ${props.token}` },
       body: JSON.stringify(faq)
     };
     fetch(`http://localhost:8000/hosting/deleteFaq/` + `${faq.faq_id}`, requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log("delete successsfully")
+        
+        props.setflags("faq");
+        navigate('/showProperty/Redirect');
       });
-
 
   }
   function showPropertyNavbar(props) {

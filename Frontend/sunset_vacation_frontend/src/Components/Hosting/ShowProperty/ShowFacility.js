@@ -169,7 +169,9 @@ export default function ShowFacility(props) {
     fetch(`http://localhost:8000/hosting/deleteFacility/` + `${fac.id}`, requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log("delete successsfully")
+        //console.log(response.msg);
+        props.setflags("fac");
+        navigate('/showProperty/Redirect')
         
       });
 
@@ -179,7 +181,7 @@ export default function ShowFacility(props) {
     return (
      
 
-    <Box sx={{flexGrow: 1 , width:"60%",marginLeft:"100px",marginRight: "auto"}}>
+    <Box sx={{flexGrow: 1 , width:"90%",marginLeft:"100px",marginRight: "auto"}}>
       <Button  sx={button} 
       onClick={()=>{navigate('/addnewfacility')}}
       variant="contained">ADD new Facility</Button>
@@ -188,9 +190,9 @@ export default function ShowFacility(props) {
        <Typography sx={{ marginTop: "30px", marginLeft:"auto",marginRight:"auto",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
       {fac.catagory}
      </Typography>
-    <Grid container spacing={2}>
+    <Grid container spacing={1}>
     {fac.list.map((f)=>(
-     <Grid item xs={4}>
+     <Grid item xs={3}>
        <List  sx={{
         width: '80%',
         maxWidth: 360,
