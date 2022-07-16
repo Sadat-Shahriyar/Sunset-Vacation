@@ -16,7 +16,7 @@ import axios from 'axios';
 import { BASE_URL } from './Utils';
 import Signup from './Components/Authentication/Signup';
 import Login from './Components/Authentication/Login';
-
+import Redirect from './Components/Hosting/ShowProperty/Redirect';
 import * as React from 'react';
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -31,50 +31,8 @@ function App() {
   const [user, setUser] = useState({})
   const [token, setToken] = useState("")
   const [selectedProperty, setSelectedProperty] = useState('');
-
-  const [selectedAmenityList, setSelectedAmenityList] = React.useState([]);
-  const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = React.useState([]);
-  const [selectedSafetyItemList, setSelectedSafetyItemList] = React.useState([]);
-
-  const handleSetSelectedAmenityList = (val) => {
-    let amenities = [...selectedAmenityList];
-    let idx = amenities.indexOf(val);
-    if(idx === -1){
-        amenities.push(val);
-        setSelectedAmenityList(amenities);
-    }
-    else{
-        amenities.splice(idx, 1);
-        setSelectedAmenityList(amenities);
-    }
-}
-
-const handleSelectedGuestsFavouriteItemList = (val) => {
-    let favs = [...selectedGuestsFavouriteItemList];
-    let idx = favs.indexOf(val);
-    if(idx === -1){
-        favs.push(val);
-        setSelectedGuestsFavouriteItemList(favs);
-    }
-    else{
-        favs.splice(idx,1);
-        setSelectedGuestsFavouriteItemList(favs);
-    }
-}
-
-const handleSetSelectedSafetyItemList = (val) => {
-    let safetyItem = [...selectedSafetyItemList];
-    let idx = safetyItem.indexOf(val);
-    if(idx === -1){
-        safetyItem.push(val);
-        setSelectedSafetyItemList(safetyItem);
-    }
-    else{
-        safetyItem.splice(idx, 1);
-        setSelectedSafetyItemList(safetyItem);
-    }
-}
-
+  var [flags,setFlags]=useState("");
+ 
   return (
    <BrowserRouter>
      <Routes>
@@ -84,27 +42,16 @@ const handleSetSelectedSafetyItemList = (val) => {
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
   
-        <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} token = {token}/>} />
+        <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
         <Route path='/showPropertyDetails' element={<ShowPropertyDetails property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>
         <Route path='/showPropertyDetails/description' element={<ShowDescription property={property}/>}/>
-        <Route path='/showPropertyDetails/faq' element={<ShowFaq property={property}/>}/>
-        <Route path='/showPropertyDetails/facility' element={<ShowFacility property={property} token = {token}/>}/>
+        <Route path='/showPropertyDetails/faq' element={<ShowFaq property={property} setflags={(val)=>{setFlags(val)}}  token={token}/>}/>
+        <Route path='/showPropertyDetails/facility' element={<ShowFacility property={property} setflags={(val)=>{setFlags(val)}}  token = {token}/>}/>
         <Route path='/showPropertyDetails/catagory' element={<ShowCatagory property={property}/>}/>
+        <Route path='/showProperty/Redirect' element={<Redirect flags={flags} property={property} setflags={(val)=>{setFlags(val)}}  token = {token} />}/>
         <Route path='/addnewfacility' element={<ADDNewFacility property={property} 
-        token = {token}
-        selectedAmenityList = {selectedAmenityList}
-        selectedGuestsFavouriteItemList = {selectedGuestsFavouriteItemList}
-        selectedSafetyItemList = {selectedSafetyItemList}
-        setSelectedAmenityList = {(val) => {handleSetSelectedAmenityList(val)}}
-        setSelectedGuestsFavouriteItemList = {(val) => {handleSelectedGuestsFavouriteItemList(val)}}
-        setSelectedSafetyItemList = {(val) => {handleSetSelectedSafetyItemList(val)}}
-        empty ={()=>{
-          setSelectedAmenityList([]);
-          setSelectedGuestsFavouriteItemList([]);
-          handleSetSelectedSafetyItemList([]);
-        }}
-        />}/>
+        token = {token} />}/>
 
         <Route
           path="*"

@@ -28,123 +28,57 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-function ViewRender(props){
-  
 
-  let amenities = props.amenities.map((amenity) => {
-    let bg = "white";
-    let idx = props.selectedAmenityList.indexOf(amenity[0]);
-    if(idx > -1){
-      bg="#EAA49B"
-    }
-    return(
-      <Grid item xs={4}>
-        <Paper elevation={3} style={{marginLeft:100, background: bg}}>
-          <Box
-            display="flex" 
-            width={200} height={80} 
-            ml={2}
-            mt={2}
-          >
-              <Box m="auto">
-                {/* <Typography variant='body1'>{amenity[0]}</Typography> */}
-                <Button variant='text' sx={{color: 'black'}} onClick={() => {props.setSelectedAmenityList(amenity[0])}}>{amenity[0]}</Button>
-              </Box>
-          </Box>
-        </Paper>
-      </Grid>
-    );
-});
-
-let guestsFavourite = props.guestsFavourite.map((fav) => {
-    let bg = "white";
-    let idx = props.selectedGuestsFavouriteItemList.indexOf(fav[0]);
-    if(idx > -1){
-      bg="#EAA49B"
-    }
-  return(
-    <Grid item xs={4}>
-      <Paper elevation={3} style={{marginLeft:100, background: bg}}>
-        <Box
-          display="flex" 
-          width={200} height={80} 
-          ml={2}
-          mt={2}
-        >
-            <Box m="auto">
-              {/* <Typography variant='body1'>{fav[0]}</Typography> */}
-              <Button variant='text' sx={{color: 'black'}} onClick={() => {props.setSelectedGuestsFavouriteItemList(fav[0])}}>{fav[0]}</Button>
-            </Box>
-        </Box>
-      </Paper>
-    </Grid>
-  );
-});
-
-let safetyItems = props.safetyItems.map((sItem) => {
-    let bg = "white";
-    let idx = props.selectedSafetyItemList.indexOf(sItem[0]);
-    if(idx > -1){
-      bg="#EAA49B"
-    }
-    
-  return(
-    <Grid item xs={4}>
-      <Paper elevation={3} style={{marginLeft:100, background: bg}}>
-        <Box
-          display="flex" 
-          width={200} height={80} 
-          ml={2}
-          mt={2}
-        >
-            <Box m="auto">
-              {/* <Typography variant='body1'>{sItem[0]}</Typography> */}
-              <Button 
-              variant='text' 
-              sx={{color: 'black'}} 
-              onClick={() => {console.log(sItem[0]);props.setSelectedSafetyItemList(sItem[0])}}
-              >
-                {sItem[0]}
-              </Button>
-            </Box>
-        </Box>
-      </Paper>
-      
-    </Grid>
-  );
-});
-
-  
-  return(
-    <Paper elevation={0} style={{maxHeight: 520, overflow: 'auto'}}>
-      <Grid container>
-        <Grid item xs={12}>
-          <Typography variant='h5' sx={{fontFamily: "Lucida Handwriting"}} marginTop={5}>Amenities: </Typography>
-        </Grid>
-
-        {amenities}
-
-        <Grid item xs={12}>
-          <Typography variant='h5' sx={{fontFamily: "Lucida Handwriting"}}  marginTop={5}>Guests favourite: </Typography>
-        </Grid>
-
-        {guestsFavourite}
-
-        <Grid item xs={12}>
-          <Typography variant='h5' sx={{fontFamily: "Lucida Handwriting"}} marginTop={5}>Safety items: </Typography>
-        </Grid>
-
-        {safetyItems}
-      </Grid>
-    </Paper>
-  );
-}
 export default function ADDNewFacility(props) {
   let navigate = useNavigate();
 
   const [amenities, setAmenities] = React.useState([]);
     const [guestsFavourites, setGuestsFavourites] = React.useState([]);
     const [safetyItems, setSafetyItems] = React.useState([]);
+    const [selectedAmenityList, setSelectedAmenityList] = React.useState([]);
+    const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = React.useState([]);
+    const [selectedSafetyItemList, setSelectedSafetyItemList] = React.useState([]);
+   
+  
+    function handleSetSelectedAmenityList (val)  {
+      let amenities = [...selectedAmenityList];
+      let idx = amenities.indexOf(val);
+      if(idx === -1){
+          amenities.push(val);
+          setSelectedAmenityList(amenities);
+      }
+      else{
+          amenities.splice(idx, 1);
+          setSelectedAmenityList(amenities);
+      }
+  }
+  
+  function handleSetSelectedGuestsFavouriteItemList  (val) {
+      let favs = [...selectedGuestsFavouriteItemList];
+      let idx = favs.indexOf(val);
+      if(idx === -1){
+          favs.push(val);
+          setSelectedGuestsFavouriteItemList(favs);
+      }
+      else{
+          favs.splice(idx,1);
+          setSelectedGuestsFavouriteItemList(favs);
+      }
+  }
+  
+  function handleSetSelectedSafetyItemList  (val) {
+      let safetyItem = [...selectedSafetyItemList];
+      let idx = safetyItem.indexOf(val);
+      if(idx === -1){
+          safetyItem.push(val);
+          setSelectedSafetyItemList(safetyItem);
+      }
+      else{
+          safetyItem.splice(idx, 1);
+          setSelectedSafetyItemList(safetyItem);
+      }
+  }
+  
     
     React.useEffect(() => {
 
@@ -162,9 +96,7 @@ export default function ADDNewFacility(props) {
             setAmenities(response.data.amenities);
             setGuestsFavourites(response.data.guestsFavourite);
             setSafetyItems(response.data.safetyItems);
-            props.setSelectedAmenityList([]);
-            props.setSelectedGuestsFavouriteItemList([]);
-            props.setSelectedSafetyItemList([]);
+            
             
           }
           else{
@@ -202,33 +134,36 @@ export default function ADDNewFacility(props) {
   }
  
   const handleCancel = (event) => {
-    props.empty();
+   setSelectedAmenityList([])
+   setSelectedSafetyItemList([])
+   setSelectedGuestsFavouriteItemList([])
     navigate('/showPropertyDetails/facility');
   }
 
   const handleSubmit=(event)=>{
-    body={
-      amenityList: props.selectedAmenityList,
-      guestFavs: props.selectedGuestsFavouriteItemList,
-      safetyItems : props.selectedSafetyItemList,
-      propertyID: props.property.propertyID
-    }
+    const body={
+      amenityList: selectedAmenityList,
+      guestFavs: selectedGuestsFavouriteItemList,
+      safetyItems : selectedSafetyItemList,
+      
+    };
     const requestOptions = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+      'Authorization':  `Bearer ${props.token}`, },
       body: JSON.stringify(body)
     };
-    fetch(`http://localhost:8000/hosting/addNewFacility/`, requestOptions)
+    fetch(`http://localhost:8000/hosting/addNewFacility/`+`${props.property.propertyID}`, requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log("insert successsfully")
+        // console.log(response.msg)
       });
       navigate('/showPropertyDetails/facility');
     }
   
 
   let getButton = () => {
-    if(props.selectedAmenityList.length === 0 && props.selectedGuestsFavouriteItemList.length === 0 && props.selectedSafetyItemList.length === 0) {
+    if(selectedAmenityList.length === 0 && selectedGuestsFavouriteItemList.length === 0 && selectedSafetyItemList.length === 0) {
       return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} >Submit</Button> 
     }
     else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{handleSubmit()}}>Submit</Button>
@@ -265,6 +200,117 @@ export default function ADDNewFacility(props) {
       </Box>
     )
   }
+  function ViewRender(props){
+  
+ 
+    let Pamenities = amenities.map((amenity) => {
+      let bg = "white";
+      let idx = selectedAmenityList.indexOf(amenity[0]);
+      if(idx > -1){
+        bg="#EAA49B"
+      }
+      return(
+        <Grid item xs={4}>
+          <Paper elevation={3} style={{marginLeft:100, background: bg}}>
+            <Box
+              display="flex" 
+              width={200} height={80} 
+              ml={2}
+              mt={2}
+            >
+                <Box m="auto">
+                  {/* <Typography variant='body1'>{amenity[0]}</Typography> */}
+                  <Button variant='text' sx={{color: 'black'}} onClick={() => {handleSetSelectedAmenityList(amenity[0])}}>{amenity[0]}</Button>
+                </Box>
+            </Box>
+          </Paper>
+        </Grid>
+      );
+      });
+  
+  let PguestsFavourite = guestsFavourites.map((fav) => {
+      let bg = "white";
+      let idx = selectedGuestsFavouriteItemList.indexOf(fav[0]);
+      if(idx > -1){
+        bg="#EAA49B"
+      }
+    return(
+      <Grid item xs={4}>
+        <Paper elevation={3} style={{marginLeft:100, background: bg}}>
+          <Box
+            display="flex" 
+            width={200} height={80} 
+            ml={2}
+            mt={2}
+          >
+              <Box m="auto">
+                {/* <Typography variant='body1'>{fav[0]}</Typography> */}
+                <Button variant='text' sx={{color: 'black'}} onClick={() => {handleSetSelectedGuestsFavouriteItemList(fav[0])}}>{fav[0]}</Button>
+              </Box>
+          </Box>
+        </Paper>
+      </Grid>
+    );
+  });
+  
+  let PsafetyItems = safetyItems.map((sItem) => {
+      let bg = "white";
+      let idx = selectedSafetyItemList.indexOf(sItem[0]);
+      if(idx > -1){
+        bg="#EAA49B"
+      }
+      
+    return(
+      <Grid item xs={4}>
+        <Paper elevation={3} style={{marginLeft:100, background: bg}}>
+          <Box
+            display="flex" 
+            width={200} height={80} 
+            ml={2}
+            mt={2}
+          >
+              <Box m="auto">
+                {/* <Typography variant='body1'>{sItem[0]}</Typography> */}
+                <Button 
+                variant='text' 
+                sx={{color: 'black'}} 
+                onClick={() => {handleSetSelectedSafetyItemList(sItem[0])}}
+                >
+                  {sItem[0]}
+                </Button>
+              </Box>
+          </Box>
+        </Paper>
+        
+      </Grid>
+    );
+  });
+  
+    
+    return(
+      <Paper elevation={0} style={{maxHeight: 520, overflow: 'auto'}}>
+        <Grid container>
+          <Grid item xs={12}>
+            <Typography variant='h5' sx={{fontFamily: "Lucida Handwriting"}} marginTop={5}>Amenities: </Typography>
+          </Grid>
+  
+          {Pamenities}
+  
+          <Grid item xs={12}>
+            <Typography variant='h5' sx={{fontFamily: "Lucida Handwriting"}}  marginTop={5}>Guests favourite: </Typography>
+          </Grid>
+  
+          {PguestsFavourite}
+  
+          <Grid item xs={12}>
+            <Typography variant='h5' sx={{fontFamily: "Lucida Handwriting"}} marginTop={5}>Safety items: </Typography>
+          </Grid>
+  
+          {PsafetyItems}
+        </Grid>
+      </Paper>
+    );
+  }
   function show(props){
 
   
@@ -279,18 +325,7 @@ export default function ADDNewFacility(props) {
               </Paper>
             </Item>
             <Item sx={{ height:'80%', mt: 1, ml:1}}>
-              <ViewRender 
-                amenities = {amenities}
-                guestsFavourite = {guestsFavourites}
-                safetyItems = {safetyItems}
-                selectedAmenityList = {props.selectedAmenityList}
-                selectedGuestsFavouriteItemList = {props.selectedGuestsFavouriteItemList}
-                selectedSafetyItemList = {props.selectedSafetyItemList}
-                setSelectedAmenityList = {(val) => {props.setSelectedAmenityList(val)}}
-                setSelectedGuestsFavouriteItemList = {(val) => {props.setSelectedGuestsFavouriteItemList(val)}}
-                setSelectedSafetyItemList = {(val) => {props.setSelectedSafetyItemList(val)}}
-
-              />
+              {ViewRender(props)}
             </Item>
             <Item sx={{height:'5%', ml:1, mt: 1}}>
               <Paper elevation={0}>

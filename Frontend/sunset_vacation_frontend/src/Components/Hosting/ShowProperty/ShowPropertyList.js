@@ -60,13 +60,16 @@ export default function ShowPropertyList(props) {
         console.log(property.propertyID)
         const requestOptions = {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json',
+        'Authorization': `Bearer ${props.token}` },
             body: JSON.stringify(props.property)
         };
         fetch(`http://localhost:8000/hosting/deleteProperty/` + `${property.propertyID}`, requestOptions)
         .then(response => response.json())
         .then(data => {
             console.log("delete successsfully")
+            props.setflags("propertylist");
+            navigate('/showProperty/Redirect');
         });
 
 
