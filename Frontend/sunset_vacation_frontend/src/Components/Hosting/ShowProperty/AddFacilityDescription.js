@@ -19,7 +19,8 @@ export default function ShowLocation(props) {
   let navigate = useNavigate();
 
   const [prop, setProp] = React.useState({});
-  var [facDes,setFacDes]=React.useState([]);
+  const [facDes,setFacDes]=React.useState([]);
+  
 
 
   const useLocation = (event) => {
@@ -56,32 +57,55 @@ export default function ShowLocation(props) {
         
         setProp(response.property)
         
+        
       })
       .catch((err) => {
         alert(err.message);
       })
+      let facilities=[]
+      props.selectedAmenityList.map((x)=>{
+        facilities.push({"facility_name":x,"description":""});
+      });
+      props.selectedGuestsFavouriteItemList.map((x)=>{
+        facilities.push({"facility_name":x,"description":""});
+      });
+      props.selectedSafetyItemList.map((x)=>{
+        facilities.push({"facility_name":x,"description":""});
+      })
+    
+       setFacDes(facilities);
+      
   },[])
-  function SetDescription(event,fac) {
-    let idx = props.selectedAmenityList.indexOf(fac);
-    console.log("fac: "+fac);
+  function SetDescription(fac,description) {
+   
+    facDes.map((f)=>{
+        if(f["facility_name"] === fac){
+            f["description"]=description;
+        }
+    })
 
   }
   
   
  
   function handleSubmit(event) {
-    const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(props.property)
+    props.empty();
+    const body={
+      facilities: facDes
     };
-    fetch(`http://localhost:8000/hosting/updateProperty/` + `${props.property.propertyID}`, requestOptions)
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json',
+      'Authorization':  `Bearer ${props.token}`, },
+      body: JSON.stringify(body)
+    };
+    fetch(`http://localhost:8000/hosting/addNewFacility/`+`${props.property.propertyID}`, requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log("updated successsfully")
+       
       });
-
-
+      navigate('/showPropertyDetails/facility');
+      
   }
 
   function AddDescription(props){
@@ -89,7 +113,7 @@ export default function ShowLocation(props) {
         <Box
         component="form"
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '40ch' },
+          '& .MuiTextField-root': { m: 1, width: '60ch' },
         }}
         noValidate
         m={2}
@@ -101,10 +125,34 @@ export default function ShowLocation(props) {
          
          <Grid item xs={6}>
          <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "15px", "color": "black" }}>{fac}</p></label>
-         <TextField id="outlined-basic" onChange={()=>{SetDescription({fac})}}  variant="outlined" />
+         <TextField id="outlined-basic" onChange={(event)=>{
+            SetDescription(fac,event.target.value)
+         }} variant="outlined" />
+         </Grid>
+       ))}
+        {props.selectedGuestsFavouriteItemList.map((fac)=>(
+         
+         <Grid item xs={6}>
+         <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "15px", "color": "black" }}>{fac}</p></label>
+         <TextField id="outlined-basic" onChange={(event)=>{
+            SetDescription(fac,event.target.value)
+         }} variant="outlined" />
+         </Grid>
+       ))}
+        {props.selectedSafetyItemList.map((fac)=>(
+         
+         <Grid item xs={6}>
+         <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "15px", "color": "black" }}>{fac}</p></label>
+         <TextField id="outlined-basic" onChange={(event)=>{
+            SetDescription(fac,event.target.value)
+         }} variant="outlined" />
          </Grid>
        ))}
         
+      </Grid>
+      <Grid item xs={12}>
+      <Button variant="outlined" onClick={handleSubmit} sx={{ml: '40%' ,color: "black", "fontFamily": "Lucida Handwriting",marginTop: "20px"}}>submit</Button>
+
       </Grid>
     </Box>
     )

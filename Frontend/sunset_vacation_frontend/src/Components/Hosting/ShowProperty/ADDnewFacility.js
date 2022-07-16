@@ -40,7 +40,7 @@ export default function ADDNewFacility(props) {
 
       const fetchFacilityList = async() => {
         try{
-          let response = await axios_api.get("hosting/getfacilities/", 
+          let response = await axios_api.get("hosting/getAddFacilityList/"+`${props.property.propertyID}`, 
           {
               headers: {
                   'Authorization' : `Bearer ${props.token}`
@@ -95,24 +95,7 @@ export default function ADDNewFacility(props) {
   }
 
   const handleSubmit=(event)=>{
-    
-    const body={
-      amenityList: props.selectedAmenityList,
-      guestFavs:props.selectedGuestsFavouriteItemList,
-      safetyItems : props.selectedSafetyItemList,
-      
-    };
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json',
-      'Authorization':  `Bearer ${props.token}`, },
-      body: JSON.stringify(body)
-    };
-    fetch(`http://localhost:8000/hosting/addNewFacility/`+`${props.property.propertyID}`, requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        // console.log(response.msg)
-      });
+  
       navigate('/addnewfacility/addFacilityDescription');
     }
   

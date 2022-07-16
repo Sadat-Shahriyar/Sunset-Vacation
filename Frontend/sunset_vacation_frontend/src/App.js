@@ -42,7 +42,9 @@ function App() {
     function handleSetSelectedAmenityList (val)  {
       let amenities = [...selectedAmenityList];
       let idx = amenities.indexOf(val);
+      
       if(idx === -1){
+       
           amenities.push(val);
           setSelectedAmenityList(amenities);
       }
@@ -55,7 +57,9 @@ function App() {
   function handleSetSelectedGuestsFavouriteItemList  (val) {
       let favs = [...selectedGuestsFavouriteItemList];
       let idx = favs.indexOf(val);
+     
       if(idx === -1){
+        
           favs.push(val);
           setSelectedGuestsFavouriteItemList(favs);
       }
@@ -68,7 +72,9 @@ function App() {
   function handleSetSelectedSafetyItemList  (val) {
       let safetyItem = [...selectedSafetyItemList];
       let idx = safetyItem.indexOf(val);
+      
       if(idx === -1){
+        
           safetyItem.push(val);
           setSelectedSafetyItemList(safetyItem);
       }
@@ -110,7 +116,10 @@ function App() {
         setSelectedSafetyItemList={(val)=>{handleSetSelectedSafetyItemList(val)}} />}/>
         <Route path='/addnewfacility/addFacilityDescription' element={<AddFacilityDescription property={property} 
                 token = {token}
-              
+                empty={()=>{
+                  setSelectedAmenityList([]);
+                  setSelectedSafetyItemList([]);
+                setSelectedGuestsFavouriteItemList([]);}}
                 selectedAmenityList={selectedAmenityList}
                 selectedGuestsFavouriteItemList={selectedGuestsFavouriteItemList}
                 selectedSafetyItemList={selectedSafetyItemList}

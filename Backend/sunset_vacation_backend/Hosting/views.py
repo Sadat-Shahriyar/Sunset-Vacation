@@ -145,6 +145,7 @@ def getFacilities(request):
     except Facility.DoesNotExist:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def getPropertyFacilities(request,property_id):
@@ -183,6 +184,40 @@ def getPropertyFacilities(request,property_id):
         return Response({"pfacilities": pfacilities},status=status.HTTP_200_OK)
     except PropertyFacilities.DoesNotExist:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getAddFacilityList(request,property_id):
+    amenities = Facility.objects.filter(catagory="amenity").values_list("facility_name")
+    guestsFavourite = Facility.objects.filter(catagory="guestFav").values_list("facility_name")
+    safetyItems = Facility.objects.filter(catagory="safety").values_list("facility_name")
+    property=Property.objects.get(propertyID=property_id)
+    propertyFacilities=PropertyFacilities.objects.filter(propertyID_id=property)
+    propertyFacilitiesSerializer =PropertyFacilitiesSerializer(propertyFacilities, many=True)
+    amenityList=[]
+    guestFavList=[]
+    safetyList=[]
+    facilities=[]
+    for f in propertyFacilitiesSerializer.data:
+        facilities.append(f["facility_name"])
+    for a in amenities:
+        if not a[0] in facilities:
+            amenityList.append(a)
+    for a in guestsFavourite:
+        if not a[0] in facilities:
+            guestFavList.append(a)
+    for a in safetyItems:
+        if not a[0] in facilities:
+            safetyList.append(a)
+
+    if "What's new" not in guestFavList:
+        guestFavList.append(["What's new"],)
+    
+    if amenities.exists() and guestsFavourite.exists() and safetyItems.exists():
+        return Response({"amenities": amenityList,"guestsFavourite": guestFavList,"safetyItems":safetyList, "success": True}, status=status.HTTP_200_OK)
+
+    else:
+        return Response({"success": False, "error" : "error 404 OT FOUND"}, status = status.HTTP_404_NOT_FOUND)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -339,34 +374,17 @@ def publishProperty(request):
 def addNewFacility(request,property_id):
     print(request.data)
     propertyinfo=Property.objects.get(propertyID=property_id)
-    amenityList = request.data['amenityList']#.strip().split(",")
+    facilityList = request.data['facilities']#.strip().split(",")
     
-    for amenity in amenityList:
-        facility = Facility.objects.get(facility_name=amenity)
+    for f in facilityList:
+        facility = Facility.objects.get(facility_name=f["facility_name"])
         PropertyFacilities.objects.create(
             propertyID=propertyinfo,
             facility_name=facility,
-            description='amenity'
+            description=f["description"]
         )
     
-    guestFavs = request.data['guestFavs']#.strip().split(",")
-    for fav in guestFavs:
-        facility = Facility.objects.get(facility_name=fav)
-        PropertyFacilities.objects.create(
-            propertyID=propertyinfo,
-            facility_name=facility,
-            description='Guests favourite'
-        )
     
-
-    safetyItems = request.data['safetyItems']#.strip().split(",")
-    for item in safetyItems:
-        facility = Facility.objects.get(facility_name=item)
-        PropertyFacilities.objects.create(
-            propertyID=propertyinfo,
-            facility_name=facility,
-            description='Safety item'
-        )
     return Response({"msg":"inserted facilities successfully"},status=status.HTTP_201_CREATED)
 # @api_view(['POST'])
 # def photoUpload(request):
