@@ -230,7 +230,7 @@ export default function ShowFacility(props) {
       <ManagementDashboard />
 
       {showPropertyNavbar(props)}
-      {/* {showPropertyFacilities(props)} */}
+      {showPropertyFacilities(props)}
     </div>
   );
 }
