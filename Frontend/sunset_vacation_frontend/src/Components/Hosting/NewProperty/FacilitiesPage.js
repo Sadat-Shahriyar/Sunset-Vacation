@@ -175,10 +175,7 @@ export default function FacilitiesPage(props){
     }
 
     let getButton = () => {
-      if(props.selectedAmenityList.length === 0 && props.selectedGuestsFavouriteItemList.length === 0 && props.selectedSafetyItemList.length === 0) {
-        return <Button disabled variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button> 
-      }
-      else return <Button variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
+      return <Button variant='outlined' color='secondary' sx={{ml: '70%'}} onClick={()=>{props.setPageNo(props.pageNo + 1)}}>Next</Button>
     }
 
     let button = getButton()
