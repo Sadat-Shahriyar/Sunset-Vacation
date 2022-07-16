@@ -35,50 +35,6 @@ export default function ADDNewFacility(props) {
   const [amenities, setAmenities] = React.useState([]);
     const [guestsFavourites, setGuestsFavourites] = React.useState([]);
     const [safetyItems, setSafetyItems] = React.useState([]);
-    const [selectedAmenityList, setSelectedAmenityList] = React.useState([]);
-    const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = React.useState([]);
-    const [selectedSafetyItemList, setSelectedSafetyItemList] = React.useState([]);
-   
-  
-    function handleSetSelectedAmenityList (val)  {
-      let amenities = [...selectedAmenityList];
-      let idx = amenities.indexOf(val);
-      if(idx === -1){
-          amenities.push(val);
-          setSelectedAmenityList(amenities);
-      }
-      else{
-          amenities.splice(idx, 1);
-          setSelectedAmenityList(amenities);
-      }
-  }
-  
-  function handleSetSelectedGuestsFavouriteItemList  (val) {
-      let favs = [...selectedGuestsFavouriteItemList];
-      let idx = favs.indexOf(val);
-      if(idx === -1){
-          favs.push(val);
-          setSelectedGuestsFavouriteItemList(favs);
-      }
-      else{
-          favs.splice(idx,1);
-          setSelectedGuestsFavouriteItemList(favs);
-      }
-  }
-  
-  function handleSetSelectedSafetyItemList  (val) {
-      let safetyItem = [...selectedSafetyItemList];
-      let idx = safetyItem.indexOf(val);
-      if(idx === -1){
-          safetyItem.push(val);
-          setSelectedSafetyItemList(safetyItem);
-      }
-      else{
-          safetyItem.splice(idx, 1);
-          setSelectedSafetyItemList(safetyItem);
-      }
-  }
-  
     
     React.useEffect(() => {
 
@@ -134,17 +90,16 @@ export default function ADDNewFacility(props) {
   }
  
   const handleCancel = (event) => {
-   setSelectedAmenityList([])
-   setSelectedSafetyItemList([])
-   setSelectedGuestsFavouriteItemList([])
+   props.empty();
     navigate('/showPropertyDetails/facility');
   }
 
   const handleSubmit=(event)=>{
+    
     const body={
-      amenityList: selectedAmenityList,
-      guestFavs: selectedGuestsFavouriteItemList,
-      safetyItems : selectedSafetyItemList,
+      amenityList: props.selectedAmenityList,
+      guestFavs:props.selectedGuestsFavouriteItemList,
+      safetyItems : props.selectedSafetyItemList,
       
     };
     const requestOptions = {
@@ -158,12 +113,12 @@ export default function ADDNewFacility(props) {
       .then(data => {
         // console.log(response.msg)
       });
-      navigate('/showPropertyDetails/facility');
+      navigate('/addnewfacility/addFacilityDescription');
     }
   
 
   let getButton = () => {
-    if(selectedAmenityList.length === 0 && selectedGuestsFavouriteItemList.length === 0 && selectedSafetyItemList.length === 0) {
+    if(props.selectedAmenityList.length === 0 && props.selectedGuestsFavouriteItemList.length === 0 && props.selectedSafetyItemList.length === 0) {
       return <Button disabled variant='outlined' color='secondary' sx={{ml: '85%'}} >Submit</Button> 
     }
     else return <Button variant='outlined' color='secondary' sx={{ml: '85%'}} onClick={()=>{handleSubmit()}}>Submit</Button>
@@ -205,7 +160,7 @@ export default function ADDNewFacility(props) {
  
     let Pamenities = amenities.map((amenity) => {
       let bg = "white";
-      let idx = selectedAmenityList.indexOf(amenity[0]);
+      let idx = props.selectedAmenityList.indexOf(amenity[0]);
       if(idx > -1){
         bg="#EAA49B"
       }
@@ -220,7 +175,7 @@ export default function ADDNewFacility(props) {
             >
                 <Box m="auto">
                   {/* <Typography variant='body1'>{amenity[0]}</Typography> */}
-                  <Button variant='text' sx={{color: 'black'}} onClick={() => {handleSetSelectedAmenityList(amenity[0])}}>{amenity[0]}</Button>
+                  <Button variant='text' sx={{color: 'black'}} onClick={() => {props.setSelectedAmenityList(amenity[0])}}>{amenity[0]}</Button>
                 </Box>
             </Box>
           </Paper>
@@ -230,7 +185,7 @@ export default function ADDNewFacility(props) {
   
   let PguestsFavourite = guestsFavourites.map((fav) => {
       let bg = "white";
-      let idx = selectedGuestsFavouriteItemList.indexOf(fav[0]);
+      let idx = props.selectedGuestsFavouriteItemList.indexOf(fav[0]);
       if(idx > -1){
         bg="#EAA49B"
       }
@@ -245,7 +200,7 @@ export default function ADDNewFacility(props) {
           >
               <Box m="auto">
                 {/* <Typography variant='body1'>{fav[0]}</Typography> */}
-                <Button variant='text' sx={{color: 'black'}} onClick={() => {handleSetSelectedGuestsFavouriteItemList(fav[0])}}>{fav[0]}</Button>
+                <Button variant='text' sx={{color: 'black'}} onClick={() => {props.setSelectedGuestsFavouriteItemList(fav[0])}}>{fav[0]}</Button>
               </Box>
           </Box>
         </Paper>
@@ -255,7 +210,7 @@ export default function ADDNewFacility(props) {
   
   let PsafetyItems = safetyItems.map((sItem) => {
       let bg = "white";
-      let idx = selectedSafetyItemList.indexOf(sItem[0]);
+      let idx = props.selectedSafetyItemList.indexOf(sItem[0]);
       if(idx > -1){
         bg="#EAA49B"
       }
@@ -274,7 +229,7 @@ export default function ADDNewFacility(props) {
                 <Button 
                 variant='text' 
                 sx={{color: 'black'}} 
-                onClick={() => {handleSetSelectedSafetyItemList(sItem[0])}}
+                onClick={() => {props.setSelectedSafetyItemList(sItem[0])}}
                 >
                   {sItem[0]}
                 </Button>
