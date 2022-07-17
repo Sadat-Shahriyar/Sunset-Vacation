@@ -112,7 +112,7 @@ export default function ShowPropertyDetails(props) {
         const sendObject = new FormData();
         sendObject.append("image", event.target.files[0]);
         sendObject.append("property_id", props.property.propertyID);
-        axios.post(`http://localhost:8000/hosting/photouploadhelper/`, sendObject)
+        axios.post(`http://localhost:8000/hosting/updatephotouploadhelper/`, sendObject)
             .then(response => response)
             .then(data => {
                 navigate('/showPropertyDetails')
@@ -169,11 +169,11 @@ export default function ShowPropertyDetails(props) {
                             fontSize: "15px",
                             color: "black"
                         }}>Catagory</Button><IconButton><DetailsIcon sx={{color: 'black'}}/></IconButton>
-                        <Button onClick={useLocation} color="inherit" sx={{
+                        {/* <Button onClick={useLocation} color="inherit" sx={{
                             fontFamily: "Lucida Handwriting",
                             fontSize: "15px",
                             color: "black"
-                        }}>Location</Button><IconButton><LocationOnIcon sx={{color: 'black'}}/></IconButton>
+                        }}>Location</Button><IconButton><LocationOnIcon sx={{color: 'black'}}/></IconButton> */}
                         <Button onClick={useFacility} color="inherit"
                                 sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black"}}>Facilities &
                             Safety Items</Button><IconButton><DesktopMacIcon sx={{color: 'black'}}/></IconButton>
@@ -202,7 +202,7 @@ export default function ShowPropertyDetails(props) {
                     {photos.map((photo) => (
                         <ImageListItem key={photo.id}>
                             <img
-                                src={`http://localhost:8000${photo.photo_url}?w=164&h=164&fit=crop&auto=format`}
+                                src={`${photo.photo_url}?w=164&h=164&fit=crop&auto=format`}
                                 alt={photo.photo_url}
                                 loading="lazy"
                             />
