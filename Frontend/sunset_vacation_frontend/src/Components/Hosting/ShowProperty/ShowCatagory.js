@@ -151,18 +151,18 @@ export default function ShowCatagory(props) {
             <Grid container>
               <Grid item xs={1}/>
               <Grid item xs={5.5}>
-                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>Concise Type</p></label>
+                {/* <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>Concise Type</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.conciseType}
-                    onChange={changeConciseType}/>
+                    placeholder={props.property.conciseType}
+                    onChange={changeConciseType}/> */}
                 <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>Type Of Hosting</p></label>
                 <FormControl sx={{ m: 1, minWidth: 120 }} disabled={!edit}>
                   <Select
                       labelId="demo-simple-select-disabled-label"
                       id="demo-simple-select-disabled"
-                      defaultValue={props.property.entirePrivateOrShared}
+                      defaultvalue={props.property.entirePrivateOrShared}
                       onChange={changeEntirePrivateOrShared}
                   >
                     <MenuItem value="Entire">Entire</MenuItem>
@@ -174,27 +174,27 @@ export default function ShowCatagory(props) {
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.noOfGuests}
+                   placeholder={props.property.noOfGuests}
                     onChange={changeNoOfGuests}/>
               </Grid>
               <Grid item xs={5.5}>
-                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Guests</p></label>
+                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Beds</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.noOfBeds}
+                    placeholder={props.property.noOfBeds}
                     onChange={changeNoOfBeds}/>
-                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Guests</p></label>
+                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Bedrooms</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.noOfBedrooms}
+                    placeholder={props.property.noOfBedrooms}
                     onChange={changeNoOfBedrooms}/>
-                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Guests</p></label>
+                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Bathrooms</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.noOfBathrooms}
+                    placeholder={props.property.noOfBathrooms}
                     onChange={changeNoOfBathrooms}/>
               </Grid>
             </Grid>

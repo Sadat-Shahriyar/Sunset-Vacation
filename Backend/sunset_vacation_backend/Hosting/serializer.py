@@ -32,8 +32,8 @@ class PropertySerializer(serializers.ModelSerializer):
             latitude=validate_data.get('latitude'),
             longitude=validate_data.get('longitude'),
             address=validate_data.get('address'),
-            checkInTime=validate_data.get('checkInTime'),
-            checkOutTime=validate_data.get('checkOutTime'),
+            # checkInTime=validate_data.get('checkInTime'),
+            # checkOutTime=validate_data.get('checkOutTime'),
         )
 
     class Meta:

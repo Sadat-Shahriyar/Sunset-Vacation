@@ -91,7 +91,7 @@ def getProperty(request,property_id):
 def updatePropertyDetails(request,property_id):
     propertyInfo=Property.objects.get(propertyID=property_id)
     serializer = PropertySerializer(propertyInfo,request.data)
-    print(request.data)
+    
     if serializer.is_valid():
         serializer.save()
         return Response({"success": True}, status=status.HTTP_200_OK)
@@ -308,7 +308,9 @@ def publishProperty(request):
         latitude=request.data['latitude'],
         longitude=request.data['longitude'],
         entirePrivateOrShared=request.data['entirePrivateOrshared'],
-        published=True
+        published=True,
+        checkInTime='2019-01-11',
+        checkOutTime='2019-01-11'
     )
     
     images = request.data['images'].strip().split(",")
