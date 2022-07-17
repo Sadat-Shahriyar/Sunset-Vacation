@@ -230,6 +230,25 @@ def insertFaq(request,property_id):
     )
     return Response({"msg":"faq inserted"},status=status.HTTP_201_CREATED)
    
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getPropertyFacilityDetails(request,fid):
+    print(fid)
+    propertyFacilities=PropertyFacilities.objects.filter(id=fid)
+    propertyFacilitiesSerializer =PropertyFacilitiesSerializer(propertyFacilities,many=True)
+    print(propertyFacilitiesSerializer.data)
+    return Response({"facility":propertyFacilitiesSerializer.data},status=status.HTTP_200_OK)
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def updatePropertyFacility(request,fac_id):
+    propertyFacility=PropertyFacilities.objects.get(id=fac_id)
+    serializer = PropertyFacilitiesSerializer(propertyFacility,request.data)
+    
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"success": True}, status=status.HTTP_200_OK)
+    return Response({"error":"error 404"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["PUT"])
 def updateFaq(request,faq_id):

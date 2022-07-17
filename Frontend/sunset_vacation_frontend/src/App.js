@@ -18,6 +18,7 @@ import Signup from './Components/Authentication/Signup';
 import Login from './Components/Authentication/Login';
 import Redirect from './Components/Hosting/ShowProperty/Redirect';
 import AddFacilityDescription from './Components/Hosting/ShowProperty/AddFacilityDescription';
+import Editfacility from './Components/Hosting/ShowProperty/EditFacility';
 import * as React from 'react';
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -33,11 +34,10 @@ function App() {
   const [token, setToken] = useState("")
   const [selectedProperty, setSelectedProperty] = useState('');
   var [flags,setFlags]=useState("");
-  const [selectedAmenityList, setSelectedAmenityList] = React.useState([]);
-    const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = React.useState([]);
-    const [selectedSafetyItemList, setSelectedSafetyItemList] = React.useState([]);
-    
-   
+  const [selectedAmenityList, setSelectedAmenityList] =useState([]);
+    const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
+    const [selectedSafetyItemList, setSelectedSafetyItemList] = useState([]);
+    const [selectedFacility,setSelectedFacility]=useState(0);
   
     function handleSetSelectedAmenityList (val)  {
       let amenities = [...selectedAmenityList];
@@ -99,7 +99,9 @@ function App() {
         <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>
         <Route path='/showPropertyDetails/description' element={<ShowDescription property={property}/>}/>
         <Route path='/showPropertyDetails/faq' element={<ShowFaq property={property} setflags={(val)=>{setFlags(val)}}  token={token}/>}/>
-        <Route path='/showPropertyDetails/facility' element={<ShowFacility property={property} setflags={(val)=>{setFlags(val)}}  token = {token}/>}/>
+        <Route path='/showPropertyDetails/facility' element={<ShowFacility property={property} selectedFacility={selectedFacility}
+        setSelectedFacility={(val)=>{setSelectedFacility(val)}}
+        setflags={(val)=>{setFlags(val)}}  token = {token}/>}/>
         <Route path='/showPropertyDetails/catagory' element={<ShowCatagory property={property}/>}/>
         <Route path='/showProperty/Redirect' element={<Redirect flags={flags} property={property} setflags={(val)=>{setFlags(val)}}  token = {token} />}/>
         <Route path='/addnewfacility' element={<ADDNewFacility property={property} 
@@ -124,6 +126,7 @@ function App() {
                 selectedGuestsFavouriteItemList={selectedGuestsFavouriteItemList}
                 selectedSafetyItemList={selectedSafetyItemList}
                 />}/>
+        <Route path='/Editfacility' element={<Editfacility selectedFacility={selectedFacility} property={property} token={token}/>}/>
         <Route
           path="*"
           element={<Navigate to="/" replace />}

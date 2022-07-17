@@ -17,6 +17,8 @@ urlpatterns = [
     path('getFaqs/<int:property_id>',views.getFaqs),
     path('insertFaq/<int:property_id>',views.insertFaq),
     path('getPropertyFacilities/<int:property_id>',views.getPropertyFacilities),
+    path('updatePropertyFacility/<int:fac_id>',views.updatePropertyFacility),
+    path('getPropertyFacilityDetails/<int:fid>',views.getPropertyFacilityDetails),
     path('getAddFacilityList/<int:property_id>',views.getAddFacilityList),
     path('getallcategory/', views.getCategoryList, name="getcategorylist"),
     path('getfacilities/',views.getFacilityList, name="getfacilitylist" ),

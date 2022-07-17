@@ -178,6 +178,10 @@ export default function ShowFacility(props) {
 
       navigate('/showPropertyDetails/facility');
   }
+  function setFacility(f){
+    props.setSelectedFacility(f);
+    navigate('/Editfacility');
+  }
   function showPropertyFacilities(props) {
     return (
      
@@ -207,6 +211,7 @@ export default function ShowFacility(props) {
             <ListItem>
         
         <ListItemText  primary={f.facility_name} secondary={f.description} />
+        <IconButton><EditIcon onClick={()=>{setFacility(f.id)}}/></IconButton>
       <IconButton><DeleteIcon onClick={() => DeleteFacility(f)}/></IconButton>
       </ListItem>
            
