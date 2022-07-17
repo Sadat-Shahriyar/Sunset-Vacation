@@ -140,7 +140,7 @@ export default function ShowFacility(props) {
               sx={{ display: { xs: 'none', sm: 'block' } }}
             >
               <p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "25px", "color": "black" }}>{props.property.title}
-                &nbsp;&nbsp;&nbsp;<IconButton><EditIcon /></IconButton></p>
+                &nbsp;&nbsp;&nbsp;</p>
             </Typography>
           </Toolbar>
         </AppBar>
@@ -186,7 +186,7 @@ export default function ShowFacility(props) {
     return (
      
 
-    <Box sx={{flexGrow: 1 , width:"90%",marginLeft:"100px",marginRight: "auto"}}>
+    <Box sx={{flexGrow: 1 , width:"90%",marginLeft:"100px",marginRight: "auto",mb:30}}>
       <Button  sx={button} 
       onClick={()=>{navigate('/addnewfacility')}}
       variant="contained">ADD new Facility</Button>
@@ -197,7 +197,7 @@ export default function ShowFacility(props) {
      </Typography>
     <Grid container spacing={1}>
     {fac.list.map((f)=>(
-     <Grid item xs={3}>
+     <Grid item xs={4}>
        <List  sx={{
         width: '80%',
         maxWidth: 360,

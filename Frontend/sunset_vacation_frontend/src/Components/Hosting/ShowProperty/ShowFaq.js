@@ -161,7 +161,7 @@ export default function ShowFaq(props) {
               sx={{ display: { xs: 'none', sm: 'block' } }}
             >
               <p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "25px", "color": "black" }}>{propertyTitle}
-                &nbsp;&nbsp;&nbsp;<IconButton><EditIcon /></IconButton></p>
+                &nbsp;&nbsp;&nbsp;</p>
             </Typography>
           </Toolbar>
         </AppBar>
