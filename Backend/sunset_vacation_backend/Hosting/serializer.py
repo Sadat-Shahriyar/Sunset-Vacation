@@ -13,8 +13,8 @@ class PropertySerializer(serializers.ModelSerializer):
     latitude=serializers.CharField(max_length=100,required=False)
     longitude=serializers.CharField(max_length=100,required=False)
     address=serializers.CharField(max_length=500,required=False)
-    checkInTime=serializers.DateTimeField(required=False)
-    checkOutTime=serializers.DateTimeField(required=False)
+    # checkInTime=serializers.DateTimeField(required=False)
+    # checkOutTime=serializers.DateTimeField(required=False)
     maxDaysRefund=serializers.IntegerField(required=False)
     published=serializers.BooleanField(required=False)
     owner_id=serializers.PrimaryKeyRelatedField(read_only=True)
@@ -193,3 +193,4 @@ class PropertyPhotoUploadHelperSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyPhotoUploadHelper
         fields = '__all__'
+

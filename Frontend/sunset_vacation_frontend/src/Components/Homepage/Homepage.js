@@ -289,17 +289,18 @@ export default function Homepage(props) {
           </Search> */}
           
           <Box sx={{ flexGrow: 1 }} />
+
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 6 new mails" color="inherit">
+            {/* <IconButton size="large" aria-label="show 6 new mails" color="inherit">
               <Badge badgeContent={6} color="error">
                 <MailIcon />
                 
                
               </Badge>
-            </IconButton>
+            </IconButton> */}
           
             <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>
-            <IconButton
+            {/* <IconButton
               size="large"
               aria-label="show 19 new notifications"
               color="inherit"
@@ -308,7 +309,7 @@ export default function Homepage(props) {
               <Badge badgeContent={19} color="error">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
             <IconButton
               size="large"
               edge="end"
@@ -317,6 +318,7 @@ export default function Homepage(props) {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
+              //onClick={()=>{navigate("/login");}}
             >
               <AccountCircle />
             </IconButton>

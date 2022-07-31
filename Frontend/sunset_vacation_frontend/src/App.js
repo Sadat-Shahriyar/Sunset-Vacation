@@ -19,6 +19,9 @@ import Login from './Components/Authentication/Login';
 import Redirect from './Components/Hosting/ShowProperty/Redirect';
 import AddFacilityDescription from './Components/Hosting/ShowProperty/AddFacilityDescription';
 import Editfacility from './Components/Hosting/ShowProperty/EditFacility';
+import Offer from './Components/Hosting/Offer&Giftcard/Offer';
+import OfferConfirmation from './Components/Hosting/Offer&Giftcard/OfferConfirmation';
+import ShowOffer from './Components/Hosting/Offer&Giftcard/ShowOffer';
 import * as React from 'react';
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -131,6 +134,9 @@ function App() {
           path="*"
           element={<Navigate to="/" replace />}
         />
+        <Route path='/createOffer' element={<Offer property={property} token={token}/>}/>
+        <Route path='/showOffers' element={<ShowOffer property={property} token={token}/>}/>
+        <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
      </Routes>
    </BrowserRouter>
   );

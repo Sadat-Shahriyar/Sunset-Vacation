@@ -75,6 +75,7 @@ export default function ShowCatagory(props) {
   }
  
   function handleSubmit(event) {
+    console.log(props.property);
     const requestOptions = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -85,6 +86,8 @@ export default function ShowCatagory(props) {
       .then(data => {
         console.log("updated successsfully")
       });
+      
+      console.log("request sent");
   }
   function changeConciseType(event) {
     props.property.conciseType = event.target.value;
@@ -126,7 +129,7 @@ export default function ShowCatagory(props) {
           <Toolbar>
             <Button onClick={useHome} color="inherit" sx={{ fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black" }} >Images</Button><IconButton><InsertPhotoOutlinedIcon sx={{ color: 'black' }} /></IconButton>
             <Button onClick={useCatagory} color="inherit" sx={{ fontFamily: "Lucida Handwriting", fontSize: "15px", color: "#C4036C" }} >Catagory</Button><IconButton><DetailsIcon sx={{ color: '#C4036C' }} /></IconButton>
-            <Button onClick={useLocation} color="inherit" sx={{ fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black" }} >Location</Button><IconButton><LocationOnIcon sx={{ color: 'black' }} /></IconButton>
+            {/* <Button onClick={useLocation} color="inherit" sx={{ fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black" }} >Location</Button><IconButton><LocationOnIcon sx={{ color: 'black' }} /></IconButton> */}
             <Button onClick={useFacility} color="inherit" sx={{ fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black" }} >Facilities & Safety Items</Button><IconButton><DesktopMacIcon sx={{ color: 'black' }} /></IconButton>
             <Button onClick={useDescription} color="inherit" sx={{ fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black" }} >Description,price & Cancellation policy</Button><IconButton><DescriptionIcon sx={{ color: 'black' }} /></IconButton>
             <Button onClick={useFaq} color="inherit" sx={{ fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black" }} >Faq</Button><IconButton><QuestionAnswerIcon sx={{ color: 'black' }} /></IconButton>
@@ -155,7 +158,7 @@ export default function ShowCatagory(props) {
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    placeholder={props.property.conciseType}
+                    defaultValue={props.property.conciseType}
                     onChange={changeConciseType}/> */}
                 <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>Type Of Hosting</p></label>
                 <FormControl sx={{ m: 1, minWidth: 120 }} disabled={!edit}>
@@ -165,9 +168,9 @@ export default function ShowCatagory(props) {
                       defaultvalue={props.property.entirePrivateOrShared}
                       onChange={changeEntirePrivateOrShared}
                   >
-                    <MenuItem value="Entire">Entire</MenuItem>
-                    <MenuItem value="Private">Private</MenuItem>
-                    <MenuItem value="Shared">Shared</MenuItem>
+                    <MenuItem value="An entire place">Entire</MenuItem>
+                    <MenuItem value="A private room">Private</MenuItem>
+                    <MenuItem value="A shared room">Shared</MenuItem>
                   </Select>
                 </FormControl>
                 <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Guests</p></label>
@@ -178,19 +181,19 @@ export default function ShowCatagory(props) {
                     onChange={changeNoOfGuests}/>
               </Grid>
               <Grid item xs={5.5}>
-                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Beds</p></label>
+                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of beds</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
                     placeholder={props.property.noOfBeds}
                     onChange={changeNoOfBeds}/>
-                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Bedrooms</p></label>
+                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of bedrooms</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
                     placeholder={props.property.noOfBedrooms}
                     onChange={changeNoOfBedrooms}/>
-                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of Bathrooms</p></label>
+                <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of bathrooms</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}

@@ -89,13 +89,17 @@ def getProperty(request,property_id):
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 @api_view(["PUT"])
 def updatePropertyDetails(request,property_id):
+    print("hello")
     propertyInfo=Property.objects.get(propertyID=property_id)
     serializer = PropertySerializer(propertyInfo,request.data)
     
     if serializer.is_valid():
         serializer.save()
+        print("hello2")
         return Response({"success": True}, status=status.HTTP_200_OK)
-    return Response({"error":"error 404"}, status=status.HTTP_404_NOT_FOUND)
+
+    print(serializer.errors)
+    return Response({"error":serializer.errors}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
@@ -308,9 +312,7 @@ def publishProperty(request):
         latitude=request.data['latitude'],
         longitude=request.data['longitude'],
         entirePrivateOrShared=request.data['entirePrivateOrshared'],
-        published=True,
-        checkInTime='2019-01-11',
-        checkOutTime='2019-01-11'
+        published=True
     )
     
     images = request.data['images'].strip().split(",")
@@ -433,7 +435,7 @@ def addNewFacility(request,property_id):
 
 @api_view(['POST'])
 def photoUpload(request):
-    print(request.data)
+    #print(request.data)
     photos_serializer = PropertyPhotoUploadHelperSerializer(data=request.data)
     if photos_serializer.is_valid():
         photos_serializer.save()
@@ -473,6 +475,29 @@ def getAllPropertiesForHomePage(request):
 
     return Response({"data": propertyData}, status=status.HTTP_200_OK)
 
+
+@api_view(['POST'])
+def updatePhotoUploadHelper(request):
+    print("hello")
+    print(request)
+    photos_serializer = PropertyPhotoUploadHelperSerializer(data=request.data)
+    if photos_serializer.is_valid():
+        photos_serializer.save()
+        # photos_serializer.data["image"] = "http://127.0.0.1" + photos_serializer.data["image"]
+        url = "http://127.0.0.1:8000" + photos_serializer.data["image"]
+        print("hello")
+        property = Property.objects.get(propertyID=int(request.data["property_id"]))
+        photo = PropertyPhotos(property_id=property, photo_url=url)
+        photo.save()
+        photos_serializer = PropertyPhotoSerializer(photo)
+        return Response({"uploaded_photo": photos_serializer.data, "success": True}, status=status.HTTP_201_CREATED)
+    else:
+        print('error', photos_serializer.errors)
+        return Response({"error": photos_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 # @api_view(["GET"])
 # @permission_classes([IsAuthenticated])
 # def getSafetyItemList(request):
@@ -500,5 +525,42 @@ def getAllPropertiesForHomePage(request):
 #                 return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 #         except Property.DoesNotExist:
 #             return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def insertOffer(request):
+    print(request.data)
+    propertyInfo=Property.objects.get(propertyID=request.data["property_id"]);
+    
+    offer=Offer.objects.create(
+        startDate=request.data["startDate"],
+        endDate=request.data["endDate"],
+        amount=float(request.data["amount"]),
+        propertyID=propertyInfo
+    )
+    
+    return Response({"data":"sent"}, status=status.HTTP_200_OK)
+    
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getOfferList(request,property_id):
+    try:
+        
+        property=Property.objects.get(propertyID=property_id)
+        
+        offer=Offer.objects.filter(propertyID_id=property)
+
+        offerSerializer =OfferSerializer(offer, many=True)
+        
+        return Response({"offers": offerSerializer.data}, status= status.HTTP_200_OK)
+        
+    except Offer.DoesNotExist:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+
+
 
 

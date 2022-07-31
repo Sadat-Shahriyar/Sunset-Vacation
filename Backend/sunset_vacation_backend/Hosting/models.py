@@ -3,6 +3,7 @@ from django.db import models
 from Authentication.models import User
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from datetime import datetime    
 
 # Create your models here.
 
@@ -40,12 +41,14 @@ class Property(models.Model):
     )
 
     checkInTime=models.DateTimeField(
-        default=None,
+        default=datetime.now,
+        blank=True,
         null=True
     )
 
     checkOutTime=models.DateTimeField(
-        default=None,
+        default=datetime.now,
+        blank=True,
         null=True
     )
     maxDaysRefund = models.IntegerField(
@@ -267,6 +270,8 @@ class PropertyPhotos(models.Model):
         blank=False,
         null=True
     )
+
+
 
 
 class PropertyPhotoUploadHelper(models.Model):
