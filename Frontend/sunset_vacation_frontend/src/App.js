@@ -22,6 +22,8 @@ import Editfacility from './Components/Hosting/ShowProperty/EditFacility';
 import Offer from './Components/Hosting/Offer&Giftcard/Offer';
 import OfferConfirmation from './Components/Hosting/Offer&Giftcard/OfferConfirmation';
 import ShowOffer from './Components/Hosting/Offer&Giftcard/ShowOffer';
+import Reservation from "./Components/Hosting/ManagementDashboard/Reservations";
+import ShowReservation from "./Components/Hosting/ManagementDashboard/ShowReservation";
 import * as React from 'react';
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -32,6 +34,7 @@ export const axios_api = axios.create({
 
 function App() {
   const [property, setProperty] = useState({});
+  const [booking, setBooking] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({})
   const [token, setToken] = useState("")
@@ -96,7 +99,8 @@ function App() {
         <Route path='/signup' element={<Signup isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
-  
+        <Route path='/reservation' element={<Reservation token={token} setBooking={(booking)=>setBooking(booking)}/>}/>
+         <Route path='/showReservation' element={<ShowReservation booking={booking} setBooking={(booking)=>setBooking(booking)} token={token}/>}/>
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
         <Route path='/showPropertyDetails' element={<ShowPropertyDetails property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>
