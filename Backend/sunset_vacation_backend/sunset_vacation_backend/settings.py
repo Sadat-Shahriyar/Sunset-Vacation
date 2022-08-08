@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'Booking',
     'Messaging',
     'QAForum',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'django.contrib.postgres'
 ]
 
 REST_FRAMEWORK = {
@@ -95,14 +96,25 @@ WSGI_APPLICATION = 'sunset_vacation_backend.wsgi.application'
 # }
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'sunset-vacations',
+#         'USER': 'root',
+#         'PASSWORD': 'root',
+#         'HOST': 'localhost',
+#         'PORT': '3306'
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sunset-vacations',
-        'USER': 'root',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'sunset_vacation', 
+        'USER': 'postgres', 
         'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '3306'
+        'HOST': '127.0.0.1', 
+        'PORT': '5432',
     }
 }
 

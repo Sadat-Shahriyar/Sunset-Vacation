@@ -105,9 +105,7 @@ export default function ShowFacility(props) {
         alert(err.message);
       })
   }, [])
-  function changeDescription(event) {
-    props.property.description = event.target.value;
-  }
+  
   const useLocation = (event) => {
     navigate("/showPropertyDetails/location");
   }

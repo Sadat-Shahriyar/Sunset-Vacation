@@ -30,5 +30,7 @@ urlpatterns = [
     path('getallpropertiesforhomepage/', views.getAllPropertiesForHomePage, name='getallproperties'),
     # path('getsafetyitems/', views.getSafetyItemList, name="getsafetyitemlist"),
     # path('propertylist/', views.getPropertyDetails),
-    
+    path('recommandations/', views.Recommendations),
+    path('getSearchResult/<str:searchword>',views.getSearchResult),
+    path('getCatagoryForSearch/',views.getCatagoryForSearch),
 ]

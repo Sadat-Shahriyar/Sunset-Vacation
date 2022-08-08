@@ -9,26 +9,15 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Navigate, useNavigate } from 'react-router-dom';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import PhoneIcon from '@mui/icons-material/Phone';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonPinIcon from '@mui/icons-material/PersonPin';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import RestoreIcon from '@mui/icons-material/Restore';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import DateRangeIcon from '@mui/icons-material/DateRange';
 import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import { axios_api } from '../../App';
+import SearchNav from './SearchNav';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -79,11 +68,11 @@ function ViewAllProperties(props){
 
   let properties = propertyData.map((property) => {
     return(
-      <Grid item xs={3} key={property.propertyID}>
+      <Grid item xs={2.5} key={property.propertyID}>
         <Card sx={{ maxWidth: 345, maxHeight:500, m:3}}>
         <CardMedia
           component="img"
-          height="140"
+          height="250"
           image={property.images[0].photo_url}
           alt={property.title}
         />
@@ -108,7 +97,7 @@ function ViewAllProperties(props){
 }
 
 
-export default function Homepage(props) {
+export default function SearchPage(props) {
 
   const [properties, setProperties] = React.useState([])
   const [value, setValue] = React.useState(0);
@@ -124,7 +113,7 @@ export default function Homepage(props) {
         let res = await axios_api.get("hosting/getallpropertiesforhomepage/");
 
         if(res.status === 200){
-          // setProperties(res.data);
+          setProperties(res.data);
         }
         else{
           alert(res.status+": " + res.statusText);
@@ -134,7 +123,7 @@ export default function Homepage(props) {
         alert(err);
       }
     }
-
+    
     fethProperties();
   }, [])
   const navigate = useNavigate();
@@ -239,111 +228,104 @@ export default function Homepage(props) {
       </MenuItem>
     </Menu>
   );
-
+  function showNavBar(props){
+    return(
+      <Box>
+        <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
+            <Toolbar>
+            
+            
+         
+        <IconButton>
+          < WbTwilightIcon sx={{color: 'white'}} />
+        </IconButton>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ display: { xs: 'none', sm: 'block' } }}
+              >
+                <p style={{"fontFamily": "Jokerman","fontSize":"25px"}}>SUNSET VACATION</p>
+               
+              </Typography>
+              
+        
+            
+              
+              <Box sx={{ flexGrow: 1 }} />
+    
+              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                {/* <IconButton size="large" aria-label="show 6 new mails" color="inherit">
+                  <Badge badgeContent={6} color="error">
+                    <MailIcon />
+                    
+                   
+                  </Badge>
+                </IconButton> */}
+                <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{{navigate('/');}}}>Home</Button>
+                          <Button variant="text" sx={{fontFamily:"Jokerman",color: "black"}} onClick={()=>{{navigate('/search');}}}>search</Button>
+                          
+    
+                <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>
+                {/* <IconButton
+                  size="large"
+                  aria-label="show 19 new notifications"
+                  color="inherit"
+                  onClick={()=>{navigate("/login");}}
+                >
+                  <Badge badgeContent={19} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton> */}
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                  //onClick={()=>{navigate("/login");}}
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+              <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                <IconButton
+                  size="large"
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </Box>
+            </Toolbar>
+          </AppBar>
+      </Box>
+    )
+  }
+      function showProperties(props){
+        return(
+          <Box sx={{ flexGrow: 1 }}>
+          
+          {/* {renderMobileMenu}
+          {renderMenu} */}
+          <ViewAllProperties 
+            properties={properties}
+          />
+        </Box>
+        );
+      }
   
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
-        <Toolbar>
-          {/* <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton> */}
-           <Tabs value={value} onChange={handleChange} textColor="inherit" size="25px"
-        aria-label="icon tabs example">
-      <Tab icon={< WbTwilightIcon />} aria-label="phone" />
-      
-    </Tabs>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          >
-            <p style={{"fontFamily": "Jokerman","fontSize":"25px"}}>SUNSET VACATION</p>
-           
-          </Typography>
-          <Tabs  textColor='inherit' value={value} onChange={handleChange}  aria-label="icon label tabs example">
-            <Tab/>
-            <Tab/>
-            <Tab/>
-      <Tab icon={<DateRangeIcon />}  label="RECENTS" />
-      <Tab icon={<FavoriteIcon />} label="FAVORITES" />
-      <Tab icon={<PersonPinIcon />} label="NEARBY" />
-    </Tabs>
-    
-          {/* <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper >
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              
-            />
-          </Search> */}
-          
-          <Box sx={{ flexGrow: 1 }} />
-
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            {/* <IconButton size="large" aria-label="show 6 new mails" color="inherit">
-              <Badge badgeContent={6} color="error">
-                <MailIcon />
-                
-               
-              </Badge>
-            </IconButton> */}
-                      <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{{navigate('/search');}}}>search</Button>
-
-            <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>
-            {/* <IconButton
-              size="large"
-              aria-label="show 19 new notifications"
-              color="inherit"
-              onClick={()=>{navigate("/login");}}
-            >
-              <Badge badgeContent={19} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-              //onClick={()=>{navigate("/login");}}
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {/* {renderMobileMenu}
-      {renderMenu} */}
-      <ViewAllProperties 
-        properties={properties}
-      />
-    </Box>
+   <div>
+    {showNavBar(props)}
+     {SearchNav(props)} 
+    {showProperties(props)}
+   </div>
   );
 }
 

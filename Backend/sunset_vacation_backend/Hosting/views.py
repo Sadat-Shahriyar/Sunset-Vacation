@@ -10,7 +10,7 @@ from Authentication.models import *
 from Authentication.serializers import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-
+from django.contrib.postgres.search import  SearchQuery, SearchRank, SearchVector,TrigramSimilarity
 
 
 # Create your views here.
@@ -214,8 +214,8 @@ def getAddFacilityList(request,property_id):
         if not a[0] in facilities:
             safetyList.append(a)
 
-    if "What's new" not in guestFavList:
-        guestFavList.append(["What's new"],)
+    if "Whats new" not in guestFavList:
+        guestFavList.append(["Whats new"],)
     
     if amenities.exists() and guestsFavourite.exists() and safetyItems.exists():
         return Response({"amenities": amenityList,"guestsFavourite": guestFavList,"safetyItems":safetyList, "success": True}, status=status.HTTP_200_OK)
@@ -356,38 +356,40 @@ def publishProperty(request):
     # )
     
     amenityList = request.data['amenityList'].strip().split(",")
-
-    if(len(amenityList) >1):
+   
+    if(len(amenityList) >0):
         for amenity in amenityList:
             facility = Facility.objects.get(facility_name=amenity)
             PropertyFacilities.objects.create(
                 propertyID=newProperty,
                 facility_name=facility,
-                description='amenity'
+                description=''
             )
     
-    
+   
     guestFavs = request.data['guestFavs'].strip().split(",")
-    if(len(guestFavs) >1):
+    
+    if(len(guestFavs) >0):
         print("print:",len(guestFavs))
         for fav in guestFavs:
-            facility = Facility.objects.get(facility_name=amenity)
+            facility = Facility.objects.get(facility_name=fav)
             PropertyFacilities.objects.create(
                 propertyID=newProperty,
                 facility_name=facility,
-                description='Guests favourite'
+                description=''
             )
    
     
 
     safetyItems = request.data['safetyItems'].strip().split(",")
-    if(len(safetyItems) >1 ):
+    
+    if(len(safetyItems) >0 ):
         for item in safetyItems:
             facility = Facility.objects.get(facility_name=item)
             PropertyFacilities.objects.create(
                 propertyID=newProperty,
                 facility_name=facility,
-                description='Safety item'
+                description=''
             )
 
     return Response({"property": PropertySerializer(newProperty).data, "success": True}, status=status.HTTP_200_OK)
@@ -559,7 +561,85 @@ def getOfferList(request,property_id):
 
 
 
+@api_view(["GET"])
+def Recommendations(request):
+    facilities=['gym','pool']
+    vector=(
+        TrigramSimilarity('description',searchword)
+        +TrigramSimilarity('facility_name',searchword)
+    )
+    #s=PropertyFacilities.objects.filter(description__contains='Available')
+    #s=PropertyFacilities.objects.filter(description__unaccent__icontains='Available')
+    #s=PropertyFacilities.objects.annotate(search=SearchVector('facility_name','description'),).filter(search='toast*')
+    s=PropertyFacilities.objects.annotate( similarity=vector).filter(similarity__gt=0.3).order_by('-similarity')
+    
+    p =PropertyFacilitiesSerializer(s, many=True)
+    print(p.data)
+    
 
+    return Response({"data": "data"},status=status.HTTP_200_OK)
+
+def getCatagoryBasedFacilityForSearch(keyword):
+    catagory= Facility.objects.filter(subcatagory=keyword).values_list("facility_name")
+    
+    facilities=''
+    
+    for tuple in catagory:
+        for f in tuple:
+            s=f.split(' ')
+            if not facilities == '':
+                facilities=facilities+' '+s[0]
+            else:
+                facilities=s[0]
+    
+    dict={"catagory":keyword,"facilities": facilities}
+    return dict
+
+@api_view(["GET"])
+def getCatagoryForSearch(request):
+    catagoryBasedFacility=[]
+    dict=getCatagoryBasedFacilityForSearch("Outdoor")
+    catagoryBasedFacility.append(dict)
+    dict=getCatagoryBasedFacilityForSearch("Home safety")
+    catagoryBasedFacility.append(dict)
+    dict=getCatagoryBasedFacilityForSearch("Bathroom")
+    catagoryBasedFacility.append(dict)
+    dict=getCatagoryBasedFacilityForSearch("Bedroom & Laundry")
+    catagoryBasedFacility.append(dict)
+    dict=getCatagoryBasedFacilityForSearch("Kitchen and dining")
+    catagoryBasedFacility.append(dict)
+    
+    print(catagoryBasedFacility)
+
+
+    return Response({"catagoryBasedFacility":catagoryBasedFacility},status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def getSearchResult(request,searchword):
+    vector=(
+        TrigramSimilarity('description',searchword)
+        +TrigramSimilarity('facility_name',searchword)
+    )
+    s=PropertyFacilities.objects.annotate( similarity=vector).filter(similarity__gt=0.1).order_by('-similarity')
+    
+    p =PropertyFacilitiesSerializer(s, many=True)
+    allRelatedProperties=[]
+    for x in p.data:
+        properties=Property.objects.filter(propertyID=x["propertyID"])
+        propertySerializer = PropertySerializer(properties, many=True)
+    
+        for property in propertySerializer.data:
+            photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
+            photoSerializer = PropertyPhotoSerializer(photos, many=True)
+            property['images'] = photoSerializer.data
+            if property not in allRelatedProperties:
+                allRelatedProperties.append(property)
+                print(property['title'])
+        
+           
+    
+    return Response({"properties":allRelatedProperties},status=status.HTTP_200_OK)
+    
 
 
 

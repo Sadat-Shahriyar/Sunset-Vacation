@@ -22,6 +22,9 @@ import Editfacility from './Components/Hosting/ShowProperty/EditFacility';
 import Offer from './Components/Hosting/Offer&Giftcard/Offer';
 import OfferConfirmation from './Components/Hosting/Offer&Giftcard/OfferConfirmation';
 import ShowOffer from './Components/Hosting/Offer&Giftcard/ShowOffer';
+import SearchPage from './Components/Homepage/SearchPage';
+import SearchResult from './Components/Homepage/SearchResult';
+
 import * as React from 'react';
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -36,6 +39,7 @@ function App() {
   const [user, setUser] = useState({})
   const [token, setToken] = useState("")
   const [selectedProperty, setSelectedProperty] = useState('');
+  const [selectedFac,setSelectedFac]=useState('');
   var [flags,setFlags]=useState("");
   const [selectedAmenityList, setSelectedAmenityList] =useState([]);
     const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
@@ -91,7 +95,7 @@ function App() {
   return (
    <BrowserRouter>
      <Routes>
-        <Route path='/' element={<Homepage helloWorld={(value)=> {setProperty(value)}} hiWorld={property}/>} />
+        <Route path='/' element={<Homepage />} />
         <Route path='/login' element={<Login isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/signup' element={<Signup isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
@@ -137,6 +141,9 @@ function App() {
         <Route path='/createOffer' element={<Offer property={property} token={token}/>}/>
         <Route path='/showOffers' element={<ShowOffer property={property} token={token}/>}/>
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
+        <Route path='/search' element={<SearchPage  setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} token={token}/>}/>
+        <Route path='/searchResult' element={<SearchResult selectedFac={selectedFac}  setflags={(val)=>{setFlags(val)}}  setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
+       
      </Routes>
    </BrowserRouter>
   );
