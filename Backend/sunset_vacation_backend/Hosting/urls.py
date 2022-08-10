@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     #path('<int:user_id>/', views.getProperties),
+    path('booking/<int:booking_id>', views.getBookingId),
+    path('booking/', views.getBooking),
     path('propertylist/',views.getProperties),
     path('facilitylist/',views.getFacilities),
     path('insertOffer/',views.insertOffer),
@@ -16,7 +18,7 @@ urlpatterns = [
     path('deleteFaq/<int:faq_id>',views.deleteFaq),
     path('getProperty/<int:property_id>',views.getProperty),
     path('getFaqs/<int:property_id>',views.getFaqs),
-    path('getOfferList/<int:property_id>',views.getOfferList),
+    path('getOfferList/',views.getOfferList),
     path('insertFaq/<int:property_id>',views.insertFaq),
     path('getPropertyFacilities/<int:property_id>',views.getPropertyFacilities),
     path('updatePropertyFacility/<int:fac_id>',views.updatePropertyFacility),
@@ -33,4 +35,5 @@ urlpatterns = [
     path('recommandations/', views.Recommendations),
     path('getSearchResult/<str:searchword>',views.getSearchResult),
     path('getCatagoryForSearch/',views.getCatagoryForSearch),
+    path('getPropertyCatagory/',views.getPropertyCatagory),
 ]

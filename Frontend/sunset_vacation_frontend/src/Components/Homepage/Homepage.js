@@ -9,7 +9,6 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
@@ -18,16 +17,16 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import PhoneIcon from '@mui/icons-material/Phone';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonPinIcon from '@mui/icons-material/PersonPin';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import TextField from '@mui/material/TextField';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import RestoreIcon from '@mui/icons-material/Restore';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import DateRangeIcon from '@mui/icons-material/DateRange';
-import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import { Button, Card, CardContent, CardMedia, Grid, Paper } from '@mui/material';
+import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import MainSection from './MainSection';
 import { axios_api } from '../../App';
 
 const Search = styled('div')(({ theme }) => ({
@@ -66,6 +65,46 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     width: '100%',
     [theme.breakpoints.up('md')]: {
       width: '20ch',
+    },
+  },
+}));
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+    boxShadow:
+      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+    '& .MuiMenu-list': {
+      padding: '4px 0',
+    },
+    '& .MuiMenuItem-root': {
+      '& .MuiSvgIcon-root': {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      '&:active': {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity,
+        ),
+      },
     },
   },
 }));
@@ -139,6 +178,37 @@ export default function Homepage(props) {
   }, [])
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl1, setAnchorEl1] = React.useState(null);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [anchorEl3, setAnchorEl3] = React.useState(null);
+  
+  const open1 = Boolean(anchorEl1);
+  const open2 = Boolean(anchorEl2);
+  const open3 = Boolean(anchorEl3);
+  const handleClick1 = (event) => {    
+      setAnchorEl1(event.currentTarget);   
+  };
+  const handleClose1 = () => {
+    setAnchorEl1(null);
+  };
+  const handleClick2 = (event) => {    
+    setAnchorEl2(event.currentTarget);   
+};
+const handleClose2 = () => {
+  setAnchorEl2(null);
+};
+const handleClick3 = (event) => {    
+  setAnchorEl3(event.currentTarget);   
+};
+const handleClose3 = () => {
+setAnchorEl3(null);
+};
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  
+  
+  
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
@@ -151,6 +221,7 @@ export default function Homepage(props) {
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
+
   };
 
   const handleMobileMenuClose = () => {
@@ -166,6 +237,8 @@ export default function Homepage(props) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  
+ 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -239,11 +312,14 @@ export default function Homepage(props) {
       </MenuItem>
     </Menu>
   );
-
+ 
   
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
+      <AppBar position="static" 
+     // color='inherit'
+     sx={{bgcolor: "#C4036C"}}
+      >
         <Toolbar>
           {/* <IconButton
             size="large"
@@ -254,7 +330,7 @@ export default function Homepage(props) {
           >
             <MenuIcon />
           </IconButton> */}
-           <Tabs value={value} onChange={handleChange} textColor="inherit" size="25px"
+           <Tabs  textColor="inherit" size="25px"
         aria-label="icon tabs example">
       <Tab icon={< WbTwilightIcon />} aria-label="phone" />
       
@@ -268,14 +344,7 @@ export default function Homepage(props) {
             <p style={{"fontFamily": "Jokerman","fontSize":"25px"}}>SUNSET VACATION</p>
            
           </Typography>
-          <Tabs  textColor='inherit' value={value} onChange={handleChange}  aria-label="icon label tabs example">
-            <Tab/>
-            <Tab/>
-            <Tab/>
-      <Tab icon={<DateRangeIcon />}  label="RECENTS" />
-      <Tab icon={<FavoriteIcon />} label="FAVORITES" />
-      <Tab icon={<PersonPinIcon />} label="NEARBY" />
-    </Tabs>
+          
     
           {/* <Search>
             <SearchIconWrapper>
@@ -287,6 +356,160 @@ export default function Homepage(props) {
               
             />
           </Search> */}
+          <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        '& > *': {
+          m: 1,
+          ml: 25
+        },
+      }}
+    >
+      
+      <ButtonGroup variant="text"  sx={{borderRadius: 10,bgcolor: "white",padding:1}} >
+      <div>
+      <Button
+        id="demo-customized-button"
+        aria-controls={open1 ? 'demo-customized-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open1 ? 'true' : undefined}
+        //variant="inherit"
+        disableElevation
+        onClick={handleClick1}
+        sx={{color: "black"}}
+      >
+        Anywhere
+      </Button>
+      <StyledMenu
+        id="demo-customized-menu"
+        MenuListProps={{
+          'aria-labelledby': 'demo-customized-button',
+        }}
+        anchorEl={anchorEl1}
+        open={open1}
+        onClose={handleClose1}
+      >
+        <MenuItem onClick={handleClose1} disableRipple>
+          <SearchIcon />
+          Edit
+        </MenuItem>
+        
+      </StyledMenu>
+      </div>
+      <div>
+      <Button
+        id="demo-customized-button"
+        aria-controls={open2 ? 'demo-customized-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open2 ? 'true' : undefined}
+        //variant="inherit"
+        disableElevation
+        onClick={handleClick2}
+        sx={{color: "black"}}
+      >
+        Anyweek
+      </Button>
+      <StyledMenu
+        id="demo-customized-menu"
+        MenuListProps={{
+          'aria-labelledby': 'demo-customized-button',
+        }}
+        anchorEl={anchorEl2}
+        open={open2}
+        onClose={handleClose2}
+      >
+        <MenuItem >
+       
+       <LocalizationProvider dateAdapter={AdapterDateFns}>
+       <Grid container spacing={3}>
+        <Grid item={6}>
+        <DesktopDatePicker
+          label="start date"
+          inputFormat="MM/dd/yyyy"
+          //value={value}
+          //onChange={handleChange}
+          renderInput={(params) => <TextField {...params} />}
+        />
+        
+        </Grid>
+        <Grid item={6}>
+        <DesktopDatePicker
+          label="end date"
+          inputFormat="MM/dd/yyyy"
+          //value={value}
+          //onChange={handleChange}
+          renderInput={(params) => <TextField {...params} />}
+        />
+        
+        </Grid>
+       </Grid>
+       
+        </LocalizationProvider>
+       
+        </MenuItem>
+        
+      </StyledMenu>
+      </div>
+      <div>
+      <Button
+        id="demo-customized-button"
+        aria-controls={open3 ? 'demo-customized-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open3 ? 'true' : undefined}
+        //variant="inherit"
+        disableElevation
+        onClick={handleClick3}
+        sx={{color: "black"}}
+      >
+        Add guests
+      </Button>
+      <StyledMenu
+        id="demo-customized-menu"
+        MenuListProps={{
+          'aria-labelledby': 'demo-customized-button',
+        }}
+         anchorEl={anchorEl3}
+         open={open3}
+         onClose={handleClose3}
+      >
+        <MenuItem 
+        //onClick={handleClose3} 
+        disableRipple>
+      
+       
+              <Grid container gridAutoColumns={12} spacing={2} >
+                
+                <Grid item xs={4}>
+                  <IconButton color="primary" sx={{mr:5}}  >
+                    <RemoveCircleOutlineRoundedIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={4}>
+                  <Typography variant='h6' >0</Typography>
+                </Grid>
+                <Grid item xs={4}>
+                  <IconButton color="primary"  >
+                    <AddCircleOutlineRoundedIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+         
+       
+    
+        </MenuItem>
+        
+      </StyledMenu>
+      </div>
+      <div>
+      <Button>
+        <SearchIcon onClick={()=>{navigate('/search')}}/>
+      </Button>
+      
+      </div>
+      </ButtonGroup>
+    </Box>
           
           <Box sx={{ flexGrow: 1 }} />
 
@@ -338,6 +561,7 @@ export default function Homepage(props) {
           </Box>
         </Toolbar>
       </AppBar>
+      <MainSection/>
       {/* {renderMobileMenu}
       {renderMenu} */}
       <ViewAllProperties 

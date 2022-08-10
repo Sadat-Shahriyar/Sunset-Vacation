@@ -23,7 +23,10 @@ import TvIcon from '@mui/icons-material/Tv';
 import WifiIcon from '@mui/icons-material/Wifi';
 import FoodBankIcon from '@mui/icons-material/FoodBank';
 import DryCleaningIcon from '@mui/icons-material/DryCleaning';
-
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import TuneIcon from '@mui/icons-material/Tune';
+import Filter from './Filter';
 export default function SearchNav(props){
 
   let navigate = useNavigate();
@@ -33,8 +36,10 @@ export default function SearchNav(props){
   const [bathroom,setBathroom]=React.useState('');
   const [laundry,setLaundry]=React.useState('');
   const [kitchen,setKitchen]=React.useState('');
+  
 
   React.useEffect(() => {
+  
     fetch(`http://localhost:8000/hosting/getCatagoryForSearch/` )
       .then((response) => {
         if (response.ok) {
@@ -77,10 +82,21 @@ export default function SearchNav(props){
     fac=Facilities.find(element => element["catagory"] === 'Kitchen and dining');
     setKitchen(fac.facilities);
    }
+   function changeDisplay(){
+    if(props.display === 'none'){
+      props.setDisplay('block') ;console.log("check: ",props.display);
+    props.setflags('filter');
+    navigate('/showProperty/Redirect');
+    }else{
+      props.setDisplay('none') ;console.log("check: ",props.display);
+    props.setflags('none');
+    }
+   }
 
   return (
     
-      <Box
+     <div>
+       <Box
   display="flex"
   justifyContent="center"
   alignItems="center"
@@ -88,7 +104,9 @@ export default function SearchNav(props){
   mt="5px"
 >
   
-<Tabs variant="scrollable"
+<Grid container columns={16}>
+  <Grid item xs={14}>
+  <Tabs variant="scrollable"
   scrollButtons={true}  aria-label="icon tabs example">
       <Tab icon={<PoolIcon />} sx={{fontFamily: 'Lucida Handwriting'}} onClick={()=>{handleClick("pool")}}  label="Pool"  />
       <Tab icon={<SoupKitchenIcon/>} sx={{fontFamily: 'Lucida Handwriting'}}  onClick={()=>{handleClick("kitchen")}}  label="Kitchen"/>
@@ -112,7 +130,26 @@ export default function SearchNav(props){
       <Tab icon={<DryCleaningIcon/>} sx={{fontFamily: 'Lucida Handwriting'}}  onClick={()=>{handleClick(laundry)}}  label="Laundry"/>
 
     </Tabs>
+  </Grid>
+  <Grid item xs={2}>
+  <Button variant="outlined" color='inherit' sx={{fontFamily: 'Lucida Handwriting',m:2,bgcolor: "grey"}} endIcon={<TuneIcon />} onClick={changeDisplay}>
+        Filter
+      </Button>
+  </Grid>
+</Grid>
+
       </Box>
+      <Box
+  display="flex"
+  justifyContent="center"
+  alignItems="center"
+ // minHeight="100vh"
+  mt="10px"
+>
+  <Filter display={props.display}/>
+  </Box>
+     </div>
+
     
   )
 }

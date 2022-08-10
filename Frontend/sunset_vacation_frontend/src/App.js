@@ -25,6 +25,10 @@ import ShowOffer from './Components/Hosting/Offer&Giftcard/ShowOffer';
 import SearchPage from './Components/Homepage/SearchPage';
 import SearchResult from './Components/Homepage/SearchResult';
 
+
+import Reservation from "./Components/Hosting/ManagementDashboard/Reservations";
+import ShowReservation from "./Components/Hosting/ManagementDashboard/ShowReservation";
+
 import * as React from 'react';
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -35,11 +39,13 @@ export const axios_api = axios.create({
 
 function App() {
   const [property, setProperty] = useState({});
+  const [booking, setBooking] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({})
   const [token, setToken] = useState("")
   const [selectedProperty, setSelectedProperty] = useState('');
   const [selectedFac,setSelectedFac]=useState('');
+  const [display,setDisplay]=useState('none');
   var [flags,setFlags]=useState("");
   const [selectedAmenityList, setSelectedAmenityList] =useState([]);
     const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
@@ -100,9 +106,10 @@ function App() {
         <Route path='/signup' element={<Signup isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
-  
+        <Route path='/reservation' element={<Reservation token={token} setBooking={(booking)=>setBooking(booking)}/>}/>
+         <Route path='/showReservation' element={<ShowReservation booking={booking} setBooking={(booking)=>setBooking(booking)} token={token}/>}/>
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
-        <Route path='/showPropertyDetails' element={<ShowPropertyDetails property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
+        <Route path='/showPropertyDetails' element={<ShowPropertyDetails token = {token} property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>
         <Route path='/showPropertyDetails/description' element={<ShowDescription property={property}/>}/>
         <Route path='/showPropertyDetails/faq' element={<ShowFaq property={property} setflags={(val)=>{setFlags(val)}}  token={token}/>}/>
@@ -141,9 +148,9 @@ function App() {
         <Route path='/createOffer' element={<Offer property={property} token={token}/>}/>
         <Route path='/showOffers' element={<ShowOffer property={property} token={token}/>}/>
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
-        <Route path='/search' element={<SearchPage  setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} token={token}/>}/>
+        <Route path='/search' element={<SearchPage  setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} token={token}/>}/>
         <Route path='/searchResult' element={<SearchResult selectedFac={selectedFac}  setflags={(val)=>{setFlags(val)}}  setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
-       
+        
      </Routes>
    </BrowserRouter>
   );

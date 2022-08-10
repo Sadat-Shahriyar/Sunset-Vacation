@@ -316,12 +316,13 @@ export default function SearchPage(props) {
           <ViewAllProperties 
             properties={properties}
           />
+          
         </Box>
         );
       }
   
   return (
-   <div>
+   <div >
     {showNavBar(props)}
      {SearchNav(props)} 
     {showProperties(props)}
