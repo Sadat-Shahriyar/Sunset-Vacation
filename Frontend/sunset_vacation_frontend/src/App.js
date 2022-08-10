@@ -20,11 +20,10 @@ import Redirect from './Components/Hosting/ShowProperty/Redirect';
 import AddFacilityDescription from './Components/Hosting/ShowProperty/AddFacilityDescription';
 import Editfacility from './Components/Hosting/ShowProperty/EditFacility';
 import * as React from 'react';
+import PropertyDetailsForBooking from './Components/Booking/PropertyDetails';
 export const axios_api = axios.create({
   baseURL: BASE_URL
 })
-
-
 
 
 function App() {
@@ -35,23 +34,24 @@ function App() {
   const [selectedProperty, setSelectedProperty] = useState('');
   var [flags,setFlags]=useState("");
   const [selectedAmenityList, setSelectedAmenityList] =useState([]);
-    const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
-    const [selectedSafetyItemList, setSelectedSafetyItemList] = useState([]);
-    const [selectedFacility,setSelectedFacility]=useState(0);
-  
-    function handleSetSelectedAmenityList (val)  {
-      let amenities = [...selectedAmenityList];
-      let idx = amenities.indexOf(val);
-      
-      if(idx === -1){
-       
-          amenities.push(val);
-          setSelectedAmenityList(amenities);
-      }
-      else{
-          amenities.splice(idx, 1);
-          setSelectedAmenityList(amenities);
-      }
+  const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
+  const [selectedSafetyItemList, setSelectedSafetyItemList] = useState([]);
+  const [selectedFacility,setSelectedFacility]=useState(0);
+  const [selectedPropertyForDetails, setSelectedPropertyForDetails] = useState(-1);
+
+  function handleSetSelectedAmenityList (val)  {
+    let amenities = [...selectedAmenityList];
+    let idx = amenities.indexOf(val);
+    
+    if(idx === -1){
+    
+        amenities.push(val);
+        setSelectedAmenityList(amenities);
+    }
+    else{
+        amenities.splice(idx, 1);
+        setSelectedAmenityList(amenities);
+    }
   }
   
   function handleSetSelectedGuestsFavouriteItemList  (val) {
@@ -88,12 +88,14 @@ function App() {
   return (
    <BrowserRouter>
      <Routes>
-        <Route path='/' element={<Homepage helloWorld={(value)=> {setProperty(value)}} hiWorld={property}/>} />
+        <Route path='/' element={<Homepage helloWorld={(value)=> {setProperty(value)}} hiWorld={property} setSelectedPropertyForDetails={(val) => {setSelectedPropertyForDetails(val)}}/>} />
         <Route path='/login' element={<Login isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/signup' element={<Signup isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
-  
+
+        <Route path='/booking/property/details' element={<PropertyDetailsForBooking isLoggedin = {loggedIn} token = {token} selectedPropertyForDetails={selectedPropertyForDetails}/>} />
+
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
         <Route path='/showPropertyDetails' element={<ShowPropertyDetails property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>

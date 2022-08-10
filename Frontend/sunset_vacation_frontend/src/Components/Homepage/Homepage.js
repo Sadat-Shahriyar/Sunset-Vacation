@@ -27,7 +27,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import RestoreIcon from '@mui/icons-material/Restore';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DateRangeIcon from '@mui/icons-material/DateRange';
-import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid } from '@mui/material';
 import { axios_api } from '../../App';
 
 const Search = styled('div')(({ theme }) => ({
@@ -77,6 +77,11 @@ function ViewAllProperties(props){
   if(props.properties.data != undefined)
     propertyData = props.properties.data;
 
+  const goToDetailsPage = (id) => {
+    props.setSelectedPropertyForDetails(id);
+    props.navigate("/booking/property/details");
+  }
+
   let properties = propertyData.map((property) => {
     return(
       <Grid item xs={3} key={property.propertyID}>
@@ -95,6 +100,9 @@ function ViewAllProperties(props){
             {property.description}
           </Typography>
         </CardContent>
+        <CardActions>
+          <Button size="large" onClick={() => {goToDetailsPage(property.propertyID)}}>View Details</Button>
+        </CardActions>
         </Card>
       </Grid>
     );
@@ -341,6 +349,8 @@ export default function Homepage(props) {
       {renderMenu} */}
       <ViewAllProperties 
         properties={properties}
+        setSelectedPropertyForDetails = {props.setSelectedPropertyForDetails}
+        navigate = {(val) => {navigate(val)}}
       />
     </Box>
   );
