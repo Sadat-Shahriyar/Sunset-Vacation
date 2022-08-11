@@ -1,0 +1,86 @@
+image{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index:-1;
+}
+.main-container{
+    --background : url('./homePageImages/img11.jpg') center center/cover no-repeat;
+    margin: 20px;
+    height: 90vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: inset 0 0 0 1000px rgba (0,0,0,0.2);
+    object-fit: contain;
+    justify-content: center;
+    animation-name: example;
+    animation-duration: 20s;
+   animation-iteration-count: infinite;
+   color: white;
+   
+}
+@keyframes example{
+    0% {background: url('./homePageImages/img11.jpg') center center/cover no-repeat;width: 100%;}
+    25% {background: url('./homePageImages/img12.jpg')center center/cover no-repeat;width: 100%;}
+    50% {background: url('./homePageImages/img13.jpg')center center/cover no-repeat;width: 100%;}
+    75% {background: url('./homePageImages/img14.jpg') center center/cover no-repeat;width: 100%;}
+    100% {background: url('./homePageImages/img15.jpg')center center/cover no-repeat;width: 100%;}
+}
+.main-container > h1 {
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-top: 180px;
+    font-size: 80px;
+}
+.main-container >p {
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 30px;
+}
+.main-btns{
+    margin-top: 2px;
+}
+.main-btns > .btns {
+    margin-top: 2px;
+    font-size: 25px;
+    border: 3px solid;
+    border-radius: 40px;
+    background: transparent;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: white;
+}
+@media screen and (max-width:960px) {
+    .main-container > h1 {
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        margin-top: -40px;
+        font-size: 70px;
+    }
+    
+}
+@media screen and (max-width:768px) {
+    .main-container > h1 {
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        margin-top: -70px;
+        font-size: 70px;
+    }
+    
+}
+#overlay {
+    position: absolute; /* Sit on top of the page content */
+    /*display: none;/* Hidden by default */
+    width: 60%; /* Full width (cover the whole page) */
+    /*height: 100%; /* Full height (cover the whole page) */
+    height: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* bottom: 0; */
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px;
+    /* overflow: scroll; */
+    /*background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+  }

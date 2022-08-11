@@ -13,6 +13,10 @@ export default function Redirect(props){
         navigate('/showPropertyDetails/faq');
        }else if(flag === "propertylist"){
         navigate('/showProperties');
+       }else if(flag === "search"){
+        navigate('/searchResult');
+       }else if(flag === "filter"){
+        navigate('/search');
        }
       },[])
     return(

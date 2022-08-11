@@ -1,0 +1,6 @@
+npm install @mui/x-date-pickers
+npm install date-fns
+
+add 'django.contrib.postgres' in settings.py INSTALLED_APPS
+
+in views.py --> from django.contrib.postgres.search import SearchVector

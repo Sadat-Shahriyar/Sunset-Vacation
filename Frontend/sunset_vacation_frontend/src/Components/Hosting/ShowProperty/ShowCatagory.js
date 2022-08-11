@@ -165,7 +165,7 @@ export default function ShowCatagory(props) {
                   <Select
                       labelId="demo-simple-select-disabled-label"
                       id="demo-simple-select-disabled"
-                      defaultValue={props.property.entirePrivateOrShared}
+                      defaultvalue={props.property.entirePrivateOrShared}
                       onChange={changeEntirePrivateOrShared}
                   >
                     <MenuItem value="An entire place">Entire</MenuItem>
@@ -177,7 +177,7 @@ export default function ShowCatagory(props) {
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.noOfGuests}
+                   placeholder={props.property.noOfGuests}
                     onChange={changeNoOfGuests}/>
               </Grid>
               <Grid item xs={5.5}>
@@ -185,19 +185,19 @@ export default function ShowCatagory(props) {
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.noOfBeds}
+                    placeholder={props.property.noOfBeds}
                     onChange={changeNoOfBeds}/>
                 <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of bedrooms</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.noOfBedrooms}
+                    placeholder={props.property.noOfBedrooms}
                     onChange={changeNoOfBedrooms}/>
                 <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "12px", "color": "black" }}>No of bathrooms</p></label>
                 <TextField
                     id="outlined-disabled"
                     disabled={!edit}
-                    defaultValue={props.property.noOfBathrooms}
+                    placeholder={props.property.noOfBathrooms}
                     onChange={changeNoOfBathrooms}/>
               </Grid>
             </Grid>

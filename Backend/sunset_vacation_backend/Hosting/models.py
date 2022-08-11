@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from datetime import datetime    
 
+
 # Create your models here.
 
 
@@ -182,6 +183,7 @@ class Facility(models.Model):
         null=True
     )
 class PropertyFacilities(models.Model):
+   
     propertyID=models.ForeignKey(Property,on_delete=models.CASCADE)
     facility_name=models.ForeignKey(Facility,on_delete=models.CASCADE)
     description=models.CharField(
@@ -270,6 +272,8 @@ class PropertyPhotos(models.Model):
         blank=False,
         null=True
     )
+
+
 
 
 class PropertyPhotoUploadHelper(models.Model):
