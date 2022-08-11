@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { axios_api } from '../../App';
 import CommonNavbar from './Navbar';
 import CircularIndeterminate from './CircularProgress';
-import { Grid, List, ListItem, ListItemButton, ListItemText, Paper, TextField, Typography } from '@mui/material';
+import { Card, CardContent, FormControl, Grid, List, ListItem, ListItemButton, ListItemText, Paper, TextField, Typography } from '@mui/material';
 
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -13,6 +13,23 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { useNavigate } from 'react-router-dom';
+import ShowNavBar from './ShowNavbar';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+
+import Stack from '@mui/material/Stack';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import AddCircleOutlineRounded from '@mui/icons-material/AddCircleOutlineRounded';
+import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const style = {
   position: 'absolute',
@@ -37,6 +54,319 @@ function srcset(image, width, height, rows = 1, cols = 1) {
     };
   }
 
+function ReservationCard(props){
+    console.log(props.token);
+    const checkInMinDate = new Date();
+    let today = new Date();
+    today.setDate(today.getDate() + 1);
+    let checkOutMiDate = new Date(today);
+    // console.log(props);
+
+    let guestsTextField;
+
+    if(props.adults === 1){
+        guestsTextField = props.adults + " Adult";
+    }
+    else{
+        guestsTextField = props.adults + " Adults";
+    }
+
+    if(props.children > 0){
+        if(props.children > 1){
+            guestsTextField = guestsTextField + ", " + props.children + " Children";
+        }
+        else{
+            guestsTextField = guestsTextField + ", " + props.children + " Child";
+        }
+        
+    }
+    if(props.infants > 0){
+        if(props.infants > 1){
+            guestsTextField = guestsTextField + ", " + props.infants + " Infants";
+        }
+        else{
+            guestsTextField = guestsTextField + ", " + props.infants + " Infant";
+        }
+    }
+
+    const setCheckInDate = (date) =>{
+        let checkIn = new Date(date);
+        let checkOut = new Date(props.checkOutDate);
+        if(checkOut.getDate() - checkIn.getDate() < 1){
+            alert("Check in date must be smaller than check out date");
+        }
+        else{
+            props.setCheckInDate(date);
+        }
+        
+    }
+
+    const setCheckOutDate = (date) =>{
+        let checkIn = new Date(props.checkInDate);
+        let checkOut = new Date(date);
+        if(checkOut.getDate() - checkIn.getDate() < 1){
+            alert("Check out date must be greater than check in date");
+        }
+        else{
+            props.setCheckOutDate(checkOut);
+        }
+        
+    }
+
+    const handleReseveButton = async() => {
+        try{
+            let response = await axios_api.get("users/verify/", 
+            {
+                headers: {
+                    'Authorization' : `Bearer ${props.token}`
+                }
+            })
+
+
+            if(props.isLoggedin && response.data.valid){
+                props.navigate('/booking/property/reserve');
+            }
+            else{
+                alert("Unauthorized");
+                props.setLoginRedirection('/booking/property/reserve');
+                props.navigate("/login");
+            }
+            
+        }
+        catch(error){
+            props.setUser({});
+            props.setToken("");
+            props.setLoggedIn(false);
+            
+            sessionStorage.setItem("user", {});
+            sessionStorage.setItem("token", "");
+            sessionStorage.setItem("loggedIn", false);
+
+
+            props.setLoginRedirection('/booking/property/reserve')
+            props.navigate("/login");
+        }
+    }
+
+    return(
+        <Card elevation={5} sx={{ ml:10, minWidth:400, maxWidth:400 }}>
+            <CardContent>
+            {/* <MonetizationOnIcon />
+                <Typography variant='h5' sx={{fontWeight:"bold" }} color="text.secondary" gutterBottom>
+                    {props.propertyDetails.property.perNightCost} per night 
+                </Typography> */}
+                <Button disableRipple variant="text" color='inherit'  startIcon={<AttachMoneyIcon sx={{fontSize:"large"}} />} sx={{fontWeight:"bold", fontSize:18, mb:4 }}> {props.propertyDetails.property.perNightCost} per night </Button>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Stack spacing={3}>
+                        <Grid 
+                            container 
+                            spacing={0}
+                            // direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                        >
+                            <Grid item xs={6}>
+                                <DesktopDatePicker
+                                    minDate={checkInMinDate}
+                                    label="Check in"
+                                    inputFormat="MM/dd/yyyy"
+                                    value={props.checkInDate}
+                                    onChange={setCheckInDate}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <DesktopDatePicker
+                                    minDate={checkOutMiDate}
+                                    label="Check out"
+                                    inputFormat="MM/dd/yyyy"
+                                    value={props.checkOutDate}
+                                    onChange={setCheckOutDate}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sx={{mt:2}}>
+
+                                <InputLabel id="demo-simple-select-label">Guests</InputLabel>
+                                <Box
+                                    display="flex" 
+                                    width={370}
+                                    height={50}
+                                    bgcolor="white"
+                                    // ml={10}
+                                    // mt={10}
+                                    sx={{
+                                        position: 'relative'
+                                    }}
+                                >
+
+                                    <Typography sx={{position:'absolute', top:10, left:10}}>{guestsTextField}</Typography>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        // value=""
+                                        label="Guests"
+                                        // onChange={handleChange}
+                                        sx={{minWidth:370, maxWidth:370,minHeight:50, maxHeight:50, position:'absolute'}}
+                                    >
+                                        <MenuItem disableRipple disableTouchRipple>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography variant='h6' sx={{fontSize:16}}>Adults:</Typography>
+                                                    <Typography variant="body1" sx={{fontSize:16}}>Age 13+</Typography>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    {props.adults <= 1 ?  
+                                                        <IconButton disabled color="primary"  sx={{mr:2}}>
+                                                            <RemoveCircleOutlineRoundedIcon />
+                                                        </IconButton> :
+                                                        <IconButton color="primary"  sx={{mr:2}} onClick={()=>{props.setAdults(props.adults-1)}}>
+                                                            <RemoveCircleOutlineRoundedIcon />
+                                                        </IconButton>
+                                                    }
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Typography sx={{mt:1, ml:1.5}}>{props.adults}</Typography>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    {
+                                                        props.adults + props.children >= props.propertyDetails.property.noOfGuests ? 
+                                                        <IconButton disabled color="primary"  sx={{mr:2}} onClick={()=>{props.setAdults(props.adults+1)}}>
+                                                            <AddCircleOutlineRounded />
+                                                        </IconButton>:
+                                                        <IconButton color="primary"  sx={{mr:2}} onClick={()=>{props.setAdults(props.adults+1)}}>
+                                                            <AddCircleOutlineRounded />
+                                                        </IconButton>
+                                                    }
+                                                    
+                                                </Grid>
+                                            </Grid>
+                                        </MenuItem>
+                                        <MenuItem disableRipple disableTouchRipple>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography variant='h6' sx={{fontSize:16}}>Children:</Typography>
+                                                    <Typography variant="body1" sx={{fontSize:16}}>Ages 2-12</Typography>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    {
+                                                        props.children <= 0 ? 
+                                                        <IconButton disabled color="primary"  sx={{mr:2}}>
+                                                            <RemoveCircleOutlineRoundedIcon />
+                                                        </IconButton> :
+                                                        <IconButton color="primary"  sx={{mr:2}} onClick={() => {props.setChildren(props.children-1)}}>
+                                                            <RemoveCircleOutlineRoundedIcon />
+                                                        </IconButton>
+                                                    }
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Typography sx={{mt:1, ml:1.5}}>{props.children}</Typography>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    {
+                                                        props.adults + props.children >= props.propertyDetails.property.noOfGuests ?
+                                                        <IconButton disabled color="primary"  sx={{mr:2}} onClick={() => {props.setChildren(props.children+1)}}>
+                                                            <AddCircleOutlineRounded />
+                                                        </IconButton> :
+                                                        <IconButton color="primary"  sx={{mr:2}} onClick={() => {props.setChildren(props.children+1)}}>
+                                                            <AddCircleOutlineRounded />
+                                                        </IconButton>
+                                                    }
+                                                    
+                                                </Grid>
+                                            </Grid>
+                                        </MenuItem>
+                                        <MenuItem disableRipple disableTouchRipple>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                    <Typography variant='h6' sx={{fontSize:16}}>Infants:</Typography>
+                                                    <Typography variant="body1" sx={{fontSize:16}}>Under 2</Typography>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    {
+                                                        props.infants <= 0 ? 
+                                                        <IconButton disabled color="primary"  sx={{mr:2}}>
+                                                            <RemoveCircleOutlineRoundedIcon />
+                                                        </IconButton>:
+                                                        <IconButton color="primary"  sx={{mr:2}} onClick={() => {props.setInfants(props.infants-1)}}>
+                                                            <RemoveCircleOutlineRoundedIcon />
+                                                        </IconButton>
+                                                    }
+                                                    
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Typography sx={{mt:1, ml:1.5}}>{props.infants}</Typography>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <IconButton color="primary"  sx={{mr:2}} onClick={() => {props.setInfants(props.infants+1)}}>
+                                                        <AddCircleOutlineRounded />
+                                                    </IconButton>
+                                                </Grid>
+                                            </Grid>
+                                        </MenuItem>
+                                        <MenuItem disableRipple disableTouchRipple>
+                                            <Typography variant='body2' sx={{mt:2}}>This place has a maximum of {props.propertyDetails.property.noOfGuests} guests excluding infants</Typography>
+                                        </MenuItem>
+                                        {/* <Box clone display={{ sm: "none" }}>
+                                            <MenuItem value={40}>hello</MenuItem>
+                                        </Box> */}
+                                    </Select>
+                                </Box>
+                                
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button
+                                    color='inherit' 
+                                    variant="contained" 
+                                    sx={{mt:2,minHeight:50, maxHeight:50,minWidth:370, maxWidth:370, background: 'linear-gradient(to right bottom, #99029e, #eb11f2)' }}
+                                    onClick={() => {handleReseveButton()}}
+                                >
+                                    Reserve
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button disabled color='inherit' variant="text" sx={{mt:1,minHeight:50, maxHeight:50,minWidth:370, maxWidth:370, fontSize:12 }}>You won't be charged yet</Button>
+                            </Grid>
+                            {/* <Grid item xs={6}>
+                                <Button disableRipple color='inherit' startIcon={<AttachMoneyIcon/>}>{props.propertyDetails.property.perNightCost}</Button>
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    flexWrap: 'wrap',
+                                }}>
+                                    <AttachMoneyIcon fontSize='small' sx={{ml:0}}/>
+                                    <span style={{fontSize:20}}>{props.propertyDetails.property.perNightCost}</span>
+                                    <ClearIcon fontSize='small'/>
+                                </div>
+                            </Grid> */}
+                            <Grid item xs={1} >
+                                <AttachMoneyIcon /> 
+                            </Grid>
+                            <Grid item xs={1}>
+                                <Typography>{props.propertyDetails.property.perNightCost}</Typography>
+                            </Grid>
+                            <Grid item xs={1}>
+                                <ClearIcon />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Typography>{props.checkOutDate.getDate() - props.checkInDate.getDate()}  Nights</Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Button disabled color='inherit' variant='text'></Button>
+                            </Grid>
+                            <Grid item xs={1}>
+                                <AttachMoneyIcon /> 
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Typography >{(props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost}</Typography>
+                            </Grid>
+                        </Grid>
+                    </Stack>
+                </LocalizationProvider>
+            </CardContent>
+        </Card>
+    );
+}
 
 
 function ViewImage(props) {
@@ -77,15 +407,15 @@ function ViewImage(props) {
 
 
 function PropertyDetails(props){
-    console.log(props.propertyDetails);
-    // console.log(props.token)
+    // console.log(props.propertyDetails);
+    console.log(props.token)
 
     const handleShowImage = (url) => {
         props.setImgUrl(url);
         props.handleOpen();
     }
 
-    console.log(props.review);
+    // console.log(props.review);
 
     const postReview = async(review, property_id) => {
         try{
@@ -114,6 +444,7 @@ function PropertyDetails(props){
                 }
             }
             else{
+                props.setLoginRedirection('/booking/property/details' )
                 props.navigate("/login");
             }
             
@@ -134,15 +465,15 @@ function PropertyDetails(props){
         
         let idx = 1;
         return(
-            <Grid container sx={{ ml:10}}>
+            <Grid container sx={{ ml:17, maxWidth:1300}}>
                 <Grid item xs={12}>
-                    <Typography variant="h3" sx={{mt:5}}>{props.propertyDetails.property.title}</Typography>
+                    <Typography variant="h3" sx={{mt:5, fontFamily:"Lucida Handwriting"}}>{props.propertyDetails.property.title}</Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="body1" sx={{mt:1}}>{props.propertyDetails.property.address}</Typography>
                 </Grid>
-                <Grid item xs={12}>
-                    <ImageList
+                <Grid item xs={6}>
+                    {/* <ImageList
                         sx={{
                             width: 1200,
                             height: 400,
@@ -199,13 +530,70 @@ function PropertyDetails(props){
                             </ImageListItem>
                             );
                         })}
-                    </ImageList>
+                    </ImageList> */}
+                    <Paper elevation={5} sx={{mt:5, paddingTop:1, paddingLeft:1, paddingRight:0.8, paddingBottom:0.5}}>
+                        <img src={props.propertyDetails.photos[0].photo_url} style={{maxWidth: 740, minWidth:740, maxHeight:385,minHeight:385}}/>
+                    </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="h6" sx={{mt:1}}>{props.propertyDetails.property.catagory} hosted by {props.propertyDetails.property.ownerName}</Typography>
+                <Grid item xs = {6}>
+                    <Grid container>
+                        <Grid item xs = {5}>
+                            <Paper elevation={5} sx={{mt:5, maxWidth:300, paddingTop:1, paddingLeft:1, paddingRight:0.8, paddingBottom:0.5}}>
+                                <img src={props.propertyDetails.photos[1].photo_url} style={{maxWidth: 300, minWidth:300, maxHeight:184,minHeight:184}}/>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs = {7}>
+                            <Paper elevation={5} sx={{mt:5,maxWidth:300, paddingTop:1, paddingLeft:1, paddingRight:0.8, paddingBottom:0.5}}>
+                                <img src={props.propertyDetails.photos[2].photo_url} style={{maxWidth: 300, minWidth:300, maxHeight:184,minHeight:184}}/>
+                            </Paper>
+                        </Grid>
+
+                        <Grid item xs = {5}>
+                            <Paper elevation={5} sx={{ maxWidth:300, paddingTop:1, paddingLeft:1, paddingRight:0.8, paddingBottom:0.5}}>
+                                <img src={props.propertyDetails.photos[3].photo_url} style={{maxWidth: 300, minWidth:300, maxHeight:184,minHeight:184}}/>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs = {7}>
+                            <Paper elevation={5} sx={{maxWidth:300, paddingTop:1, paddingLeft:1, paddingRight:0.8, paddingBottom:0.5}}>
+                                <img src={props.propertyDetails.photos[4].photo_url} style={{maxWidth: 300, minWidth:300, maxHeight:184,minHeight:184}}/>
+                            </Paper>
+                        </Grid>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="body1" sx={{mt:1}}>{props.propertyDetails.property.noOfGuests} guests, {props.propertyDetails.property.noOfBedrooms} bedrooms, {props.propertyDetails.property.noOfBeds} beds, {props.propertyDetails.property.noOfBathrooms} bathrooms</Typography>
+                
+                <Grid item xs={7} sx={{mt:5}}>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <Typography variant="h5" sx={{fontWeight:"bold"}}>{props.propertyDetails.property.catagory} hosted by {props.propertyDetails.property.ownerName}</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="body1" sx={{mt:1, mb:3}}>{props.propertyDetails.property.noOfGuests} guests, {props.propertyDetails.property.noOfBedrooms} bedrooms, {props.propertyDetails.property.noOfBeds} beds, {props.propertyDetails.property.noOfBathrooms} bathrooms</Typography>
+                            <hr />
+                        </Grid>
+                        
+                    </Grid>
+                </Grid>
+                <Grid item xs={5} sx={{mt:5}}>
+                    <ReservationCard 
+                        propertyDetails={props.propertyDetails}
+                        checkInDate = {props.checkInDate}
+                        checkOutDate = {props.checkOutDate}
+                        setCheckInDate = {(val) => {props.setCheckInDate(val)}}
+                        setCheckOutDate = {(val) => {props.setCheckOutDate(val)}}
+                        adults = {props.adults}
+                        setAdults = {(val) => {props.setAdults(val)}}
+                        children = {props.children}
+                        setChildren = {(val) => {props.setChildren(val)}}
+                        infants = {props.infants}
+                        setInfants = {(val) => {props.setInfants(val)}}
+                        navigate = {(val) => {props.navigate(val)}}
+                        token = {props.token}
+                        isLoggedin = {props.isLoggedin}
+                        setLoginRedirection={(val) => {props.setLoginRedirection(val)}}
+                        setLoggedIn = {(value)=>{props.setLoggedIn(value)}}
+                        setUser = {(value) => {props.setUser(value)}}
+                        setToken = {(t) => {props.setToken(t)}}
+                    />
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="h6" sx={{mt:5}}>Have any review?</Typography>
@@ -235,7 +623,7 @@ function PropertyDetails(props){
                         }
                     </List>
                 </Grid>
-                {props.imgUrl === ""? null:<ViewImage photo_url={props.imgUrl} open={props.open} handleClose={props.handleClose}/>}
+                {/* {props.imgUrl === ""? null:<ViewImage photo_url={props.imgUrl} open={props.open} handleClose={props.handleClose}/>} */}
             </Grid>
         );
     }
@@ -252,6 +640,9 @@ export default function PropertyDetailsForBooking(props){
     const [imgUrl, setImgUrl] = React.useState("");
 
     const [review, setReview] = React.useState("");
+
+    console.log(props)
+    
 
     const navigate = useNavigate();
 
@@ -285,7 +676,7 @@ export default function PropertyDetailsForBooking(props){
     return(
     
     <Box sx={{ flexGrow: 1 }}>
-      <CommonNavbar />
+      <ShowNavBar />
       <PropertyDetails 
         propertyDetails = {propertyDetails}
         open = {open}
@@ -299,6 +690,20 @@ export default function PropertyDetailsForBooking(props){
         isLoggedin = {props.isLoggedin}
         fetchProperty = {(id) => {fetchProperty(id)}}
         navigate = {(val) => {navigate(val)}}
+        checkInDate = {props.checkInDate}
+        checkOutDate = {props.checkOutDate}
+        setCheckInDate = {(val) => {props.setCheckInDate(val)}}
+        setCheckOutDate = {(val) => {props.setCheckOutDate(val)}}
+        adults = {props.adults}
+        setAdults = {(val) => {props.setAdults(val)}}
+        children = {props.children}
+        setChildren = {(val) => {props.setChildren(val)}}
+        infants = {props.infants}
+        setInfants = {(val) => {props.setInfants(val)}}
+        setLoginRedirection={(val) => {props.setLoginRedirection(val)}}
+        setLoggedIn = {(value)=>{props.setLoggedIn(value)}}
+        setUser = {(value) => {props.setUser(value)}}
+        setToken = {(t) => {props.setToken(t)}}
       />
     </Box>
     );

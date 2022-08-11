@@ -25,18 +25,20 @@ export default function ManagementDashboardAccessControl(props){
                 }
                 else{
                     alert("Unauthorized");
+                    props.setLoginRedirection('/hosting')
                     navigate("/login");
                 }
                 
             }
             catch(error){
+                props.setLoginRedirection('/hosting')
                 navigate("/login");
             }
         }
         
         tokenVerifier();
 
-    },[])
+    },[navigate, props])
    
     return (<ManagementDashboard isLoggedin={props.isLoggedin} />);
     

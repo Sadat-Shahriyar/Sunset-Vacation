@@ -218,7 +218,7 @@ export default function CommonNavbar(props){
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              // onClick={handleProfileMenuOpen}
               color="inherit"
               onClick={()=>{navigate("/login");}}
             >

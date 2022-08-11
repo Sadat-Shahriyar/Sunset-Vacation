@@ -15,7 +15,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Navigate, useNavigate } from 'react-router-dom';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
-import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid } from '@mui/material';
 import { axios_api } from '../../App';
 import SearchNav from './SearchNav';
 
@@ -66,6 +66,11 @@ function ViewAllProperties(props){
   if(props.properties.data != undefined)
     propertyData = props.properties.data;
 
+  const goToDetailsPage = (id) => {
+    props.setSelectedPropertyForDetails(id);
+    props.navigate("/booking/property/details");
+  }
+
   let properties = propertyData.map((property) => {
     return(
       <Grid item xs={2.5} key={property.propertyID}>
@@ -84,6 +89,9 @@ function ViewAllProperties(props){
             {property.description}
           </Typography>
         </CardContent>
+        <CardActions>
+          <Button size="large" onClick={() => {goToDetailsPage(property.propertyID)}}>View Details</Button>
+        </CardActions>
         </Card>
       </Grid>
     );
@@ -315,8 +323,10 @@ export default function SearchPage(props) {
           {renderMenu} */}
           <ViewAllProperties 
             properties={properties}
+            setSelectedPropertyForDetails = {props.setSelectedPropertyForDetails}
+            navigate = {(val) => {navigate(val)}}
           />
-          
+         
         </Box>
         );
       }

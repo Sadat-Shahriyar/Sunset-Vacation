@@ -23,7 +23,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { Button, Card, CardContent, CardMedia, Grid, Paper } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Paper } from '@mui/material';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import MainSection from './MainSection';
@@ -548,9 +548,12 @@ setAnchorEl3(null);
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              // onClick={handleProfileMenuOpen}
               color="inherit"
-              //onClick={()=>{navigate("/login");}}
+              onClick={()=>{
+                props.setLoginRedirection('/')
+                navigate("/login");
+              }}
             >
               <AccountCircle />
             </IconButton>
