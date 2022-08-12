@@ -6,6 +6,8 @@ urlpatterns = [
     #path('<int:user_id>/', views.getProperties),
     path('addCategory/', views.addCategory),
     path('addFacility/', views.addFacility),
+    path('facilityCategories/', views.getFacilityCategories),
+    path('facilitySubcategories/', views.getFacilitySubcategories),
     path('propertylist/', views.getProperties),
     path('facilitylist/',views.getFacilities),
     path('insertOffer/',views.insertOffer),

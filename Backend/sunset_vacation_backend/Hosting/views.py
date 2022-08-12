@@ -41,7 +41,33 @@ def addFacility(request):
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    
+
+@api_view(["GET"])
+def getFacilityCategories(request):
+    try:
+        # change delete this portion
+        print("hi1")
+        categories = FacilityCategory.objects.all()
+        print("hi")
+        categorySerializer = FacilityCategorySerializer(categories, many=True)
+        # change add code for fetching booking here by user
+        return Response({"categories": categorySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["GET"])
+def getFacilitySubcategories(request):
+    try:
+        # change delete this portion
+        subcategories = FacilitySubcategory.objects.all()
+        subcategorySerializer = FacilitySubcategorySerializer(subcategories, many=True)
+        # change add code for fetching booking here by user
+        return Response({"subcategories": subcategorySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def getPropertyPhoto(request, property_id):
