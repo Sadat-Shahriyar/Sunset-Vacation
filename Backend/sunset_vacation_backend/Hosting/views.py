@@ -56,6 +56,49 @@ def getPendingProperties(request):
         return Response({"error": "405 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
+
+@api_view(["PUT"])
+def approveProperty(request, propertyId):
+    try:
+        # change delete this portion
+        property = Property.objects.get(propertyID=propertyId)
+        property.approved = True
+        property.save()
+        user = User.objects.get(id=property.owner_id_id)
+        notification = Notification.objects.create(
+            user_id=user,
+            title="Published property with title- " + property.title,
+            text=request.data["message"]
+        )
+        property = Property.objects.filter(published=True).filter(approved=False)
+        propertySerializer = PropertySerializer(property, many=True)
+        # change add code for fetching booking here by user
+        return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 Bad request"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["PUT"])
+def rejectProperty(request, propertyId):
+    try:
+        # change delete this portion
+        property = Property.objects.get(propertyID=propertyId)
+        property.published = False
+        property.save()
+        user = User.objects.get(id=property.owner_id_id)
+        notification = Notification.objects.create(
+            user_id=user,
+            title="Property title- " + property.title + " needs some change ",
+            text=request.data["message"]
+        )
+        property = Property.objects.filter(published=True).filter(approved=False)
+        propertySerializer = PropertySerializer(property, many=True)
+        # change add code for fetching booking here by user
+        return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "405 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
 @api_view(["GET"])
 def getFacilityCategories(request):
     try:
