@@ -12,6 +12,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MailIcon from '@mui/icons-material/Mail';
+import ApprovalIcon from '@mui/icons-material/Approval';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 
 import {styled, alpha} from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
@@ -24,6 +31,20 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LocalOfferRoundedIcon from '@mui/icons-material/LocalOfferRounded';
 import CardGiftcardRoundedIcon from '@mui/icons-material/CardGiftcardRounded';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import {useState} from "react";
+import DetailsIcon from "@mui/icons-material/Details";
+import {IconButton} from "@mui/material";
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import DesktopMacIcon from "@mui/icons-material/DesktopMac";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -66,8 +87,10 @@ const StyledMenu = styled((props) => (
     },
 }));
 
-export default function ManagementDashboard(props) {
+export default function AdminDashboard(props) {
     const navigate = useNavigate();
+    const [newCategory, setNewCategory] = useState("");
+
 
     const useReservation = (event) => {
         navigate("/reservation");
@@ -98,6 +121,9 @@ export default function ManagementDashboard(props) {
     function mouseOut(event) {
         event.target.style.color = "white";
     }
+    function changeEdit(event) {
+        setEdit(!edit);
+    }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -108,29 +134,171 @@ export default function ManagementDashboard(props) {
         setAnchorEl(null);
         console.log(event.target.value);
     };
+
+    function changeDescription(event) {
+        props.property.description = event.target.value;
+    }
+
+    function handleSubmit(event) {
+        props.property.description = event.target.value;
+    }
+
+    function handleSubmitApprove(event) {
+        setMessage(event.target.value);
+        const data={
+            message: message
+        }
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        };
+        setMessage("");
+        setEdit(!edit);
+        fetch(`http://localhost:8000/hosting/approve/`+propertyId, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setProperties(response.properties)
+            })
+            .catch((err) => {
+                alert(err.message);
+            })
+    }
+
+    function handleSubmitReject(event) {
+        setMessage(event.target.value);
+        const data={
+            message: message
+        }
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        };
+        setMessage("");
+        setEdit(!edit);
+        fetch(`http://localhost:8000/hosting/reject/`+propertyId, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setProperties(response.properties)
+            })
+            .catch((err) => {
+                alert(err.message);
+            })
+
+    }
+
+    function showProperty(property) {
+        props.setProperty(property);
+        navigate('/showPropertyDetails/'+property.propertyID);
+    }
+    function editStatus(property) {
+        setPropertyId(property.propertyID);
+        setEdit(!edit);
+    }
+    function changeNewCategory(event) {
+        setNewCategory(event.target.value);
+    }
+
+    function addCategory(){
+        const data={
+            category: newCategory
+        }
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        };
+        setNewCategory("");
+        fetch(`http://localhost:8000/hosting/addCategory/`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setCategories(response.categories)
+            })
+            .catch((err) => {
+                console.log(err.message);
+            })
+
+    }
+
+    function showAdmin(props) {
+        return (
+            <div>
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': {m: 0.5, width: '35ch', height:'10ch'},
+                    }}
+                    noValidate
+                    m={0.5}
+                    p={0.5}
+                    autoComplete="off"
+                >
+                    <Grid container>
+                        <Grid item xs={1}/>
+                        <Grid item xs={11}>
+                            <label><p style={{
+                                "fontFamily": "Lucida Handwriting",
+                                "fontSize": "15px",
+                                "color": "black"
+                            }}>Category</p></label>
+                            <TextField
+                                id="outlined-basic"
+                                label="Category Name"
+                                value={newCategory}
+                                onChange={changeNewCategory}
+                                />
+                            <Button variant="contained" onClick={addCategory}
+                                    sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 4 }} endIcon={<CategoryOutlinedIcon sx={{ color: 'white' }}/>}>Add Category
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </div>
+        )
+    }
+
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
                 <Toolbar>
-
                     <Typography
                         variant="h6"
                         noWrap
                         component="div"
                         sx={{display: {xs: 'none', sm: 'block'}}}
                     >
-                        <p style={{"fontFamily": "Jokerman", "fontSize": "25px"}}>ManagementDashboard</p>
+                        <p style={{"fontFamily": "Jokerman", "fontSize": "25px"}}>AdminDashboard</p>
 
                     </Typography>
                     {/* <Button disabled></Button> */}
-                    <Button color="inherit" onClick={useHostingRedirect}><HomeIcon/></Button>
-
-                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
-                            onClick={useShowProperties} onMouseOver={mouseOver} onMouseOut={mouseOut}>Your
-                        Listing</Button>
-                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
-                            onClick={useHandleHostNewPropertyButton} onMouseOver={mouseOver} onMouseOut={mouseOut}>Create
-                        Listing</Button>
 
                     <Button
                         id="demo-customized-button"
@@ -138,7 +306,7 @@ export default function ManagementDashboard(props) {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                         variant="inherit"
-                        sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
+                        sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", paddingLeft: "30px"}}
                         disableElevation
                         onClick={handleClick}
                         endIcon={<KeyboardArrowDownIcon/>}
@@ -177,7 +345,7 @@ export default function ManagementDashboard(props) {
                     </StyledMenu>
                 </Toolbar>
             </AppBar>
-
+            {showAdmin(props)}
         </Box>
     );
 }
