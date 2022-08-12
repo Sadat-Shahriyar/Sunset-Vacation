@@ -1,0 +1,10 @@
+pip install --upgrade stripe
+npm install @stripe/react-stripe-js @stripe/stripe-js
+
+test credit card details:
+card number: 4242 4242 4242 4242
+cvc: 123
+zip: 42424
+email: any email. I used test@gmail.com
+
+
