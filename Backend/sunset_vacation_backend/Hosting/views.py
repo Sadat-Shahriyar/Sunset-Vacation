@@ -12,37 +12,21 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 
-# Create your views here.
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def getBooking(request):
+@api_view(["POST"])
+def addCategory(request):
     try:
-        print(request.user)
-        user = UserSerializer(request.user).data
-        user = User.objects.get(id=user['id'])
         # change delete this portion
-        property = Property.objects.filter(owner_id_id=user)
-        propertySerializer = PropertySerializer(property, many=True)
+        category = FacilityCategory.objects.create(
+            category=request.data["category"]
+        )
+        categories = FacilityCategory.objects.all()
+        categorySerializer = FacilityCategorySerializer(categories, many=True)
         # change add code for fetching booking here by user
-        return Response({"bookings": propertySerializer.data}, status=status.HTTP_200_OK)
+        return Response({"categories": categorySerializer.data}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def getBookingId(request, booking_id):
-    try:
-        print(request.user)
-        user = UserSerializer(request.user).data
-        user = User.objects.get(id=user['id'])
-        # change delete this portion
-        property = Property.objects.filter(owner_id_id=user, propertyID=booking_id)
-        propertySerializer = PropertySerializer(property)
-        # change add code for fetching specific booking by id here
-        return Response({"booking": propertySerializer.data}, status=status.HTTP_200_OK)
-    except Exception:
-        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

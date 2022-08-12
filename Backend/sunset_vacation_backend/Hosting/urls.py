@@ -4,9 +4,8 @@ from . import views
 
 urlpatterns = [
     #path('<int:user_id>/', views.getProperties),
-    path('booking/<int:booking_id>', views.getBookingId),
-    path('booking/', views.getBooking),
-    path('propertylist/',views.getProperties),
+    path('addCategory/', views.addCategory),
+    path('propertylist/', views.getProperties),
     path('facilitylist/',views.getFacilities),
     path('insertOffer/',views.insertOffer),
     path('updateProperty/<int:property_id>',views.updatePropertyDetails),
