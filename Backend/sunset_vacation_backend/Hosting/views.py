@@ -98,6 +98,22 @@ def rejectProperty(request, propertyId):
     except Exception:
         return Response({"error": "405 not found"}, status=status.HTTP_404_NOT_FOUND)
 
+# Create your views here.
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getNotification(request):
+    try:
+        print(request.user)
+        user = UserSerializer(request.user).data
+        user = User.objects.get(id=user['id'])
+        # change delete this portion
+        property = Property.objects.filter(owner_id_id=user)
+        propertySerializer = PropertySerializer(property, many=True)
+        # change add code for fetching booking here by user
+        return Response({"notifications": propertySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(["GET"])
 def getFacilityCategories(request):
