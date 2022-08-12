@@ -110,7 +110,28 @@ class Property(models.Model):
     approved = models.BooleanField(default=False)
 
 
+class FacilityCategory(models.Model):
+    id = models.AutoField(
+        primary_key=True
+    )
+    category = models.CharField(
+        max_length=100,
+        default=None,
+        blank=False,
+        null=True
+    )
 
+
+class FacilitySubcategory(models.Model):
+    id = models.AutoField(
+        primary_key=True
+    )
+    subcategory = models.CharField(
+        max_length=100,
+        default=None,
+        blank=False,
+        null=True
+    )
 
 
 
