@@ -88,7 +88,7 @@ def rejectProperty(request, propertyId):
         user = User.objects.get(id=property.owner_id_id)
         notification = Notification.objects.create(
             user_id=user,
-            title="Property title- " + property.title + " needs some change ",
+            title=" Changes needed for property title- " + property.title,
             text=request.data["message"]
         )
         property = Property.objects.filter(published=True).filter(approved=False)
@@ -107,10 +107,10 @@ def getNotification(request):
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
         # change delete this portion
-        property = Property.objects.filter(owner_id_id=user)
-        propertySerializer = PropertySerializer(property, many=True)
+        notification = Notification.objects.filter(user_id_id=user)
+        notificationSerializer = NotificationSerializer(notification, many=True)
         # change add code for fetching booking here by user
-        return Response({"notifications": propertySerializer.data}, status=status.HTTP_200_OK)
+        return Response({"notifications": notificationSerializer.data}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 

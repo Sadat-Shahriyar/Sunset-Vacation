@@ -99,7 +99,7 @@ export default function Notification(props) {
                         <ListItem sx={{ bgcolor: "#F1948A"}} button onClick={()=> showNotification(item)}>
                             <IconButton><CollectionsBookmarkIcon /></IconButton>
                             {/*change here propertyId*/}
-                            <ListItemText  ><p style={{ fontFamily: "Lucida Handwriting" }}>Notification No {item.propertyID}</p></ListItemText>
+                            <ListItemText  ><p style={{ fontFamily: "Lucida Handwriting" }}>{item.title}</p></ListItemText>
                         </ListItem>
                     </List>
                 </div>
