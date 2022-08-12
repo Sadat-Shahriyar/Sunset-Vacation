@@ -48,9 +48,7 @@ export default function ShowNotification(props) {
             })
             .then((response) => response.json())
             .then((response) => {
-                console.log(response.notification)
                 setNotification(prevState => response.notification)
-                console.log(notification)
             })
             .catch((err) => {
                 // alert(err.message);
@@ -65,7 +63,7 @@ export default function ShowNotification(props) {
 
             <Typography sx={{marginTop: "50px", fontFamily: "Lucida Handwriting"}} align='center' variant="h5"
                         component="h2">
-                Notification {props.notification.propertyID}
+                Notification
             </Typography>
             <Card sx={{
                 width: '35%',
@@ -78,34 +76,18 @@ export default function ShowNotification(props) {
                 paddingLeft: "auto",
                 paddingRight: "auto"
             }}>
-                <CardContent>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Word of the Day
+                <CardContent sx={{marginTop: "15px", marginBottom: "15px"}}>
+                    <Typography sx={{ fontSize: 14 , fontFamily: "Lucida Handwriting"}} color="text.secondary" gutterBottom>
+                        notification sent {props.notification.time}
                     </Typography>
-                    <Typography variant="h5" component="div">
-                        hello
+                    <Typography variant="h4" component="div" sx={{paddingTop:"20px", fontFamily: "Lucida Handwriting"}}>
+                        {props.notification.title}
                     </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        adjective
+                    <Typography variant="h6" component="div" sx={{paddingTop:"30px", fontFamily: "Lucida Handwriting"}}>
+                       {props.notification.text}
                     </Typography>
-                    <Typography variant="body2">
-                        well meaning and kindly.
-                        <br />
-                        {'"a benevolent smile"'}
-                    </Typography>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Word of the Day
-                    </Typography>
-                    <Typography variant="h5" component="div">
-                        hello
-                    </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        adjective
-                    </Typography>
-                    <Typography variant="body2">
-                        well meaning and kindly.
-                        <br />
-                        {'"a benevolent smile"'}
+                    <Typography variant="h6" component="div" sx={{paddingTop:"30px", fontFamily: "Lucida Handwriting"}}>
+                       {props.notification.link}
                     </Typography>
                 </CardContent>
             </Card>

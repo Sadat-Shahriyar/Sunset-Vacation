@@ -123,10 +123,11 @@ def getNotificationId(request, notification_id):
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
         # change delete this portion
-        property = Property.objects.filter(owner_id_id=user, propertyID=notification_id)
-        propertySerializer = PropertySerializer(property)
+        notification = Notification.objects.get(id=notification_id)
+        notificationSerializer = NotificationSerializer(notification)
+        print(notification)
         # change add code for fetching specific booking by id here
-        return Response({"notification": propertySerializer.data}, status=status.HTTP_200_OK)
+        return Response({"notification": notificationSerializer.data}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
