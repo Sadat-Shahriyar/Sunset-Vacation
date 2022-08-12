@@ -2,6 +2,27 @@ from .models import *
 from rest_framework import serializers
 
 
+class FacilityCategorySerializer(serializers.ModelSerializer):
+    category=serializers.CharField(
+       max_length=100,
+       required=False
+    )
+
+    class Meta:
+        model=FacilityCategory
+        fields = '__all__'
+
+
+class FacilitySubcategorySerializer(serializers.ModelSerializer):
+    subcategory=serializers.CharField(
+       max_length=100,
+       required=False
+    )
+
+    class Meta:
+        model=FacilitySubcategory
+        fields = '__all__'
+
 
 class PropertySerializer(serializers.ModelSerializer):
     title=serializers.CharField(max_length=100,required=False)
