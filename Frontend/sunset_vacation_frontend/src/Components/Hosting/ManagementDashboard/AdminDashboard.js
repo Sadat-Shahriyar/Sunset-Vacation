@@ -90,6 +90,48 @@ const StyledMenu = styled((props) => (
 export default function AdminDashboard(props) {
     const navigate = useNavigate();
     const [newCategory, setNewCategory] = useState("");
+    const [category, setCategory] = useState("");
+    const [subcategory, setSubcategory] = useState("");
+    const [facility, setFacility] = useState("");
+    const [categories, setCategories] = useState([]);
+    const [subcategories, setSubcategories] = useState([]);
+
+    React.useEffect(() => {
+        fetch(`http://localhost:8000/hosting/facilityCategories/`)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setCategories(response.categories)
+            })
+            .catch((err) => {
+                alert(err.message);
+            })
+        fetch(`http://localhost:8000/hosting/facilitySubcategories/`)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setSubcategories(response.subcategories)
+            })
+            .catch((err) => {
+                alert(err.message);
+            })
+    }, [])
 
 
     const useReservation = (event) => {
@@ -143,69 +185,6 @@ export default function AdminDashboard(props) {
         props.property.description = event.target.value;
     }
 
-    function handleSubmitApprove(event) {
-        setMessage(event.target.value);
-        const data={
-            message: message
-        }
-        const requestOptions = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        };
-        setMessage("");
-        setEdit(!edit);
-        fetch(`http://localhost:8000/hosting/approve/`+propertyId, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response
-                }
-                else {
-                    let err = new Error(response.status + ": " + response.text);
-                    throw err;
-                }
-            })
-            .then((response) => response.json())
-            .then((response) => {
-                setProperties(response.properties)
-            })
-            .catch((err) => {
-                alert(err.message);
-            })
-    }
-
-    function handleSubmitReject(event) {
-        setMessage(event.target.value);
-        const data={
-            message: message
-        }
-        const requestOptions = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        };
-        setMessage("");
-        setEdit(!edit);
-        fetch(`http://localhost:8000/hosting/reject/`+propertyId, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response
-                }
-                else {
-                    let err = new Error(response.status + ": " + response.text);
-                    throw err;
-                }
-            })
-            .then((response) => response.json())
-            .then((response) => {
-                setProperties(response.properties)
-            })
-            .catch((err) => {
-                alert(err.message);
-            })
-
-    }
-
     function showProperty(property) {
         props.setProperty(property);
         navigate('/showPropertyDetails/'+property.propertyID);
@@ -216,6 +195,51 @@ export default function AdminDashboard(props) {
     }
     function changeNewCategory(event) {
         setNewCategory(event.target.value);
+    }
+    function changeCategory(event) {
+        setCategory(event.target.value);
+    }
+    function changeSubcategory(event) {
+        setSubcategory(event.target.value);
+    }
+    function changeFacility(event) {
+        setFacility(event.target.value);
+    }
+
+    function addFacility(){
+        const data={
+            facility: facility,
+            category: category,
+            subcategory: subcategory,
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        };
+
+        setCategory("");
+        setFacility("");
+        setSubcategory("");
+
+        fetch(`http://localhost:8000/hosting/addFacility/`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+
+            })
+            .catch((err) => {
+                console.log(err.message);
+            })
     }
 
     function addCategory(){
@@ -278,6 +302,46 @@ export default function AdminDashboard(props) {
                             <Button variant="contained" onClick={addCategory}
                                     sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 4 }} endIcon={<CategoryOutlinedIcon sx={{ color: 'white' }}/>}>Add Category
                             </Button>
+                            <label><p style={{
+                                "fontFamily": "Lucida Handwriting",
+                                "fontSize": "15px",
+                                "color": "black"
+                            }}>Facility</p></label>
+                            <FormControl sx={{ m: 0.5, minWidth: 230 }}>
+                                <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={category}
+                                    label="Category"
+                                    onChange={changeCategory}
+                                >
+                                    {categories.map((item,index)=>{
+                                        return(  <MenuItem key={index} value={item.category}>{item.category}</MenuItem>)})}
+                                </Select>
+                            </FormControl>
+                            <FormControl sx={{ m: 0.5, minWidth: 230 }}>
+                                <InputLabel id="demo-simple-select-label">Sub-category</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={subcategory}
+                                    label="Category"
+                                    onChange={changeSubcategory}
+                                >
+                                    {subcategories.map((item,index)=>{
+                                        return(  <MenuItem key={index} value={item.subcategory}>{item.subcategory}</MenuItem>)})}
+                                </Select>
+                            </FormControl>
+                            <br/>
+                            <TextField
+                                id="outlined-basic"
+                                label="Facility Name"
+                                value={facility}
+                                onChange={changeFacility}
+                            />
+                            <Button variant="contained" onClick={addFacility}
+                                    sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 5}} endIcon={<DesktopMacIcon sx={{ color: 'white' }}/>}>Add Facility</Button>
                         </Grid>
                     </Grid>
                 </Box>
