@@ -1,6 +1,8 @@
 from .models import *
 from rest_framework import serializers
 
+
+
 class PropertySerializer(serializers.ModelSerializer):
     title=serializers.CharField(max_length=100,required=False)
     description=serializers.CharField(max_length=500,required=False)
@@ -18,6 +20,7 @@ class PropertySerializer(serializers.ModelSerializer):
     maxDaysRefund=serializers.IntegerField(required=False)
     published=serializers.BooleanField(required=False)
     owner_id=serializers.PrimaryKeyRelatedField(read_only=True)
+    approved=serializers.BooleanField(required=False)
 
     def create(self,validate_data):
         return Property.objects.create(
@@ -128,6 +131,10 @@ class ReviewsSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     user_id=serializers.PrimaryKeyRelatedField(read_only=True)
+    title = serializers.CharField(
+        max_length=100,
+       required=False
+    )
     text=serializers.CharField(
         max_length=100,
        required=False
@@ -135,9 +142,6 @@ class NotificationSerializer(serializers.ModelSerializer):
     link=serializers.CharField(
         max_length=100,
         required=False
-    )
-    time=serializers.DateTimeField(
-       required=False
     )
     marked=serializers.BooleanField(required=False)
 
