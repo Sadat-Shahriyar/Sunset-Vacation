@@ -116,6 +116,22 @@ def getNotification(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getNotificationId(request, notification_id):
+    try:
+        print(request.user)
+        user = UserSerializer(request.user).data
+        user = User.objects.get(id=user['id'])
+        # change delete this portion
+        property = Property.objects.filter(owner_id_id=user, propertyID=notification_id)
+        propertySerializer = PropertySerializer(property)
+        # change add code for fetching specific booking by id here
+        return Response({"notification": propertySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["GET"])
 def getFacilityCategories(request):
     try:
         # change delete this portion

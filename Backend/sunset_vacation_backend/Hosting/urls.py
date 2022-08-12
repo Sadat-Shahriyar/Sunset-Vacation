@@ -11,6 +11,7 @@ urlpatterns = [
     path('pendingProperties/', views.getPendingProperties),
     path('approve/<int:propertyId>',views.approveProperty),
     path('reject/<int:propertyId>',views.rejectProperty),
+    path('notification/<int:notification_id>', views.getNotificationId),
     path('notification/', views.getNotification),
     path('propertylist/', views.getProperties),
     path('facilitylist/',views.getFacilities),
