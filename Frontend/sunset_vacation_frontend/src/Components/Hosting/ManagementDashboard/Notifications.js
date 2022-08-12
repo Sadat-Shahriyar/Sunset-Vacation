@@ -20,13 +20,13 @@ import ListItem from "@mui/material/ListItem";
 import HelpCenterIcon from "@mui/icons-material/HelpCenter";
 import ListItemText from "@mui/material/ListItemText";
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
-export default function Reservation(props) {
+export default function Notification(props) {
     let navigate = useNavigate();
 
-    const [bookings, setBookings] = React.useState([])
+    const [notifications, setNotifications] = React.useState([])
 
     React.useEffect(() => {
-        fetch(`http://localhost:8000/hosting/booking/`, {
+        fetch(`http://localhost:8000/hosting/notification/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json' ,
@@ -44,9 +44,9 @@ export default function Reservation(props) {
             })
             .then((response) => response.json())
             .then((response) => {
-                console.log(response.bookings)
-                setBookings(prevState => response.bookings)
-                console.log(bookings)
+                console.log(response.notifications)
+                setNotifications(prevState => response.notifications)
+                console.log(notifications)
             })
             .catch((err) => {
                 // alert(err.message);
@@ -54,9 +54,9 @@ export default function Reservation(props) {
             })
     }, []);
 
-    function showBooking(item){
-        props.setBooking(item);
-        navigate('/showReservation');
+    function showNotification(item){
+        props.setNotification(item);
+        navigate('/showNotification');
     }
 
     function getSelectedProperty(property) {
@@ -88,18 +88,18 @@ export default function Reservation(props) {
         <div>
             {<ManagementDashboard />}
 
-            <Typography sx={{marginTop:"50px", fontFamily:"Lucida Handwriting"}}align='center' variant="h5" component="h2">
-                All Reservations
+            <Typography sx={{marginTop:"50px", fontFamily:"Lucida Handwriting"}} align='center' variant="h5" component="h2">
+                All Notifications
             </Typography>;
             {/*<div><pre>{JSON.stringify(booking, null, 2) }</pre></div>*/}
-            {bookings.map((item,index)=>{
+            {notifications.map((item,index)=>{
                 return( <div>
                     <List  sx={{  width: '60%', bgcolor: 'background.paper', marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} component="nav" aria-label="mailbox folders">
                         <Divider />
-                        <ListItem sx={{ bgcolor: "#F1948A"}} button onClick={()=> showBooking(item)}>
+                        <ListItem sx={{ bgcolor: "#F1948A"}} button onClick={()=> showNotification(item)}>
                             <IconButton><CollectionsBookmarkIcon /></IconButton>
                             {/*change here propertyId*/}
-                            <ListItemText  ><p style={{ fontFamily: "Lucida Handwriting" }}>Booking No {item.propertyID}</p></ListItemText>
+                            <ListItemText  ><p style={{ fontFamily: "Lucida Handwriting" }}>Notification No {item.propertyID}</p></ListItemText>
                         </ListItem>
                     </List>
                 </div>
