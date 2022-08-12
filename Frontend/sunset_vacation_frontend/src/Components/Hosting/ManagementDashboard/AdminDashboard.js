@@ -96,6 +96,9 @@ export default function AdminDashboard(props) {
     const [categories, setCategories] = useState([]);
     const [subcategories, setSubcategories] = useState([]);
     const [properties, setProperties] = useState([]);
+    const [message, setMessage] = useState("");
+    const [propertyId, setPropertyId] = useState(0);
+    const [edit, setEdit] = useState(false);
 
     React.useEffect(() => {
         fetch(`http://localhost:8000/hosting/facilityCategories/`)
@@ -289,6 +292,68 @@ export default function AdminDashboard(props) {
             })
 
     }
+    function handleSubmitApprove(event) {
+        setMessage(event.target.value);
+        const data={
+            message: message
+        }
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        };
+        setMessage("");
+        setEdit(!edit);
+        fetch(`http://localhost:8000/hosting/approve/`+propertyId, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setProperties(response.properties)
+            })
+            .catch((err) => {
+                alert(err.message);
+            })
+    }
+
+    function handleSubmitReject(event) {
+        setMessage(event.target.value);
+        const data = {
+            message: message
+        }
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        };
+        setMessage("");
+        setEdit(!edit);
+        fetch(`http://localhost:8000/hosting/reject/`+propertyId, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setProperties(response.properties)
+            })
+            .catch((err) => {
+                alert(err.message);
+            })
+
+    }
 
     function showAdmin(props) {
         return (
@@ -360,6 +425,24 @@ export default function AdminDashboard(props) {
                             />
                             <Button variant="contained" onClick={addFacility}
                                     sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 5}} endIcon={<DesktopMacIcon sx={{ color: 'white' }}/>}>Add Facility</Button>
+                            <label><p style={{
+                                "fontFamily": "Lucida Handwriting",
+                                "fontSize": "15px",
+                                "color": "black"
+                            }}>Property Status Update</p></label>
+                            <TextField
+                                disabled={!edit}
+                                sx={{minWidth: 460 }}
+                                id="outlined-textarea"
+                                multiline
+                                rows={2}
+                                label="Description"
+                                onChange={changeDescription}/>
+                            <br/>
+                            <Button  variant="contained" onClick={handleSubmitApprove} disabled={!edit}
+                                     sx={{bgcolor: '#282c34', marginTop: 2}} endIcon={<ThumbUpOffAltIcon sx={{ color: 'white' }}/>}>Approve</Button>
+                            <Button variant="contained" onClick={handleSubmitReject}  disabled={!edit} endIcon={<ThumbDownOutlinedIcon sx={{ color: 'white' }} />}
+                                    sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 4}}>Request Change</Button>
                         </Grid>
                         <Grid item xs={4}>
                             {properties.map((item,index)=>{
