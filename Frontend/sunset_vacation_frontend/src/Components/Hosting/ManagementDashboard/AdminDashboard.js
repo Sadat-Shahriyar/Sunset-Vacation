@@ -95,6 +95,7 @@ export default function AdminDashboard(props) {
     const [facility, setFacility] = useState("");
     const [categories, setCategories] = useState([]);
     const [subcategories, setSubcategories] = useState([]);
+    const [properties, setProperties] = useState([]);
 
     React.useEffect(() => {
         fetch(`http://localhost:8000/hosting/facilityCategories/`)
@@ -127,6 +128,23 @@ export default function AdminDashboard(props) {
             .then((response) => response.json())
             .then((response) => {
                 setSubcategories(response.subcategories)
+            })
+            .catch((err) => {
+                alert(err.message);
+            })
+        fetch(`http://localhost:8000/hosting/pendingProperties/`)
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setProperties(response.properties)
             })
             .catch((err) => {
                 alert(err.message);
@@ -287,7 +305,7 @@ export default function AdminDashboard(props) {
                 >
                     <Grid container>
                         <Grid item xs={1}/>
-                        <Grid item xs={11}>
+                        <Grid item xs={6}>
                             <label><p style={{
                                 "fontFamily": "Lucida Handwriting",
                                 "fontSize": "15px",
@@ -343,6 +361,23 @@ export default function AdminDashboard(props) {
                             <Button variant="contained" onClick={addFacility}
                                     sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 5}} endIcon={<DesktopMacIcon sx={{ color: 'white' }}/>}>Add Facility</Button>
                         </Grid>
+                        <Grid item xs={4}>
+                            {properties.map((item,index)=>{
+                                return( <div key={index}>
+                                        <List  sx={{  width: '100%', bgcolor: 'background.paper', marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} component="nav" aria-label="mailbox folders">
+                                            <Divider />
+                                            <ListItem sx={{ bgcolor: "#F1948A"}}  >
+                                                {item.propertyID} <CheckBoxOutlineBlankOutlinedIcon/>
+                                                {/*change here propertyId*/}
+                                                <ListItemText><p style={{ fontFamily: "Lucida Handwriting" }}>{item.title}</p></ListItemText>
+                                                <IconButton onClick={()=> showProperty(item)} sx={{color:'black'}}><HomeOutlinedIcon/></IconButton>
+                                                <IconButton onClick={ () => editStatus(item)} sx={{color:'black'}}><RateReviewOutlinedIcon/></IconButton>
+                                            </ListItem>
+                                        </List>
+                                    </div>
+                                )})}
+                        </Grid>
+                        <Grid item xs={1}/>
                     </Grid>
                 </Box>
             </div>
