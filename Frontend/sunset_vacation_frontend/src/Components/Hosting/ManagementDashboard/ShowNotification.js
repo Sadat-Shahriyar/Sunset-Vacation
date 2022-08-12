@@ -24,7 +24,7 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 
-export default function ShowReservation(props) {
+export default function ShowNotification(props) {
     let navigate = useNavigate();
 
     const [booking, setBooking] = React.useState({})

@@ -148,6 +148,9 @@ export default function Homepage(props) {
   const becomeAHostButton = (event) => {
     navigate("/hosting");
   }
+  const AdminButton = (event) => {
+    navigate("/admin");
+  }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -298,7 +301,7 @@ export default function Homepage(props) {
                
               </Badge>
             </IconButton> */}
-          
+            <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>
             <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>
             {/* <IconButton
               size="large"
