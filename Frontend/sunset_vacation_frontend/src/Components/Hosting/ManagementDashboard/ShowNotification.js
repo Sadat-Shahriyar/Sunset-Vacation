@@ -27,11 +27,11 @@ import CardContent from '@mui/material/CardContent';
 export default function ShowNotification(props) {
     let navigate = useNavigate();
 
-    const [booking, setBooking] = React.useState({})
+    const [notification, setNotification] = React.useState({})
 
     React.useEffect(() => {
         // change here propertyId
-        fetch('http://localhost:8000/hosting/booking/' + props.booking.propertyID, {
+        fetch('http://localhost:8000/hosting/notification/' + props.notification.propertyID, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,9 +48,9 @@ export default function ShowNotification(props) {
             })
             .then((response) => response.json())
             .then((response) => {
-                console.log(response.booking)
-                setBooking(prevState => response.booking)
-                console.log(booking)
+                console.log(response.notification)
+                setNotification(prevState => response.notification)
+                console.log(notification)
             })
             .catch((err) => {
                 // alert(err.message);
@@ -65,7 +65,7 @@ export default function ShowNotification(props) {
 
             <Typography sx={{marginTop: "50px", fontFamily: "Lucida Handwriting"}} align='center' variant="h5"
                         component="h2">
-                Booking No {props.booking.propertyID}
+                Notification {props.notification.propertyID}
             </Typography>
             <Card sx={{
                 width: '35%',
