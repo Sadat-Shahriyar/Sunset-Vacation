@@ -17,6 +17,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { useNavigate } from "react-router-dom";
+import { Card, CardContent, List, ListItem, ListItemText } from "@mui/material";
 
 
 const theme = createTheme();
@@ -29,7 +30,24 @@ export default function CheckoutForm(props){
     const [cardholderName, setCardHolderName] = useState('');
     const stripe = useStripe();
     const elements = useElements();// Handle real-time validation errors from the CardElement.
+    // const [totalOffer, setTotalOffer] = useState(0);
+
     console.log(props.propertyDetails);
+    let totalOfferAmount = 0;
+
+    // React.useEffect(()=>{
+    //   // if(props.propertyDetails != null)        
+    //     for(let i=0; i< props.propertyDetails.offers.length; i++){
+    //       let x =  props.propertyDetails.offers[i];
+    //       let offerStartDate = new Date(x.startDate);
+    //       let offerEndDate = new Date(x.endDate);
+    
+    //       if( props.checkInDate.getDate() - offerStartDate.getDate() >= 0 && offerEndDate.getDate() - props.checkOutDate.getDate()>= 0){
+    //         availableOffers.push(x);
+    //       }
+    //     }
+    // },[props])
+    
     const handleChange = (event) => {
         if (event.error) {
             setError(event.error.message);
@@ -66,7 +84,7 @@ export default function CheckoutForm(props){
     }
 
     const handleSubmit = async (event) => {
-        let paymentAmount = (props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost
+        let paymentAmount = (props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost;
         event.preventDefault();
         const card = elements.getElement(CardElement);
 
@@ -78,7 +96,7 @@ export default function CheckoutForm(props){
 
         console.log(paymentMethod);
 
-        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount, discount:0,
+        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount-totalOfferAmount, discount:0,
                        checkInDate:props.checkInDate.toISOString().split('.')[0] + 'Z', 
                         checkOutDate:props.checkOutDate.toISOString().split('.')[0] + 'Z',
                          noOfGuests:props.adults+props.children,
@@ -105,9 +123,13 @@ export default function CheckoutForm(props){
     //     </form>
     // );
 
+    let offerIdx = 0;
+
+    
+
     return (
         <ThemeProvider theme={theme}>
-          <Container component="main" maxWidth="xs">
+          <Container component="main">
             <CssBaseline />
             <Box
               sx={{
@@ -123,6 +145,69 @@ export default function CheckoutForm(props){
               <Typography component="h1" variant="h5">
                 Complete payment
               </Typography>
+              <Card sx={{width:1000}}>
+                <CardContent>
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>Check in date: </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkInDate.getDate()}</Typography>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>Check out date: </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkOutDate.getDate()}</Typography>
+                    </Grid>
+                  
+                  {props.propertyDetails === null ? null : 
+                  <div> {/*this div causing prolem in aligment need to fix it */}
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>Per night cost: </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.propertyDetails.property.perNightCost}</Typography>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>Total cost: </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{(props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost}</Typography>
+                    </Grid>
+                    <List sx={{width:1000, alignContent:'start'}}>
+                      {props.propertyDetails.offers.map((off) => {
+                        offerIdx++;
+                        let offerStartDate = new Date(off.startDate);
+                        let offerEndDate = new Date(off.endDate);
+                        if( props.checkInDate.getDate() - offerStartDate.getDate() >= 0 && offerEndDate.getDate() - props.checkOutDate.getDate()>= 0){
+                          totalOfferAmount = totalOfferAmount + off.amount;
+                          return(
+                            <ListItem id={offerIdx} sx={{width:500, fontSize:16}}>
+                                <Typography variant="body1" sx={{width:500, fontSize:16}}>offer {offerIdx}: {off.amount}</Typography>
+                            </ListItem>
+                          );
+                        } 
+                        else{
+                          return(<div></div>);
+                        }
+                        
+                      })}
+                    </List>
+
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>Final amount: </Typography> 
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{(props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost - totalOfferAmount}</Typography> 
+                    </Grid>
+
+                  </div>}
+                  </Grid>
+                </CardContent>
+              </Card>
               <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
                   margin="normal"
@@ -157,7 +242,7 @@ export default function CheckoutForm(props){
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, width:500 }}
+                  sx={{ mt: 3, mb: 2, width:1000 }}
                 >
                   Submit payment
                 </Button>

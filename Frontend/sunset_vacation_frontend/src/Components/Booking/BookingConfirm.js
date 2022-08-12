@@ -24,6 +24,17 @@ export default function BookingConfirm(props){
       navigate('/');
     }
 
+    React.useEffect(()=>{
+      props.setCheckInDate(new Date());
+      let today = new Date();
+      today.setDate(today.getDate() + 5);
+      let tempDate = new Date(today);
+      props.setCheckOutDate(tempDate);
+      props.setAdults(1);
+      props.setChildren(0);
+      props.setInfants(0);
+    },[props]);
+
     return (
         <Box sx={{ flexGrow: 1 }}>
           <Grid container>

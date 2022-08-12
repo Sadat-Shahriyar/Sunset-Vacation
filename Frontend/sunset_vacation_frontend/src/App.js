@@ -67,6 +67,7 @@ function App() {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
+  const [offers, setOffers] = useState([]);
 
   // ******************************* end ********************************
 
@@ -76,6 +77,7 @@ function App() {
 
   //***********************************check out form***************************
   const [receipt, setReceipt] = useState("");
+  // ******************************* end ********************************
 
 
   function handleSetSelectedAmenityList (val)  {
@@ -197,6 +199,8 @@ function App() {
                 setLoggedIn = {(value)=>{setLoggedIn(value)}}
                 setUser = {(value) => {setUser(value)}}
                 setToken = {(t) => {setToken(t)}}
+                setOffers = {(val) => {setOffers(val)}}
+                offers = {offers}
               />
           } 
           />
@@ -222,6 +226,7 @@ function App() {
                 setUser = {(value) => {setUser(value)}}
                 setToken = {(t) => {setToken(t)}}
                 setReceipt={(val) => {setReceipt(val)}}
+                offers = {offers}
               />
             }
           />
@@ -230,6 +235,11 @@ function App() {
             element={
               <BookingConfirm
                 receipt={receipt}
+                setCheckInDate = {(val) => {setCheckInDate(val)}}
+                setCheckOutDate = {(val) => {setCheckOutDate(val)}}
+                setAdults = {(val) => {setAdults(val)}}
+                setChildren = {(val) => {setChildren(val)}}
+                setInfants = {(val) => {setInfants(val)}}
               />
             }
           />
