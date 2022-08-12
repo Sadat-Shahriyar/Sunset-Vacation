@@ -42,6 +42,20 @@ def addFacility(request):
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
+# Create your views here.
+@api_view(["GET"])
+def getPendingProperties(request):
+    try:
+        # change delete this portion
+        property = Property.objects.filter(published=True)
+        propertySerializer = PropertySerializer(property, many=True)
+        print(propertySerializer.data)
+        # change add code for fetching booking here by user
+        return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "405 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
 @api_view(["GET"])
 def getFacilityCategories(request):
     try:

@@ -8,6 +8,7 @@ urlpatterns = [
     path('addFacility/', views.addFacility),
     path('facilityCategories/', views.getFacilityCategories),
     path('facilitySubcategories/', views.getFacilitySubcategories),
+    path('pendingProperties/', views.getPendingProperties),
     path('propertylist/', views.getProperties),
     path('facilitylist/',views.getFacilities),
     path('insertOffer/',views.insertOffer),
