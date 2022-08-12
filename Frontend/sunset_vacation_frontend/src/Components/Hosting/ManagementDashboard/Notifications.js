@@ -78,10 +78,20 @@ export default function Notification(props) {
                 props.setflags("propertylist");
                 navigate('/showProperty/Redirect');
             });
-
-
     }
-
+    function  deleteNotification(notification) {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${props.token}` },
+            body: JSON.stringify()
+        };
+        fetch(`http://localhost:8000/hosting/deleteNotification/` + `${notification.id}`, requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                setNotifications(response.notifications)
+            });
+    }
 
 
     return (
@@ -96,10 +106,11 @@ export default function Notification(props) {
                 return( <div>
                     <List  sx={{  width: '60%', bgcolor: 'background.paper', marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} component="nav" aria-label="mailbox folders">
                         <Divider />
-                        <ListItem sx={{ bgcolor: "#F1948A"}} button onClick={()=> showNotification(item)}>
-                            <IconButton><CollectionsBookmarkIcon /></IconButton>
+                        <ListItem sx={{ bgcolor: "#F1948A"}}>
+                            <IconButton onClick={()=> showNotification(item)}><CollectionsBookmarkIcon /></IconButton>
                             {/*change here propertyId*/}
                             <ListItemText  ><p style={{ fontFamily: "Lucida Handwriting" }}>{item.title}</p></ListItemText>
+                            <IconButton onClick={()=>{deleteNotification(item)}}><DeleteIcon/></IconButton>
                         </ListItem>
                     </List>
                 </div>

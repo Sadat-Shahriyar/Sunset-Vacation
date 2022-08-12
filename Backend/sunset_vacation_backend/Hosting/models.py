@@ -236,13 +236,13 @@ class Notification(models.Model):
 
     user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
     title = models.CharField(
-        max_length=100,
+        max_length=200,
         default=None,
         blank=True,
         null=True
     )
     text=models.CharField(
-        max_length=100,
+        max_length=200,
         default=None,
         blank=True,
         null=True

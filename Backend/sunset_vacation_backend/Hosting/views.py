@@ -107,7 +107,7 @@ def getNotification(request):
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
         # change delete this portion
-        notification = Notification.objects.filter(user_id_id=user)
+        notification = Notification.objects.filter(user_id_id=user, marked=False)
         notificationSerializer = NotificationSerializer(notification, many=True)
         # change add code for fetching booking here by user
         return Response({"notifications": notificationSerializer.data}, status=status.HTTP_200_OK)
@@ -130,6 +130,20 @@ def getNotificationId(request, notification_id):
         return Response({"notification": notificationSerializer.data}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["DELETE"])
+def deleteNotification(request, notification_id):
+    notification = Notification.objects.get(id=notification_id)
+    notification.marked=True
+    notification.save()
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+    # change delete this portion
+    notification = Notification.objects.filter(user_id_id=user, marked=False)
+    notificationSerializer = NotificationSerializer(notification, many=True)
+    # change add code for fetching booking here by user
+    return Response({"notifications": notificationSerializer.data}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])

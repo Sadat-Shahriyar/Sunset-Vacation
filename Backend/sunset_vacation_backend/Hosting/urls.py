@@ -13,6 +13,7 @@ urlpatterns = [
     path('reject/<int:propertyId>',views.rejectProperty),
     path('notification/<int:notification_id>', views.getNotificationId),
     path('notification/', views.getNotification),
+    path('deleteNotification/<int:notification_id>', views.deleteNotification),
     path('propertylist/', views.getProperties),
     path('facilitylist/',views.getFacilities),
     path('insertOffer/',views.insertOffer),
