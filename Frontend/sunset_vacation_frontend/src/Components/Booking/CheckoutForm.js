@@ -26,6 +26,7 @@ export default function CheckoutForm(props){
     const navigate = useNavigate()
     const [error, setError] = useState(null);
     const [email, setEmail] = useState('');
+    const [cardholderName, setCardHolderName] = useState('');
     const stripe = useStripe();
     const elements = useElements();// Handle real-time validation errors from the CardElement.
     console.log(props.propertyDetails);
@@ -77,7 +78,12 @@ export default function CheckoutForm(props){
 
         console.log(paymentMethod);
 
-        saveStripInfo({email, payment_method_id: paymentMethod.id, amount: paymentAmount, discount:0, checkInDate:props.checkInDate.toISOString().split('.')[0] + 'Z', checkOutDate:props.checkOutDate.toISOString().split('.')[0] + 'Z', noOfGuests:props.adults+props.children, propertyID:props.propertyDetails.property.propertyID});
+        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount, discount:0,
+                       checkInDate:props.checkInDate.toISOString().split('.')[0] + 'Z', 
+                        checkOutDate:props.checkOutDate.toISOString().split('.')[0] + 'Z',
+                         noOfGuests:props.adults+props.children,
+                          propertyID:props.propertyDetails.property.propertyID,
+                        name_on_card: cardholderName});
 
     };
 
@@ -122,11 +128,25 @@ export default function CheckoutForm(props){
                   margin="normal"
                   required
                   fullWidth
+                  id="Card Holder Name"
+                  label="Card Holder Name"
+                  name="Card Holder Name"
+                  autoComplete="Card Holder Name"
+                  autoFocus
+                  onChange={(event) => { setCardHolderName(event.target.value)}}
+                  sx={{
+                    width:500
+                  }}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
                   id="email"
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  autoFocus
+                  onChange={(event) => { setEmail(event.target.value)}}
                   sx={{
                     width:500
                   }}

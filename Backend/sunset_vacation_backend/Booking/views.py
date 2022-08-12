@@ -49,7 +49,7 @@ def reserve(request):
     user = User.objects.get(id=user['id'])
 
     data = request.data
-    print(data['amount'], data['discount'], data['checkInDate'], data['checkOutDate'], data['noOfGuests'], data['propertyID'])
+    print(data['email'],data['payment_method_id'],data['amount'], data['discount'], data['checkInDate'], data['checkOutDate'], data['noOfGuests'], data['propertyID'],data['payment_method_id'],data['name_on_card'])
     email = data['email']
     payment_method_id = data['payment_method_id']
     extra_msg = '' # add new variable to response message  # checking if customer with provided email already exists
@@ -59,7 +59,7 @@ def reserve(request):
     if len(customer_data) == 0:
         # creating customer
         customer = stripe.Customer.create(
-        email=email, payment_method=payment_method_id)  
+        email=email, payment_method=payment_method_id, name=data['name_on_card'])  
     else:
         customer = customer_data[0]
         extra_msg = "Customer already existed." 
@@ -70,7 +70,7 @@ def reserve(request):
         currency='USD', # you can provide any currency you want
         amount=data['amount']*100,
         confirm=True
-    )     # it equals 9.99 PLN
+    )    
 
     # print(intent)
     # print(intent.charges.data[0].receipt_url)
