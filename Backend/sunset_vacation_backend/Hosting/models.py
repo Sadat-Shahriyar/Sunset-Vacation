@@ -105,7 +105,13 @@ class Property(models.Model):
         null=True
     )
 
-    published=models.BooleanField(default=False)
+    published = models.BooleanField(default=False)
+
+    approved = models.BooleanField(default=False)
+
+
+
+
 
 
 class Catagory(models.Model):
@@ -169,6 +175,7 @@ class Facility(models.Model):
         max_length=100,
         default=None,
         blank=False)
+    #spelling mistake
     catagory=models.CharField(
         max_length=100,
         default=None,
@@ -205,21 +212,28 @@ class Reviews(models.Model):
         null=True
     )
 class Notification(models.Model):
+
     user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
+    title = models.CharField(
+        max_length=100,
+        default=None,
+        blank=True,
+        null=True
+    )
     text=models.CharField(
         max_length=100,
         default=None,
-        blank=False,
+        blank=True,
         null=True
     )
     link=models.CharField(
         max_length=100,
         default=None,
-        blank=False,
+        blank=True,
         null=True
     )
     time=models.DateTimeField(
-        default=None,
+        default=datetime.now,
         null=True
     )
     marked=models.BooleanField(default=False)
