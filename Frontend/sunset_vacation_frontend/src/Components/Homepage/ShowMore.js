@@ -19,30 +19,14 @@ import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import SearchNav from './SearchNav';
 import Rating from '@mui/material/Rating';
 
-export default function SearchResult(props) {
+export default function ShowMore(props) {
 
   const [properties, setProperties] = React.useState([])
   
 
   React.useEffect(()=>{
-    fetch(`http://localhost:8000/hosting/getSearchResult/` + `${props.selectedFac}`)
-            .then((response) => {
-                if (response.ok) {
-                    return response
-                } else {
-                    let err = new Error(response.status + ": " + response.text);
-                    throw err;
-                }
-            })
-            .then((response) => response.json())
-            .then((response) => {
-              //props.setSearchResults(response.properties)
-              setProperties(response.properties)
-                console.log(response.properties)
-            })
-            .catch((err) => {
-                alert(err.message);
-            })
+    console.log(props)
+    setProperties(props.showMore.list)
   }, [])
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -276,7 +260,7 @@ export default function SearchResult(props) {
     {showNavBar(props)}
     {SearchNav(props)}
     <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
-            Search result for "{props.selectedFac}"
+            View more result for "{props.showMore.title}"
           </Typography>
     {CheckResult(props)}
    </div>

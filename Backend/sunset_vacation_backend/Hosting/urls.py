@@ -37,4 +37,7 @@ urlpatterns = [
     path('getSearchResult/<str:searchword>',views.getSearchResult),
     path('getCatagoryForSearch/',views.getCatagoryForSearch),
     path('getPropertyCatagory/',views.getPropertyCatagory),
+    path('getUserStaticSearch/',views.getUserStaticSearch),
+    path('getGuestList/',views.getGuestList),
+    
 ]

@@ -11,6 +11,7 @@ from Authentication.serializers import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.postgres.search import  SearchQuery, SearchRank, SearchVector,TrigramSimilarity
+from psycopg2.extras import NumericRange
 import datetime
 
 # Create your views here.
@@ -318,14 +319,15 @@ def getCategoryList(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def getFacilityList(request):
     amenities = Facility.objects.filter(catagory="amenity").values_list("facility_name")
     guestsFavourite = Facility.objects.filter(catagory="guestFav").values_list("facility_name")
     safetyItems = Facility.objects.filter(catagory="safety").values_list("facility_name")
-    print(amenities)
-    print(guestsFavourite)
-    print(safetyItems)
+   
+    # print(amenities)
+    # print(guestsFavourite)
+    # print(safetyItems)
     if amenities.exists() and guestsFavourite.exists() and safetyItems.exists():
         return Response(
             {"amenities": amenities, "guestsFavourite": guestsFavourite, "safetyItems": safetyItems, "success": True},
@@ -544,7 +546,7 @@ def updatePhotoUploadHelper(request):
         photos_serializer = PropertyPhotoSerializer(photo)
         return Response({"uploaded_photo": photos_serializer.data, "success": True}, status=status.HTTP_201_CREATED)
     else:
-        print('error', photos_serializer.errors)
+        #print('error', photos_serializer.errors)
         return Response({"error": photos_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -602,7 +604,7 @@ def addReview(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def insertOffer(request):
-    print(request.data)
+    #print(request.data)
     propertyInfo = Property.objects.get(propertyID=request.data["property_id"]);
     
     offer = Offer.objects.create(
@@ -614,25 +616,98 @@ def insertOffer(request):
 
     return Response({"data": "sent"}, status=status.HTTP_200_OK)
 
+def calculateRating():
+    properties=Property.objects.all()
+    propertySerializer = PropertySerializer(properties, many=True)
+    propertyRating=[]
+    for property in propertySerializer.data:
+        ratings=Ratings.objects.filter(propertyID=property['propertyID'])
+        ratings=RatingsSerializer(ratings,many=True)
+        total=0
+        count=len(ratings.data)        
+        for r in ratings.data:
+            total=total+r['rating']
+        rating=round(total/count)
+        dict={"propertyID":property['propertyID'],"rating":rating}
+        propertyRating.append(dict)
+    return propertyRating
+
+
 
 @api_view(["GET"])
-
 def Recommendations(request):
-    facilities=['gym','pool']
-    vector=(
-        TrigramSimilarity('description',searchword)
-        +TrigramSimilarity('facility_name',searchword)
-    )
-    #s=PropertyFacilities.objects.filter(description__contains='Available')
-    #s=PropertyFacilities.objects.filter(description__unaccent__icontains='Available')
-    #s=PropertyFacilities.objects.annotate(search=SearchVector('facility_name','description'),).filter(search='toast*')
-    s=PropertyFacilities.objects.annotate( similarity=vector).filter(similarity__gt=0.3).order_by('-similarity')
     
+    propertyRating=calculateRating()
+    print(propertyRating)
+    
+    propertyList=[]
+
+    #------------offer--------------
+    offers=Offer.objects.all()
+    offerSerializer=OfferSerializer(offers,many=True)
+    offers=sorted(offerSerializer.data, key=lambda d:d['amount'],reverse=True)
+    offerList=[]
+    for offer in offers:
+        properties=Property.objects.filter(propertyID=offer["propertyID"])
+        propertySerializer = PropertySerializer(properties, many=True)
+    
+        for property in propertySerializer.data:
+            if property['published'] == True:
+                photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
+                photoSerializer = PropertyPhotoSerializer(photos, many=True)
+                property['images'] = photoSerializer.data
+                idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+                property['rating']=propertyRating[idx]['rating']
+                if property not in offerList:
+                    offerList.append(property)
+    
+    dict={"title": "offer","list": offerList}
+    propertyList.append(dict)
+
+    #-----------facility==pool---------------
+    vector=(
+        TrigramSimilarity('description','pool')
+        +TrigramSimilarity('facility_name','pool')
+    )
+    poolList=[]
+    s=PropertyFacilities.objects.annotate( similarity=vector).filter(similarity__gt=0.3).order_by('-similarity')
     p =PropertyFacilitiesSerializer(s, many=True)
-    print(p.data)
+    for f in p.data:
+        properties=Property.objects.filter(propertyID=f["propertyID"])
+        propertySerializer = PropertySerializer(properties, many=True)
+        for property in propertySerializer.data:
+            photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
+            photoSerializer = PropertyPhotoSerializer(photos, many=True)
+            property['images'] = photoSerializer.data
+            idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+            property['rating']=propertyRating[idx]['rating']
+            if property not in poolList:
+                poolList.append(property)
+    dict={"title": "pool","list" :poolList}
+    propertyList.append(dict)
+
+    #-----------rating--------------
+    rating=Ratings.objects.all()
+    ratingSerializer=RatingsSerializer(rating,many=True)
+    ratings=sorted(ratingSerializer.data, key=lambda d: d['rating'],reverse=True)
+    ratingList=[]
+    for r in ratings:
+        properties=Property.objects.filter(propertyID=r["propertyID"])
+        propertySerializer = PropertySerializer(properties, many=True)
+        for property in propertySerializer.data:
+            photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
+            photoSerializer = PropertyPhotoSerializer(photos, many=True)
+            property['images'] = photoSerializer.data
+            idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+            property['rating']=propertyRating[idx]['rating']
+            if property not in ratingList:
+                ratingList.append(property)
+    dict={"title":"rating","list": ratingList}
+    propertyList.append(dict)
+
     
 
-    return Response({"data": "data"},status=status.HTTP_200_OK)
+    return Response({"properties": propertyList},status=status.HTTP_200_OK)
 
 def getCatagoryBasedFacilityForSearch(keyword):
     catagory= Facility.objects.filter(subcatagory=keyword).values_list("facility_name")
@@ -664,13 +739,16 @@ def getCatagoryForSearch(request):
     dict=getCatagoryBasedFacilityForSearch("Kitchen and dining")
     catagoryBasedFacility.append(dict)
     
-    print(catagoryBasedFacility)
+    #print(catagoryBasedFacility)
 
 
     return Response({"catagoryBasedFacility":catagoryBasedFacility},status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def getSearchResult(request,searchword):
+    propertyRating=calculateRating()
+    print(propertyRating)
+  
     vector=(
         TrigramSimilarity('description',searchword)
         +TrigramSimilarity('facility_name',searchword)
@@ -687,9 +765,11 @@ def getSearchResult(request,searchword):
             photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
             photoSerializer = PropertyPhotoSerializer(photos, many=True)
             property['images'] = photoSerializer.data
+            idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+            property['rating']=propertyRating[idx]['rating']
             if property not in allRelatedProperties:
                 allRelatedProperties.append(property)
-                print(property['title'])
+                #print(property['title'])
         
            
     
@@ -729,5 +809,151 @@ def getPropertyCatagory(request):
     catagories=[]
     for c in catagorySerializer.data:
         catagories.append(c["description"])
-    print(catagories)
+    
     return Response({"catagories":catagories},status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def getUserStaticSearch(request):
+    facility=request.data['facility']
+    minprice=float(request.data['minprice'])
+    maxprice=float(request.data['maxprice'])
+    placetypes=request.data['placeType']
+    propertytypes=request.data['propertyType']
+
+    propertyRating=Ratings.objects.all()
+    propertyRating=RatingsSerializer(propertyRating,many=True)
+    propertyRating=propertyRating.data
+    
+    propertyList=[]
+    propertyIDList=[]
+    for f in facility:
+        vector=(
+        TrigramSimilarity('description',f)
+        +TrigramSimilarity('facility_name',f)
+        )
+        s=PropertyFacilities.objects.annotate( similarity=vector).filter(similarity__gt=0.3).order_by('-similarity')
+        p =PropertyFacilitiesSerializer(s, many=True)
+        for x in p.data:
+            id=x['propertyID']
+            properties=Property.objects.filter(propertyID=id)
+            propertySerializer = PropertySerializer(properties,many=True)
+            for property in propertySerializer.data:
+                if id in propertyIDList:
+                    idx=next((index for (index,d) in enumerate(propertyList) if d['propertyID'] == id),None)
+                    propertyList[idx]['count']=propertyList[idx]['count']+1
+                else:                
+                    photos = PropertyPhotos.objects.filter(property_id=id)
+                    photoSerializer = PropertyPhotoSerializer(photos, many=True)                
+                    property['images'] = photoSerializer.data
+                    idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+                    property['rating']=propertyRating[idx]['rating']
+                    property['count']=1
+                    propertyIDList.append(id)
+                    propertyList.append(property)           
+      
+
+    for placeType in placetypes:
+        place=Property.objects.filter(entirePrivateOrShared=placeType)
+        placeSerializer=PropertySerializer(place,many=True)
+        for property in placeSerializer.data:
+            id=property['propertyID']
+            if id in propertyIDList:
+                idx=next((index for (index,d) in enumerate(propertyList) if d['propertyID'] == id),None)
+                propertyList[idx]['count']=propertyList[idx]['count']+1
+            else:                
+                photos = PropertyPhotos.objects.filter(property_id=id)
+                photoSerializer = PropertyPhotoSerializer(photos, many=True)                
+                property['images'] = photoSerializer.data
+                idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+                property['rating']=propertyRating[idx]['rating']
+                property['count']=1
+                propertyIDList.append(id)
+                propertyList.append(property)   
+    
+    for propertyType in propertytypes:
+        place=Property.objects.filter(catagory=propertyType)
+        placeSerializer=PropertySerializer(place,many=True)
+        for property in placeSerializer.data:
+            id=property['propertyID']
+            if id in propertyIDList:
+                idx=next((index for (index,d) in enumerate(propertyList) if d['propertyID'] == id),None)
+                propertyList[idx]['count']=propertyList[idx]['count']+1
+            else:                
+                photos = PropertyPhotos.objects.filter(property_id=id)
+                photoSerializer = PropertyPhotoSerializer(photos, many=True)                
+                property['images'] = photoSerializer.data
+                idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+                property['rating']=propertyRating[idx]['rating']
+                property['count']=1
+                propertyIDList.append(id)
+                propertyList.append(property)   
+
+    properties=Property.objects.filter(perNightCost__contained_by=NumericRange(minprice,maxprice))
+    propertySerailizer=PropertySerializer(properties,many=True)
+    print(propertySerailizer.data)
+    for property in propertySerailizer.data:
+        id=property['propertyID']
+        if id in propertyIDList:
+            idx=next((index for (index,d) in enumerate(propertyList) if d['propertyID'] == id),None)
+            propertyList[idx]['count']=propertyList[idx]['count']+1
+        else:                
+            photos = PropertyPhotos.objects.filter(property_id=id)
+            photoSerializer = PropertyPhotoSerializer(photos, many=True)                
+            property['images'] = photoSerializer.data
+            idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+            property['rating']=propertyRating[idx]['rating']
+            property['count']=1
+            propertyIDList.append(id)
+            propertyList.append(property) 
+    propertyList=sorted(propertyList, key=lambda d: d['count'],reverse=True)       
+    
+
+    for f in propertyList:
+        print(f['title'],' ',f['count'])  
+    
+    return Response({"properties":propertyList},status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def getGuestList(request):
+    guestList=[]
+    data=request.data['body']
+    guest=data["guest"]
+    property_id=data["property"]
+
+    for g in guest:
+        if g == 'All guests':
+            print('all')
+        elif g == 'Recently visited':
+            print('recent')
+        elif g == 'Most frequently visted':
+            print('most')
+        else:
+            rating=Ratings.objects.filter(propertyID=property_id)
+            rating=RatingsSerializer(rating,many=True)
+            rating=sorted(rating.data, key=lambda d: d['rating'],reverse=True)
+            list=[]
+            if len(rating) >2:
+                for r in rating[0:2]:
+                    user=User.objects.get(id=r['user_id'])
+                    user=UserSerializer(user,many=True)
+                    user=user.data[0]
+                    user['rating']=r['rating']
+                    if user not in list:
+                        list.append(user)
+            else:
+                for r in rating:
+                    user=User.objects.filter(id=r['user_id'])
+                    user=UserSerializer(user,many=True)
+                    user=user.data[0]
+                    user['rating']=r['rating']
+                    if user not in list:
+                        list.append(user)
+           
+            dict={"guest":g,"list":list}
+            guestList.append(dict)
+    print(guestList)
+            
+    
+    return Response({"list":guestList},status=status.HTTP_200_OK)
+    

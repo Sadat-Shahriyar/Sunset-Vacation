@@ -19,30 +19,32 @@ import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import SearchNav from './SearchNav';
 import Rating from '@mui/material/Rating';
 
-export default function SearchResult(props) {
+export default function UserStaticSearch(props) {
 
-  const [properties, setProperties] = React.useState([])
+  // const [properties, setProperties] = React.useState([])
   
-
   React.useEffect(()=>{
-    fetch(`http://localhost:8000/hosting/getSearchResult/` + `${props.selectedFac}`)
-            .then((response) => {
-                if (response.ok) {
-                    return response
-                } else {
-                    let err = new Error(response.status + ": " + response.text);
-                    throw err;
-                }
-            })
-            .then((response) => response.json())
-            .then((response) => {
-              //props.setSearchResults(response.properties)
-              setProperties(response.properties)
-                console.log(response.properties)
-            })
-            .catch((err) => {
-                alert(err.message);
-            })
+    
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json',
+       },
+      body: JSON.stringify(props.userStaticSearch)
+    };
+   
+    fetch(`http://localhost:8000/hosting/getUserStaticSearch/` , requestOptions)
+    .then((response) => {
+      if(response.ok) return response;
+      else{
+        let err = new Error(response.status + ": " + response.statusText);
+        throw err;
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      props.setSearchResults(data.properties)
+      console.log("response data: ",data);
+    });
   }, [])
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -229,7 +231,7 @@ export default function SearchResult(props) {
 
         return(
           <Grid container>
-             {properties.map((property)=>(
+             {props.searchresults.map((property)=>(
                 <Grid item xs={2.5} key={property.propertyID}>
                 <Card sx={{ maxWidth: 345, maxHeight:500, m:3}}>
                 <CardMedia
@@ -263,8 +265,9 @@ export default function SearchResult(props) {
         )
     }
   function CheckResult(props){
-    console.log("length:",properties.length)
-    if(properties.length > 0){
+    
+    
+    if(props.searchresults.length > 0){
         return <div>{showProperties(props)}</div>
     }else{
         return <div>{NoResultFound(props)}</div>
@@ -276,7 +279,7 @@ export default function SearchResult(props) {
     {showNavBar(props)}
     {SearchNav(props)}
     <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
-            Search result for "{props.selectedFac}"
+            Search result ...
           </Typography>
     {CheckResult(props)}
    </div>

@@ -554,6 +554,7 @@ setAnchorEl3(null);
                 props.setLoginRedirection('/')
                 navigate("/login");
               }}
+
             >
               <AccountCircle />
             </IconButton>
