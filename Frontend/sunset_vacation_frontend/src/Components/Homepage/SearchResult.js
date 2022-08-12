@@ -17,12 +17,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
 import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import SearchNav from './SearchNav';
-
-
-
-
-
-
+import Rating from '@mui/material/Rating';
 
 export default function SearchResult(props) {
 
@@ -41,7 +36,8 @@ export default function SearchResult(props) {
             })
             .then((response) => response.json())
             .then((response) => {
-                setProperties(response.properties)
+              //props.setSearchResults(response.properties)
+              setProperties(response.properties)
                 console.log(response.properties)
             })
             .catch((err) => {
@@ -243,12 +239,15 @@ export default function SearchResult(props) {
                   alt={property.title}
                 />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom sx={{fontFamily: 'Lucida Handwriting'}} variant="h5" component="div">
                     {property.title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {property.description}
-                  </Typography>
+                  <Typography variant="body2" sx={{fontFamily: 'Lucida Handwriting'}} color="text.inherit">
+           $ {property.perNightCost} per night
+          </Typography>
+          <Typography variant="body2" >
+          <Rating name="half-rating-read" defaultValue={property.rating} precision={0.5} readOnly />
+          </Typography>
                 </CardContent>
                 </Card>
               </Grid>

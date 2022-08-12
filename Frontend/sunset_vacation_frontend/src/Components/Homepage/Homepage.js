@@ -540,9 +540,9 @@ setAnchorEl3(null);
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              //onClick={handleProfileMenuOpen}
               color="inherit"
-              //onClick={()=>{navigate("/login");}}
+              onClick={()=>{navigate("/login");}}
             >
               <AccountCircle />
             </IconButton>

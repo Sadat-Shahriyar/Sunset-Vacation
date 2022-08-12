@@ -16,96 +16,18 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import { Navigate, useNavigate } from 'react-router-dom';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
 import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
-import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import SearchNav from './SearchNav';
 import Rating from '@mui/material/Rating';
 
-function ViewAllProperties(propertyData){
-  // console.log(props.properties);
-  // let propertyData = [];
-  // if(props.properties.data != undefined)
-  //   propertyData = props.properties.data;
-
-  let properties = propertyData.map((property) => {
-    return(
-      <Grid item xs={2.5} key={property.propertyID}>
-        <Card sx={{ maxWidth: 345, maxHeight:500, m:2}}>
-        <CardMedia
-          component="img"
-          height="250"
-          image={property.images[0].photo_url}
-          alt={property.title}
-        />
-        <CardContent>
-          <Typography sx={{fontFamily: 'Lucida Handwriting'}} gutterBottom variant="h5" component="div">
-            {property.title}
-          </Typography>
-          <Typography variant="body2" sx={{fontFamily: 'Lucida Handwriting'}} color="text.inherit">
-           $ {property.perNightCost} per night
-          </Typography>
-          <Typography variant="body2" >
-          <Rating name="half-rating-read" defaultValue={property.rating} precision={0.5} readOnly />
-          </Typography>
-        </CardContent>
-        </Card>
-      </Grid>
-    );
-  })
-  // let properties = "hello"
-  return(
-    <Grid container>
-      {properties}
-    </Grid>
-  );
-}
-
-
-export default function SearchPage(props) {
+export default function ShowMore(props) {
 
   const [properties, setProperties] = React.useState([])
-  const [value, setValue] = React.useState(0);
-  const [selectedProperty, setSelectedProperty] = React.useState('');
-  const [offers,setOffers]=React.useState([]);
-  const [pool,setPool]=React.useState([]);
-  const [rating,setRating]=React.useState([]);
-  const [nearby,setNearby]=React.useState([]);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  
 
   React.useEffect(()=>{
-   
-    fetch(`http://localhost:8000/hosting/recommandations/` )
-    .then((response) => {
-      if (response.ok) {
-        return response
-      }
-      else {
-        let err = new Error(response.status + ": " + response.text);
-        throw err;
-      }
-    })
-    .then((response) => response.json())
-    .then((response) => {
-      
-      setAllProperties(response.properties)
-      
-    })
-    .catch((err) => {
-      alert(err.message);
-    })
+    console.log(props)
+    setProperties(props.showMore.list)
   }, [])
-
-  function setAllProperties(properties){
-    var p=properties.find(element => element["title"] === 'pool');        
-    setPool(p.list);
-    p=properties.find(element => element["title"] === 'offer'); 
-    setOffers(p.list)
-    p=properties.find(element => element["title"] === 'rating'); 
-    setRating(p.list);
-    
-  }
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -287,62 +209,60 @@ export default function SearchPage(props) {
       </Box>
     )
   }
-  function handleShowMore(description,list){
-      var dict={'title': description, 'list': list}
-      console.log(dict)
-      props.setShowMore(dict);
-
-       navigate('/showmore');
-  }
-  function show4property(list){
-    if(list.length >4){
-      return <div>{ViewAllProperties(list.slice(0,4))}</div>
-    }else{
-      return <div>{ViewAllProperties(list)}</div>
-    }
-  }
-  function showMore(description,list){
-    if(list.length >4){
-      return <Button sx={{mt: 30,ml: -25}} variant='contained' color='inherit' endIcon={<DoubleArrowIcon/>} onClick={(event)=>{handleShowMore(description,list)}} >show more</Button>
-    }else{
-        return <div></div>
-    }
-  }
-  function show(description,list){
-    return(
-     <div>
-      <Grid container>
-      <Grid item xs={11}>
-       <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
-     {description}
-    </Typography>
-    {show4property(list)}
-       </Grid>
-       <Grid item xs={1}>
-        {showMore(description,list)}
-       </Grid>
-      </Grid>
-     </div>
-    );
-  }
       function showProperties(props){
-        
+
         return(
-          <Box position="static" sx={{ flexGrow: 1 }}>
-          
-          {show("Checkout the Best Rated Properties",rating)}         
-          {show("Grab the Best Offer",offers)}
-          {show("Splash in the pool",pool)}
-        </Box>
-    
+          <Grid container>
+             {properties.map((property)=>(
+                <Grid item xs={2.5} key={property.propertyID}>
+                <Card sx={{ maxWidth: 345, maxHeight:500, m:3}}>
+                <CardMedia
+                  component="img"
+                  height="250"
+                  image={property.images[0].photo_url}
+                  alt={property.title}
+                />
+                <CardContent>
+                  <Typography gutterBottom sx={{fontFamily: 'Lucida Handwriting'}} variant="h5" component="div">
+                    {property.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{fontFamily: 'Lucida Handwriting'}} color="text.inherit">
+           $ {property.perNightCost} per night
+          </Typography>
+          <Typography variant="body2" >
+          <Rating name="half-rating-read" defaultValue={property.rating} precision={0.5} readOnly />
+          </Typography>
+                </CardContent>
+                </Card>
+              </Grid>
+             ))}
+          </Grid>
         );
       }
-  
+    function NoResultFound(props){
+        return(
+            <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
+           No result found
+          </Typography>
+        )
+    }
+  function CheckResult(props){
+    console.log("length:",properties.length)
+    if(properties.length > 0){
+        return <div>{showProperties(props)}</div>
+    }else{
+        return <div>{NoResultFound(props)}</div>
+    }
+    
+  }
   return (
-   <div >
+   <div>
     {showNavBar(props)}
-     {SearchNav(props)} 
-    {showProperties(props)}
+    {SearchNav(props)}
+    <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
+            View more result for "{props.showMore.title}"
+          </Typography>
+    {CheckResult(props)}
    </div>
   );
 }

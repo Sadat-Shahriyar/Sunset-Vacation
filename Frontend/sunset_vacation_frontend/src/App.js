@@ -24,10 +24,12 @@ import OfferConfirmation from './Components/Hosting/Offer&Giftcard/OfferConfirma
 import ShowOffer from './Components/Hosting/Offer&Giftcard/ShowOffer';
 import SearchPage from './Components/Homepage/SearchPage';
 import SearchResult from './Components/Homepage/SearchResult';
-
+import UserStaticSearch from './Components/Homepage/UserStaticSearch';
 
 import Reservation from "./Components/Hosting/ManagementDashboard/Reservations";
 import ShowReservation from "./Components/Hosting/ManagementDashboard/ShowReservation";
+import ShowMore from './Components/Homepage/ShowMore';
+import GiftCard from './Components/Hosting/Offer&Giftcard/GiftCard';
 
 import * as React from 'react';
 export const axios_api = axios.create({
@@ -43,15 +45,17 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({})
   const [token, setToken] = useState("")
-  const [selectedProperty, setSelectedProperty] = useState('');
+  const [selectedPropertys, setSelectedProperty] = useState('');
   const [selectedFac,setSelectedFac]=useState('');
   const [display,setDisplay]=useState('none');
   var [flags,setFlags]=useState("");
+  const [userStaticSearch,setStaticUserSearch]=useState({});
   const [selectedAmenityList, setSelectedAmenityList] =useState([]);
-    const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
-    const [selectedSafetyItemList, setSelectedSafetyItemList] = useState([]);
-    const [selectedFacility,setSelectedFacility]=useState(0);
-  
+  const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
+  const [selectedSafetyItemList, setSelectedSafetyItemList] = useState([]);
+  const [selectedFacility,setSelectedFacility]=useState(0);
+  const [searchresults, setSearchResults] = useState([]);
+  const [showMore,setShowMore]=useState({});
     function handleSetSelectedAmenityList (val)  {
       let amenities = [...selectedAmenityList];
       let idx = amenities.indexOf(val);
@@ -148,9 +152,12 @@ function App() {
         <Route path='/createOffer' element={<Offer property={property} token={token}/>}/>
         <Route path='/showOffers' element={<ShowOffer property={property} token={token}/>}/>
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
-        <Route path='/search' element={<SearchPage  setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} token={token}/>}/>
-        <Route path='/searchResult' element={<SearchResult selectedFac={selectedFac}  setflags={(val)=>{setFlags(val)}}  setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
-        
+        <Route path='/search' element={<SearchPage setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
+        <Route path='/searchResult' element={<SearchResult setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
+        <Route path='/userStaticSearch' element={<UserStaticSearch setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
+        <Route path='/showmore'  element={<ShowMore setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
+        <Route path='/giftcard' element={<GiftCard token={token}/>}/>
+     
      </Routes>
    </BrowserRouter>
   );

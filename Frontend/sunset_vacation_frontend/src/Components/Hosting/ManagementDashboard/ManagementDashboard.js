@@ -5,9 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import {useNavigate} from 'react-router-dom';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import WbTwilightIcon from '@mui/icons-material/WbTwilight';
+
 import HomeIcon from '@mui/icons-material/Home';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -16,11 +14,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import {styled, alpha} from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import EditIcon from '@mui/icons-material/Edit';
-import Divider from '@mui/material/Divider';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LocalOfferRoundedIcon from '@mui/icons-material/LocalOfferRounded';
 import CardGiftcardRoundedIcon from '@mui/icons-material/CardGiftcardRounded';
@@ -160,7 +154,7 @@ export default function ManagementDashboard(props) {
                             <LocalOfferRoundedIcon/>
                             show all Offer
                         </MenuItem>
-                        <MenuItem onClick={handleClose} disableRipple>
+                        <MenuItem onClick={()=>{navigate('/giftcard')}} disableRipple>
                             <CardGiftcardRoundedIcon/>
                             Create Gift card
                         </MenuItem>

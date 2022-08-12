@@ -146,7 +146,7 @@ export default function SearchNav(props){
  // minHeight="100vh"
   mt="10px"
 >
-  <Filter display={props.display}/>
+  <Filter display={props}/>
   </Box>
      </div>
 
