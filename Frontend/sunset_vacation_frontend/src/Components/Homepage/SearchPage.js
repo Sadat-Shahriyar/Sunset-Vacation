@@ -15,8 +15,11 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Navigate, useNavigate } from 'react-router-dom';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
-import { Button, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+
+import { Button, Card, CardActions, CardContent, CardMedia, Grid } from '@mui/material';
+import { axios_api } from '../../App';
+
 import SearchNav from './SearchNav';
 import Rating from '@mui/material/Rating';
 
@@ -25,6 +28,11 @@ function ViewAllProperties(propertyData){
   // let propertyData = [];
   // if(props.properties.data != undefined)
   //   propertyData = props.properties.data;
+
+  const goToDetailsPage = (id) => {
+    props.setSelectedPropertyForDetails(id);
+    props.navigate("/booking/property/details");
+  }
 
   let properties = propertyData.map((property) => {
     return(
@@ -47,6 +55,9 @@ function ViewAllProperties(propertyData){
           <Rating name="half-rating-read" defaultValue={property.rating} precision={0.5} readOnly />
           </Typography>
         </CardContent>
+        <CardActions>
+          <Button size="large" onClick={() => {goToDetailsPage(property.propertyID)}}>View Details</Button>
+        </CardActions>
         </Card>
       </Grid>
     );
@@ -328,11 +339,13 @@ export default function SearchPage(props) {
       function showProperties(props){
         
         return(
+
           <Box position="static" sx={{ flexGrow: 1 }}>
           
           {show("Checkout the Best Rated Properties",rating)}         
           {show("Grab the Best Offer",offers)}
           {show("Splash in the pool",pool)}
+
         </Box>
     
         );

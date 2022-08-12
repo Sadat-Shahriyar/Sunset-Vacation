@@ -550,6 +550,30 @@ def updatePhotoUploadHelper(request):
         return Response({"error": photos_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addReview(request):
+    user = UserSerializer(request.user).data
+    print(user)
+    print(request.data["review"])
+    print(user['id'])
+    user = User.objects.get(id=user['id'])
+    prop = Property.objects.get(propertyID=int(request.data["property_id"][0]))
+    newReview = Reviews.objects.create(
+        user_id=user,
+        review=request.data["review"],
+        propertyID=prop
+    )
+
+    reviewsSerializer = ReviewsSerializer(newReview)
+    print(reviewsSerializer.data)
+
+    return Response({"hello": "hellow"}, status=status.HTTP_200_OK)
+
+
+
+
+    
 # @api_view(["GET"])
 # @permission_classes([IsAuthenticated])
 # def getSafetyItemList(request):

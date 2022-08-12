@@ -23,7 +23,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { Button, Card, CardContent, CardMedia, Grid, Paper } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Paper } from '@mui/material';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import MainSection from './MainSection';
@@ -116,6 +116,11 @@ function ViewAllProperties(props){
   if(props.properties.data != undefined)
     propertyData = props.properties.data;
 
+  const goToDetailsPage = (id) => {
+    props.setSelectedPropertyForDetails(id);
+    props.navigate("/booking/property/details");
+  }
+
   let properties = propertyData.map((property) => {
     return(
       <Grid item xs={3} key={property.propertyID}>
@@ -134,6 +139,9 @@ function ViewAllProperties(props){
             {property.description}
           </Typography>
         </CardContent>
+        <CardActions>
+          <Button size="large" onClick={() => {goToDetailsPage(property.propertyID)}}>View Details</Button>
+        </CardActions>
         </Card>
       </Grid>
     );
@@ -540,9 +548,13 @@ setAnchorEl3(null);
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              //onClick={handleProfileMenuOpen}
+              // onClick={handleProfileMenuOpen}
               color="inherit"
-              onClick={()=>{navigate("/login");}}
+              onClick={()=>{
+                props.setLoginRedirection('/')
+                navigate("/login");
+              }}
+
             >
               <AccountCircle />
             </IconButton>
@@ -566,6 +578,8 @@ setAnchorEl3(null);
       {renderMenu} */}
       <ViewAllProperties 
         properties={properties}
+        setSelectedPropertyForDetails = {props.setSelectedPropertyForDetails}
+        navigate = {(val) => {navigate(val)}}
       />
     </Box>
   );

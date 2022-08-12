@@ -30,6 +30,7 @@ urlpatterns = [
     path('photouploadhelper/', views.photoUpload, name="photouploadhelper"),
     path('updatephotouploadhelper/', views.updatePhotoUploadHelper, name="updatephotouploadhelper"),
     path('getallpropertiesforhomepage/', views.getAllPropertiesForHomePage, name='getallproperties'),
+    path('addreview/', views.addReview, name="addReview"),
     # path('getsafetyitems/', views.getSafetyItemList, name="getsafetyitemlist"),
     # path('propertylist/', views.getPropertyDetails),
     path('recommandations/', views.Recommendations),

@@ -32,20 +32,26 @@ import ShowMore from './Components/Homepage/ShowMore';
 import GiftCard from './Components/Hosting/Offer&Giftcard/GiftCard';
 
 import * as React from 'react';
+import PropertyDetailsForBooking from './Components/Booking/PropertyDetails';
+import PropertyReservation from './Components/Booking/PropertyReservation';
+import BookingConfirm from './Components/Booking/BookingConfirm';
+
+
+
 export const axios_api = axios.create({
   baseURL: BASE_URL
 })
 
 
-
-
 function App() {
   const [property, setProperty] = useState({});
   const [booking, setBooking] = useState({});
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState({})
-  const [token, setToken] = useState("")
-  const [selectedPropertys, setSelectedProperty] = useState('');
+
+  const [loggedIn, setLoggedIn] = useState(sessionStorage.getItem("loggedIn"));
+  const [user, setUser] = useState(sessionStorage.getItem("user"));
+  const [token, setToken] = useState(sessionStorage.getItem("token"));
+  const [selectedProperty, setSelectedProperty] = useState('');
+
   const [selectedFac,setSelectedFac]=useState('');
   const [display,setDisplay]=useState('none');
   var [flags,setFlags]=useState("");
@@ -54,21 +60,47 @@ function App() {
   const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
   const [selectedSafetyItemList, setSelectedSafetyItemList] = useState([]);
   const [selectedFacility,setSelectedFacility]=useState(0);
+
   const [searchresults, setSearchResults] = useState([]);
   const [showMore,setShowMore]=useState({});
-    function handleSetSelectedAmenityList (val)  {
-      let amenities = [...selectedAmenityList];
-      let idx = amenities.indexOf(val);
-      
-      if(idx === -1){
-       
-          amenities.push(val);
-          setSelectedAmenityList(amenities);
-      }
-      else{
-          amenities.splice(idx, 1);
-          setSelectedAmenityList(amenities);
-      }
+
+  
+
+// ************************* For booking details page *********************
+  const [selectedPropertyForDetails, setSelectedPropertyForDetails] = useState(-1);
+  const [checkInDate, setCheckInDate] = useState(new Date());
+  let today = new Date();
+  today.setDate(today.getDate() + 5);
+  let tempDate = new Date(today);
+  const [checkOutDate, setCheckOutDate] = useState(tempDate);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [infants, setInfants] = useState(0);
+
+  // ******************************* end ********************************
+
+  // ********************************* Login page redirection url*************************************
+  const [loginRedirection, setLoginRedirection] = useState('/')
+  // ******************************* end ********************************
+
+  //***********************************check out form***************************
+  const [receipt, setReceipt] = useState("");
+
+
+  function handleSetSelectedAmenityList (val)  {
+    let amenities = [...selectedAmenityList];
+    let idx = amenities.indexOf(val);
+    
+    if(idx === -1){
+    
+        amenities.push(val);
+        setSelectedAmenityList(amenities);
+    }
+    else{
+        amenities.splice(idx, 1);
+        setSelectedAmenityList(amenities);
+    }
+
   }
   
   function handleSetSelectedGuestsFavouriteItemList  (val) {
@@ -105,10 +137,10 @@ function App() {
   return (
    <BrowserRouter>
      <Routes>
-        <Route path='/' element={<Homepage />} />
-        <Route path='/login' element={<Login isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
-        <Route path='/signup' element={<Signup isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
-        <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
+        <Route path='/' element={<Homepage setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} />
+        <Route path='/login' element={<Login loginRedirection={loginRedirection} isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
+        <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
+        <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
         <Route path='/reservation' element={<Reservation token={token} setBooking={(booking)=>setBooking(booking)}/>}/>
          <Route path='/showReservation' element={<ShowReservation booking={booking} setBooking={(booking)=>setBooking(booking)} token={token}/>}/>
@@ -152,12 +184,72 @@ function App() {
         <Route path='/createOffer' element={<Offer property={property} token={token}/>}/>
         <Route path='/showOffers' element={<ShowOffer property={property} token={token}/>}/>
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
+
         <Route path='/search' element={<SearchPage setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
         <Route path='/searchResult' element={<SearchResult setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
         <Route path='/userStaticSearch' element={<UserStaticSearch setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
         <Route path='/showmore'  element={<ShowMore setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
         <Route path='/giftcard' element={<GiftCard token={token}/>}/>
      
+
+        <Route 
+          path='/booking/property/details' 
+          element={
+              <PropertyDetailsForBooking 
+                selectedPropertyForDetails={selectedPropertyForDetails}
+                checkInDate = {checkInDate}
+                checkOutDate = {checkOutDate}
+                setCheckInDate = {(val) => {setCheckInDate(val)}}
+                setCheckOutDate = {(val) => {setCheckOutDate(val)}}
+                adults = {adults}
+                setAdults = {(val) => {setAdults(val)}}
+                children = {children}
+                setChildren = {(val) => {setChildren(val)}}
+                infants = {infants}
+                setInfants = {(val) => {setInfants(val)}}
+                setLoginRedirection={(val) => {setLoginRedirection(val)}}
+                token = {token}
+                isLoggedin={loggedIn}
+                setLoggedIn = {(value)=>{setLoggedIn(value)}}
+                setUser = {(value) => {setUser(value)}}
+                setToken = {(t) => {setToken(t)}}
+              />
+          } 
+          />
+          <Route 
+            path='/booking/property/reserve' 
+            element={
+              <PropertyReservation 
+                selectedPropertyForDetails={selectedPropertyForDetails}
+                checkInDate = {checkInDate}
+                checkOutDate = {checkOutDate}
+                setCheckInDate = {(val) => {setCheckInDate(val)}}
+                setCheckOutDate = {(val) => {setCheckOutDate(val)}}
+                adults = {adults}
+                setAdults = {(val) => {setAdults(val)}}
+                children = {children}
+                setChildren = {(val) => {setChildren(val)}}
+                infants = {infants}
+                setInfants = {(val) => {setInfants(val)}}
+                setLoginRedirection={(val) => {setLoginRedirection(val)}}
+                token = {token}
+                isLoggedin={loggedIn}
+                setLoggedIn = {(value)=>{setLoggedIn(value)}}
+                setUser = {(value) => {setUser(value)}}
+                setToken = {(t) => {setToken(t)}}
+                setReceipt={(val) => {setReceipt(val)}}
+              />
+            }
+          />
+          <Route 
+            path='/booking/property/confirm'
+            element={
+              <BookingConfirm
+                receipt={receipt}
+              />
+            }
+          />
+
      </Routes>
    </BrowserRouter>
   );
