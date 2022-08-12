@@ -27,7 +27,21 @@ def addCategory(request):
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
+@api_view(["POST"])
+def addFacility(request):
+    try:
+        # change delete this portion
+        facility = Facility.objects.create(
+            catagory=request.data["category"],
+            subcatagory=request.data["subcategory"],
+            facility_name=request.data["facility"]
+        )
+        # change add code for fetching booking here by user
+        return Response({"message":"ok"},status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def getPropertyPhoto(request, property_id):
