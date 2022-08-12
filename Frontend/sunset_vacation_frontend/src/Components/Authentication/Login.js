@@ -68,6 +68,7 @@ export default function Login(props) {
       if(response.status === 200){
         props.setUser(response.data);
         props.setToken(response.data.token);
+        props.setAdmin(response.data.isAdmin);
         props.setLoggedIn(true);
         navigate("/")
       }
@@ -75,6 +76,7 @@ export default function Login(props) {
         props.setUser({});
         props.setToken("");
         props.setLoggedIn(false);
+        props.setAdmin(false);
         alert("Invalid email or password");
       }
       console.log(response.data);

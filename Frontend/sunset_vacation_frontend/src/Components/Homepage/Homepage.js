@@ -301,7 +301,7 @@ export default function Homepage(props) {
                
               </Badge>
             </IconButton> */}
-            <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>
+            {props.isAdmin && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}
             <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>
             {/* <IconButton
               size="large"

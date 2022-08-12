@@ -35,12 +35,13 @@ function App() {
   const [booking, setBooking] = useState({});
   const [notification, setNotification] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
+  const [admin, setAdmin] = useState(false);
   const [user, setUser] = useState({})
   const [token, setToken] = useState("")
   const [selectedProperty, setSelectedProperty] = useState('');
   var [flags,setFlags]=useState("");
   const [selectedAmenityList, setSelectedAmenityList] =useState([]);
-    const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
+  const [selectedGuestsFavouriteItemList, setSelectedGuestsFavouriteItemList] = useState([]);
     const [selectedSafetyItemList, setSelectedSafetyItemList] = useState([]);
     const [selectedFacility,setSelectedFacility]=useState(0);
   
@@ -93,8 +94,8 @@ function App() {
   return (
    <BrowserRouter>
      <Routes>
-        <Route path='/' element={<Homepage helloWorld={(value)=> {setProperty(value)}} hiWorld={property}/>} />
-        <Route path='/login' element={<Login isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
+        <Route path='/' element={<Homepage isLoggedin={loggedIn} isAdmin={admin} helloWorld={(value)=> {setProperty(value)}} hiWorld={property}/>}/>
+        <Route path='/login' element={<Login isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}}  setAdmin={(value)=>setAdmin(value)} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/signup' element={<Signup isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
