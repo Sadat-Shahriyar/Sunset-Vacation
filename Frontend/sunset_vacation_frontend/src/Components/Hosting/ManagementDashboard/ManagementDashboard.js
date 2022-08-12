@@ -72,6 +72,9 @@ export default function ManagementDashboard(props) {
     const useReservation = (event) => {
         navigate("/reservation");
     }
+    const useNotification = (event) => {
+        navigate("/notification");
+    }
     const useHandleHostNewPropertyButton = (event) => {
         navigate("/hostproperty");
     }
@@ -163,7 +166,7 @@ export default function ManagementDashboard(props) {
                             <CollectionsBookmarkIcon/>
                             Reservation
                         </MenuItem>
-                        <MenuItem value="offer" onClick={useOfferpage} disableRipple>
+                        <MenuItem onClick={useNotification} disableRipple>
                             <NotificationsIcon/>
                             Notification
                         </MenuItem>
