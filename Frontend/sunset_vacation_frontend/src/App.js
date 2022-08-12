@@ -22,6 +22,8 @@ import Editfacility from './Components/Hosting/ShowProperty/EditFacility';
 import Offer from './Components/Hosting/Offer&Giftcard/Offer';
 import OfferConfirmation from './Components/Hosting/Offer&Giftcard/OfferConfirmation';
 import ShowOffer from './Components/Hosting/Offer&Giftcard/ShowOffer';
+import Notification from "./Components/Hosting/ManagementDashboard/Notifications";
+import ShowNotification from "./Components/Hosting/ManagementDashboard/ShowNotification";
 import AdminDashboard from "./Components/Hosting/ManagementDashboard/AdminDashboard";
 import * as React from 'react';
 export const axios_api = axios.create({
@@ -97,6 +99,8 @@ function App() {
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
         <Route path='/admin' element={<AdminDashboard setProperty={(p)=>{setProperty(p)}}/>}/>
+        <Route path='/notification' element={<Notification token={token} setNotification={(notification)=>setNotification(notification)}/>}/>
+        <Route path='/showNotification' element={<ShowNotification notification={notification} setNotification={(notification)=>setNotification(notification)} token={token}/>}/>
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
         <Route path='/showPropertyDetails' element={<ShowPropertyDetails property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>
