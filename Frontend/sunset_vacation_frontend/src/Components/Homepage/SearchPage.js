@@ -23,15 +23,17 @@ import { axios_api } from '../../App';
 import SearchNav from './SearchNav';
 import Rating from '@mui/material/Rating';
 
-function ViewAllProperties(propertyData){
+function ViewAllProperties(propertyData, props, navigate){
   // console.log(props.properties);
   // let propertyData = [];
   // if(props.properties.data != undefined)
   //   propertyData = props.properties.data;
 
+  console.log(props)
+
   const goToDetailsPage = (id) => {
     props.setSelectedPropertyForDetails(id);
-    props.navigate("/booking/property/details");
+    navigate('/booking/property/details');
   }
 
   let properties = propertyData.map((property) => {
@@ -307,9 +309,9 @@ export default function SearchPage(props) {
   }
   function show4property(list){
     if(list.length >4){
-      return <div>{ViewAllProperties(list.slice(0,4))}</div>
+      return <div>{ViewAllProperties(list.slice(0,4), props, navigate)}</div>
     }else{
-      return <div>{ViewAllProperties(list)}</div>
+      return <div>{ViewAllProperties(list, props, navigate)}</div>
     }
   }
   function showMore(description,list){

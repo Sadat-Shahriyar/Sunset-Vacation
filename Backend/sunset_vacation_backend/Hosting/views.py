@@ -572,6 +572,35 @@ def addReview(request):
 
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addRating(request):
+    print(request.user)
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+
+    data = request.data
+    print(data)
+    rating = Ratings.objects.filter(user_id_id=user).values()
+    property = Property.objects.get(propertyID=data['propertyID'])
+
+    if len(rating) == 0:
+        
+        newRating = Ratings.objects.create(
+            user_id=user,
+            propertyID=property,
+            rating=data['rating']
+        )
+    else:
+        newRating = Ratings.objects.filter(user_id_id=user,propertyID_id=property)[0]
+        newRating.rating = data['rating']
+        newRating.save()
+
+    ratingData = RatingsSerializer(newRating).data['rating'];
+    print(ratingData)
+    
+    return Response(status=status.HTTP_200_OK, data={"newRating": ratingData})
+
 
     
 # @api_view(["GET"])
@@ -627,7 +656,10 @@ def calculateRating():
         count=len(ratings.data)        
         for r in ratings.data:
             total=total+r['rating']
-        rating=round(total/count)
+        if count == 0:
+            rating = 0
+        else:
+            rating=round(total/count)
         dict={"propertyID":property['propertyID'],"rating":rating}
         propertyRating.append(dict)
     return propertyRating

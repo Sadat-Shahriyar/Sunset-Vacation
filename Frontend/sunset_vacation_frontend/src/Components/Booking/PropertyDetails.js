@@ -31,6 +31,7 @@ import AddCircleOutlineRounded from '@mui/icons-material/AddCircleOutlineRounded
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import ClearIcon from '@mui/icons-material/Clear';
 import ShowOffer from './ShowOffers';
+import axios from 'axios';
 
 const style = {
   position: 'absolute',
@@ -439,6 +440,63 @@ function PropertyDetails(props){
         props.handleOpen();
     }
 
+    let ratinBG1 = 'white'
+    let ratinBG2 = 'white'
+    let ratinBG3 = 'white'
+    let ratinBG4 = 'white'
+    let ratinBG5 = 'white'
+
+    const handleRating = async(val) => {
+        props.setRating(val);
+        try{
+            if(props.isLoggedin){
+                let body = {rating:val, propertyID:props.propertyDetails.property.propertyID}
+                let response = await axios_api.post("hosting/addrating/", body,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization' : `Bearer ${props.token}`
+                    }
+                });
+
+                if(response.status === 200){
+                    console.log(response.statusText);
+                }
+            }
+            else{
+                props.setLoginRedirection('/booking/property/details' )
+                props.navigate("/login");
+            }
+        }
+        catch(err){
+            alert(err.message);
+        }
+    }
+
+    if(props.rating === 1){
+        ratinBG1='yellow'
+    }
+    else if(props.rating === 2){
+        ratinBG1='yellow';
+        ratinBG2='yellow'
+    }
+    else if(props.rating === 3){
+        ratinBG1='yellow';
+        ratinBG2='yellow'
+        ratinBG3='yellow'
+    }
+    else if(props.rating === 4){
+        ratinBG1='yellow';
+        ratinBG2='yellow'
+        ratinBG3='yellow'
+        ratinBG4='yellow'
+    }
+    else if(props.rating === 5){
+        ratinBG1='yellow';
+        ratinBG2='yellow'
+        ratinBG3='yellow'
+        ratinBG4='yellow'
+        ratinBG5='yellow'
+    }
     // console.log(props.review);
 
     const postReview = async(review, property_id) => {
@@ -619,6 +677,31 @@ function PropertyDetails(props){
                         setToken = {(t) => {props.setToken(t)}}
                     />
                 </Grid>
+                <Grid item xs={1}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(1)}} sx={{background:ratinBG1}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
+                <Grid item xs={1}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(2)}} sx={{background:ratinBG2}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
+                <Grid item xs={1}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(3)}} sx={{background:ratinBG3}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
+                <Grid item xs={1}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(4)}} sx={{background:ratinBG4}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
+                <Grid item xs={8}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(5)}} sx={{background:ratinBG5}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
                 <Grid item xs={12}>
                     <Typography variant="h6" sx={{mt:5}}>Have any review?</Typography>
                 </Grid>
@@ -663,6 +746,7 @@ export default function PropertyDetailsForBooking(props){
     const [imgUrl, setImgUrl] = React.useState("");
 
     const [review, setReview] = React.useState("");
+    const [rating, setRating] = React.useState(0);
 
     console.log(props)
     
@@ -731,6 +815,8 @@ export default function PropertyDetailsForBooking(props){
         setLoggedIn = {(value)=>{props.setLoggedIn(value)}}
         setUser = {(value) => {props.setUser(value)}}
         setToken = {(t) => {props.setToken(t)}}
+        rating={rating}
+        setRating={(val)=>{setRating(val); console.log(rating)}}
       />
     </Box>
     );

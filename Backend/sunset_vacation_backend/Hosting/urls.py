@@ -39,5 +39,5 @@ urlpatterns = [
     path('getPropertyCatagory/',views.getPropertyCatagory),
     path('getUserStaticSearch/',views.getUserStaticSearch),
     path('getGuestList/',views.getGuestList),
-    
+    path('addrating/', views.addRating),
 ]
