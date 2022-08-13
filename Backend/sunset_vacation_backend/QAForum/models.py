@@ -14,6 +14,13 @@ class Question(models.Model):
 
     questionair_id = models.ForeignKey(get_user_model(),on_delete=models.CASCADE,default=None,null=False)
 
+    question = models.CharField(
+        max_length=500,
+        default=None,
+        blank=False,
+        null=True
+    )
+    
     description=models.CharField(
         max_length=500,
         default=None,
