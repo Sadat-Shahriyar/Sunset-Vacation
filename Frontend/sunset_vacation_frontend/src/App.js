@@ -37,6 +37,10 @@ import PropertyReservation from './Components/Booking/PropertyReservation';
 import BookingConfirm from './Components/Booking/BookingConfirm';
 
 import ShowGiftcard from './Components/Hosting/Offer&Giftcard/ShowGiftcard';
+import AskQuestion from './Components/QAForum/AskQuestion';
+import ViewTags from './Components/QAForum/ViewTags';
+import ViewAnswer from './Components/QAForum/ViewAnswer';
+import QaHome from './Components/QAForum/QaHome';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -264,6 +268,10 @@ function App() {
 
         <Route  path='/showGiftcard'  element={<ShowGiftcard setflags={(val)=>{setFlags(val)}} token={token}/>}/>
 
+        <Route path='askquestion' element={<AskQuestion />}/>
+        <Route path='viewtags' element={<ViewTags />}/>
+        <Route path='viewanswer' element={<ViewAnswer />}/>
+        <Route path='qahome' element={<QaHome />}/>
      </Routes>
    </BrowserRouter>
   );

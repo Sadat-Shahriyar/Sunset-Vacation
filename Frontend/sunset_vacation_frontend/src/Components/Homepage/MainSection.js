@@ -13,8 +13,11 @@ export default function MainSection(props){
            <p>Not sure where to go? Perfect</p>
            <div className="main-btns">
            <Button variant="outlined" color='inherit' sx={{fontSize: "20px"}} onClick={()=>{navigate('/search')}}>I'm flexible</Button>
-
                {/* <button className="btns" onClick={()=>{console.log("button")}}>I'm flexible</button> */}
+           </div>
+           <div className="main-btns">
+           <Button variant="outlined" color='inherit' sx={{fontSize: "18px"}} onClick={()=>{navigate('/qahome')}}>Ask a question</Button>
+
            </div>
              </div>
         );
