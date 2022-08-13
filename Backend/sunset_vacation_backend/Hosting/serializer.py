@@ -192,6 +192,10 @@ class GiftCardSerializer(serializers.ModelSerializer):
     )
     discount=serializers.FloatField(required=False)
     expiry_date=serializers.DateTimeField(required=False)
+    customMsg=serializers.CharField(
+        max_length=500,
+        required=False
+    )
 
     class Meta:
         model=GiftCard
@@ -201,6 +205,7 @@ class UserGiftCardListSerializer(serializers.ModelSerializer):
     user_id=serializers.PrimaryKeyRelatedField(read_only=True)
     giftcard_id=serializers.PrimaryKeyRelatedField(read_only=True)
     used_flag=serializers.BooleanField(required=False)
+
 
     class Meta:
         model=UserGiftCardList

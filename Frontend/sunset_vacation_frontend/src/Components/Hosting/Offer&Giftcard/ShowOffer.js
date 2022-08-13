@@ -14,14 +14,14 @@ import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
 import './../../../App.css';
-export default function ShowPropertyList(props) {
+export default function ShowOffer(props) {
     let navigate = useNavigate();
 
     const [offers, setOffers] = React.useState([])
 
     React.useEffect(() => {
        
-        fetch(`http://localhost:8000/hosting/getOfferList/`+  `${props.property.propertyID}`, {
+        fetch(`http://localhost:8000/hosting/getOfferList/`, {
             method: 'GET',
             headers: { 
                 'Content-Type': 'application/json' ,
@@ -77,11 +77,11 @@ export default function ShowPropertyList(props) {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                     <TableCell component="th" scope="row">
-                    <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" value={offer.offer_id} onClick={() => { getSelectedOffer(offer) }}>{offer.propertyID_id}</Button>
+                    <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" value={offer.offer_id} onClick={() => { getSelectedOffer(offer) }}>{offer.title}</Button>
 
                     </TableCell>
                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{offer.startDate}</TableCell>
-                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{offer.endtDate}</TableCell>
+                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{offer.endDate}</TableCell>
                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{offer.amount}</TableCell>
 
                     <TableCell><Tooltip title="Delete">

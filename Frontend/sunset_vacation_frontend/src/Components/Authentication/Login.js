@@ -40,7 +40,7 @@ export default function Login(props) {
 
   React.useEffect(() => {
     if (props.isLoggedin){
-         navigate("/")   
+         navigate(props.loginRedirection)   
     }
   },[])
 
@@ -70,13 +70,20 @@ export default function Login(props) {
         props.setToken(response.data.token);
         props.setAdmin(response.data.isAdmin);
         props.setLoggedIn(true);
-        navigate("/")
+        
+        sessionStorage.setItem("user", response.data)
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("loggedIn", true);
+        navigate(props.loginRedirection)
       }
       else{
         props.setUser({});
         props.setToken("");
         props.setLoggedIn(false);
         props.setAdmin(false);
+        sessionStorage.setItem("user", {});
+        sessionStorage.setItem("token", "");
+        sessionStorage.setItem("loggedIn", false);
         alert("Invalid email or password");
       }
       console.log(response.data);

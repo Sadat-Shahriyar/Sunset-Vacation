@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from datetime import datetime    
 
+
 # Create your models here.
 
 
@@ -210,6 +211,7 @@ class Facility(models.Model):
         null=True
     )
 class PropertyFacilities(models.Model):
+   
     propertyID=models.ForeignKey(Property,on_delete=models.CASCADE)
     facility_name=models.ForeignKey(Facility,on_delete=models.CASCADE)
     description=models.CharField(
@@ -285,6 +287,12 @@ class GiftCard(models.Model):
     )
     discount=models.FloatField(default=None,null=True)
     expiry_date=models.DateTimeField(default=None,null=True)
+    customMsg=models.CharField(
+        max_length=500,
+        default=None,
+        blank=False,
+        null=True
+    )
 
 class UserGiftCardList(models.Model):
     user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)

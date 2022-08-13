@@ -41,7 +41,7 @@ export default function Signup(props) {
 
   React.useEffect(() => {
     if (props.isLoggedin){
-         navigate("/")   
+         navigate(props.loginRedirection)   
     }
   },[])
 
@@ -79,7 +79,7 @@ export default function Signup(props) {
         props.setUser(response.data);
         props.setToken(response.data.token);
         props.setLoggedIn(true);
-        navigate("/")
+        navigate(props.loginRedirection)
       }
       else{
         props.setUser({});

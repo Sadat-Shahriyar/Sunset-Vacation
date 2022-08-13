@@ -31,8 +31,13 @@ export default function ShowPropertyDetails(props) {
     const [photos, setPhotos] = React.useState([]);
 
     React.useEffect(() => {
-        fetch(`http://localhost:8000/hosting/getProperty/` + `${props.property.propertyID}`)
-            .then((response) => {
+        fetch(`http://localhost:8000/hosting/getProperty/` + `${props.property.propertyID}`,{
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json' ,
+                'Authorization' : `Bearer ${props.token}`
+            }
+        }).then((response) => {
                 if (response.ok) {
                     return response
                 } else {
@@ -47,7 +52,13 @@ export default function ShowPropertyDetails(props) {
             .catch((err) => {
                 alert(err.message);
             })
-        fetch(`http://localhost:8000/hosting/getPropertyPhoto/` + `${props.property.propertyID}`)
+        fetch(`http://localhost:8000/hosting/getPropertyPhoto/` + `${props.property.propertyID}`,{
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json' ,
+                'Authorization' : `Bearer ${props.token}`
+            }
+        })
             .then((response) => {
                 if (response.ok) {
                     return response
@@ -63,7 +74,7 @@ export default function ShowPropertyDetails(props) {
             .catch((err) => {
                 alert(err.message);
             })
-    })
+    },[props.token])
 
     let navigate = useNavigate();
 
@@ -169,11 +180,11 @@ export default function ShowPropertyDetails(props) {
                             fontSize: "15px",
                             color: "black"
                         }}>Catagory</Button><IconButton><DetailsIcon sx={{color: 'black'}}/></IconButton>
-                        {/* <Button onClick={useLocation} color="inherit" sx={{
+                        <Button onClick={useLocation} color="inherit" sx={{
                             fontFamily: "Lucida Handwriting",
                             fontSize: "15px",
                             color: "black"
-                        }}>Location</Button><IconButton><LocationOnIcon sx={{color: 'black'}}/></IconButton> */}
+                        }}>Location</Button><IconButton><LocationOnIcon sx={{color: 'black'}}/></IconButton>
                         <Button onClick={useFacility} color="inherit"
                                 sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black"}}>Facilities &
                             Safety Items</Button><IconButton><DesktopMacIcon sx={{color: 'black'}}/></IconButton>
