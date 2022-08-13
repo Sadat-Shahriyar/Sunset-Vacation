@@ -54,7 +54,7 @@ function App() {
   const [property, setProperty] = useState({});
   const [booking, setBooking] = useState({});
   const [notification, setNotification] = useState({});
-  const [admin, setAdmin] = useState(false);
+  const [admin, setAdmin] = useState(sessionStorage.getItem("isAdmin"));
   const [loggedIn, setLoggedIn] = useState(sessionStorage.getItem("loggedIn"));
   const [user, setUser] = useState(sessionStorage.getItem("user"));
   const [token, setToken] = useState(sessionStorage.getItem("token"));
