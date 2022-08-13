@@ -29,6 +29,57 @@ def getPropertyDetails(request, property_id):
 
     facilities = PropertyFacilities.objects.filter(propertyID=property).values()
 
+    ads = []
+
+    if propertyInfo["entirePrivateOrShared"] == "An entire place":
+        ads.append({"Title": "Get the whole place to yourself", "Description": ""})
+    if propertyInfo["entirePrivateOrShared"] == "A private room":
+        ads.append({"Title": "Get a private room to yourself", "Description": ""})
+    if propertyInfo["entirePrivateOrShared"] == "An shared place":
+        ads.append({"Title": "Get a shared room to yourself", "Description": ""})
+
+
+    for fac in facilities:
+        if fac["facility_name_id"] == "Pool":
+            ads.append({"Title": "Dive right in", "Description": "This is one of the few places in the area with a pool."})
+        elif fac["facility_name_id"] == "Kitchen":
+            ads.append({"Title": "Cook your own meal", "Description": "Weekend with family members in a homely environment"})
+        elif fac["facility_name_id"] == "Sea view":
+            ads.append({"Title": "Enjoy the see", "Description": "Has see view to make your stay more deliightfull"})
+        elif fac["facility_name_id"] == "Free parking on premises":
+            ads.append({"Title": "Free parking", "Description": "Can park your car right on the premises"})
+        elif fac["facility_name_id"] == "Free street parking":
+            ads.append({"Title": "Free parking", "Description": "Can park your car right in front"})
+
+    owner_id = propertyInfo["owner_id"]
+    owner = User.objects.get(id=owner_id)
+    properties_under_same_owner = Property.objects.filter(owner_id_id = owner)
+
+    rating_count = 0
+    rating_sum = 0
+    review_count = 0
+    for prop in properties_under_same_owner:
+        temp_rat = Ratings.objects.filter(propertyID_id = prop).values()
+        for rat in temp_rat:
+            rating_sum = rating_sum + rat['rating']
+        rating_count = rating_count + len(temp_rat)
+        temp_rev = Reviews.objects.filter(propertyID_id = prop).values()
+        review_count = review_count + len(temp_rev)
+    
+    name = ownername[0]["name"]
+    if review_count > 0:
+        ads.append({"Title": "Experienced host", "Description": f"{name} has a total of {review_count} reviews"})
+
+    # print(rating_sum, rating_count)
+
+
+    if rating_count > 0:
+        ads.append({"Title": "Everyone's choice", "Description": f"{name} has an average rating of {rating_sum/rating_count}"})
+
+    max_days_refund = propertyInfo["maxDaysRefund"]
+    if max_days_refund > 0:
+        ads.append({"Title": f"Free cancellation before {max_days_refund} days of arrival"})
+    
     ratings = Ratings.objects.filter(propertyID=property).values()
     reviews = Reviews.objects.filter(propertyID=property).values()
 
@@ -43,7 +94,7 @@ def getPropertyDetails(request, property_id):
 
 
     return Response({"facilities":facilities, "faqs":faqs, "dos":dos, "donts":donts,"property":propertyInfo, 
-                    "ratings":ratings,"reviews":reviews,"photos":photos, "offers": offers },status=status.HTTP_200_OK)
+                    "ratings":ratings,"reviews":reviews,"photos":photos, "offers": offers, "ads": ads },status=status.HTTP_200_OK)
 
 
 
@@ -76,7 +127,7 @@ def checkAvailabilityOfDate(request):
     # print(2)
     # print(bookedDatesBasedOnCheckOut)
     # print(3)
-    print(bookedDates)
+    print(len(bookedDates))
 
     propertyData = PropertySerializer(propertyToBeBooked).data
     # print(propertyData)
@@ -90,6 +141,8 @@ def checkAvailabilityOfDate(request):
     if propertyData['entirePrivateOrShared'] == 'An entire place':
         if len(bookedDates) > 0:
             return Response({'available': False}, status=status.HTTP_200_OK)
+        
+        return Response({'available': True}, status=status.HTTP_200_OK)
     
     elif propertyData['entirePrivateOrShared'] == "A private room":
         checkInDateTimeObject = datetime.strptime(checkInDate, '%Y-%m-%d')

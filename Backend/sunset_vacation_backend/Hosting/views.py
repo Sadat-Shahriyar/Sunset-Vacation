@@ -405,7 +405,7 @@ def publishProperty(request):
     amenityList = request.data['amenityList'].strip().split(",")
 
    
-    if(len(amenityList) >0):
+    if(amenityList[0] != "" and len(amenityList) >0):
 
         for amenity in amenityList:
             facility = Facility.objects.get(facility_name=amenity)
@@ -419,7 +419,7 @@ def publishProperty(request):
    
     guestFavs = request.data['guestFavs'].strip().split(",")
     
-    if(len(guestFavs) >0):
+    if(guestFavs[0] != "" and len(guestFavs) >0):
      
         print("print:", len(guestFavs))
 
@@ -434,7 +434,7 @@ def publishProperty(request):
     safetyItems = request.data['safetyItems'].strip().split(",")
 
     
-    if(len(safetyItems) >0 ):
+    if(safetyItems[0] != "" and len(safetyItems) >0 ):
 
         for item in safetyItems:
             facility = Facility.objects.get(facility_name=item)
@@ -581,8 +581,10 @@ def addRating(request):
 
     data = request.data
     print(data)
-    rating = Ratings.objects.filter(user_id_id=user).values()
+    
     property = Property.objects.get(propertyID=data['propertyID'])
+
+    rating = Ratings.objects.filter(user_id_id=user, propertyID_id=property).values()
 
     if len(rating) == 0:
         

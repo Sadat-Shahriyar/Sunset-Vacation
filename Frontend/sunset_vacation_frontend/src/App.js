@@ -41,6 +41,8 @@ import AskQuestion from './Components/QAForum/AskQuestion';
 import ViewTags from './Components/QAForum/ViewTags';
 import ViewAnswer from './Components/QAForum/ViewAnswer';
 import QaHome from './Components/QAForum/QaHome';
+import ContactHost from './Components/Booking/ContactHost';
+import Inbox from './Components/Messaging/Inbox';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -266,12 +268,36 @@ function App() {
             }
           />
 
+          <Route 
+            path='/booking/property/contacthost' 
+            element={
+              <ContactHost 
+                selectedPropertyForDetails={selectedPropertyForDetails}
+                setLoginRedirection={(val) => {setLoginRedirection(val)}}
+                token = {token}
+                isLoggedin={loggedIn}
+                setLoggedIn = {(value)=>{setLoggedIn(value)}}
+                setUser = {(value) => {setUser(value)}}
+                setToken = {(t) => {setToken(t)}}
+              />
+            }
+          />
+
         <Route  path='/showGiftcard'  element={<ShowGiftcard setflags={(val)=>{setFlags(val)}} token={token}/>}/>
 
         <Route path='askquestion' element={<AskQuestion />}/>
         <Route path='viewtags' element={<ViewTags />}/>
         <Route path='viewanswer' element={<ViewAnswer />}/>
         <Route path='qahome' element={<QaHome />}/>
+        <Route 
+          path='/inbox' 
+          element={
+            <Inbox 
+              token = {token}
+              isLoggedin={loggedIn}
+            />
+          }
+        />
      </Routes>
    </BrowserRouter>
   );

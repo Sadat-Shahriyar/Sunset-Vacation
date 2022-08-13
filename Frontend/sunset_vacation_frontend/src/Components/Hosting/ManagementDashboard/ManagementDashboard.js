@@ -170,7 +170,7 @@ export default function ManagementDashboard(props) {
                             <NotificationsIcon/>
                             Notification
                         </MenuItem>
-                        <MenuItem onClick={handleClose} disableRipple>
+                        <MenuItem onClick={()=>{navigate('/inbox')}} disableRipple>
                             <MailIcon/>
                             Inbox
                         </MenuItem>

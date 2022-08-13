@@ -1,3 +1,4 @@
+from sqlite3 import DateFromTicks
 from django.shortcuts import render
 
 from .serializers import AnswerSerializer, QuestionSerializer
@@ -19,13 +20,17 @@ from datetime import timedelta
 
 @api_view(['GET'])
 def getAllQuestions(request):
-    questions = Question.objects.all()
-
+    question_objects = Question.objects.all()
+    qurstionSerializer = QuestionSerializer(question_objects, many=True)
+    questions=sorted(qurstionSerializer.data, key=lambda d:d['question_date'],reverse=True)
     allQuestions = []
 
     for question in questions:
-        answer = Answer.objects.filter(question_id_id=question)
-        allQuestions.append({"quesion": QuestionSerializer(question).data, "Answers": AnswerSerializer(answer, many=True).data})
+        q = Question.objects.filter(questions_id=question['questions_id'])[0]
+        answer = Answer.objects.filter(question_id_id=q)
+        answerSerializer=AnswerSerializer(answer,many=True)
+        sortedAnswers = sorted(answerSerializer.data, key=lambda d:d['answer_time'],reverse=True)
+        allQuestions.append({"question": QuestionSerializer(q).data, "answers": sortedAnswers, "ansCount": len(sortedAnswers)})
 
     print(allQuestions)
 
