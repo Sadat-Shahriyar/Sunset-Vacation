@@ -41,6 +41,7 @@ import AskQuestion from './Components/QAForum/AskQuestion';
 import ViewTags from './Components/QAForum/ViewTags';
 import ViewAnswer from './Components/QAForum/ViewAnswer';
 import QaHome from './Components/QAForum/QaHome';
+import HomePageSearchResult from './Components/Homepage/HomePageSearchResult';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -67,6 +68,7 @@ function App() {
 
   const [searchresults, setSearchResults] = useState([]);
   const [showMore,setShowMore]=useState({});
+  const [homepagesearch,setHomepagesearch]=useState({});
 
   
 
@@ -143,7 +145,7 @@ function App() {
   return (
    <BrowserRouter>
      <Routes>
-        <Route path='/' element={<Homepage setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} />
+        <Route path='/' element={<Homepage setHomepagesearch={(val)=>{setHomepagesearch(val)}} setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} />
         <Route path='/login' element={<Login loginRedirection={loginRedirection} isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
@@ -268,10 +270,12 @@ function App() {
 
         <Route  path='/showGiftcard'  element={<ShowGiftcard setflags={(val)=>{setFlags(val)}} token={token}/>}/>
 
-        <Route path='askquestion' element={<AskQuestion />}/>
+        <Route path='askquestion' element={<AskQuestion setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}}  />}/>
         <Route path='viewtags' element={<ViewTags />}/>
         <Route path='viewanswer' element={<ViewAnswer />}/>
         <Route path='qahome' element={<QaHome />}/>
+
+        <Route path='/homepagesearchresult' element={<HomePageSearchResult setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} homepagesearch={homepagesearch}/>}/>
      </Routes>
    </BrowserRouter>
   );

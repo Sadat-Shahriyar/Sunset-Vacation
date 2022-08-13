@@ -23,51 +23,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { Button, Card, CardActions, CardContent, CardMedia, Grid, Paper } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Paper, responsiveFontSizes } from '@mui/material';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import MainSection from './MainSection';
 import { axios_api } from '../../App';
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -85,7 +47,7 @@ const StyledMenu = styled((props) => (
   '& .MuiPaper-root': {
     borderRadius: 6,
     marginTop: theme.spacing(1),
-    minWidth: 180,
+    //minWidth: 180,
     color:
       theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow:
@@ -110,69 +72,29 @@ const StyledMenu = styled((props) => (
 }));
 
 
-function ViewAllProperties(props){
-  console.log(props.properties);
-  let propertyData = [];
-  if(props.properties.data != undefined)
-    propertyData = props.properties.data;
-
-  const goToDetailsPage = (id) => {
-    alert('hello');
-    props.setSelectedPropertyForDetails(id);
-    props.navigate("/booking/property/details");
-  }
-
-  let properties = propertyData.map((property) => {
-    return(
-      <Grid item xs={3} key={property.propertyID}>
-        <Card sx={{ maxWidth: 345, maxHeight:500, m:3}}>
-        <CardMedia
-          component="img"
-          height="140"
-          image={property.images[0].photo_url}
-          alt={property.title}
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {property.title}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {property.description}
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="large" onClick={() => {goToDetailsPage(property.propertyID)}}>View Details</Button>
-        </CardActions>
-        </Card>
-      </Grid>
-    );
-  })
-  // let properties = "hello"
-  return(
-    <Grid container>
-      {properties}
-    </Grid>
-  );
-}
-
-
 export default function Homepage(props) {
 
-  const [properties, setProperties] = React.useState([])
-  const [value, setValue] = React.useState(0);
-  const [selectedProperty, setSelectedProperty] = React.useState('');
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
+  
+  const [startDate, setstartDate] = React.useState(null);
+  const [EndDate, setEndDate] = React.useState(null);
+  const [guestno,setGuestNo]=React.useState(0);
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl1, setAnchorEl1] = React.useState(null);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [anchorEl3, setAnchorEl3] = React.useState(null);
+  const [anchorEl4, setAnchorEl4] = React.useState(null);
+  const [countryList,setCountryList]=React.useState([]);
+  const [country,setCountry]=React.useState('');
+  const [areaList,setAreaList]=React.useState([]);
+  const [area,setArea]=React.useState('');
   React.useEffect(()=>{
     const fethProperties = async() => {
       try{
-        let res = await axios_api.get("hosting/getallpropertiesforhomepage/");
+        let res = await axios_api.get("hosting/getCountryList/");
 
         if(res.status === 200){
-          // setProperties(res.data);
+          setCountryList(res.data.countryList)
         }
         else{
           alert(res.status+": " + res.statusText);
@@ -185,20 +107,18 @@ export default function Homepage(props) {
 
     fethProperties();
   }, [])
-  const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorEl1, setAnchorEl1] = React.useState(null);
-  const [anchorEl2, setAnchorEl2] = React.useState(null);
-  const [anchorEl3, setAnchorEl3] = React.useState(null);
+  
   
   const open1 = Boolean(anchorEl1);
   const open2 = Boolean(anchorEl2);
   const open3 = Boolean(anchorEl3);
+  const openLocation = Boolean(anchorEl4);
   const handleClick1 = (event) => {    
       setAnchorEl1(event.currentTarget);   
   };
-  const handleClose1 = () => {
+  const handleClose1 = async(event) => {
     setAnchorEl1(null);
+    setAnchorEl4(event.currentTarget);
   };
   const handleClick2 = (event) => {    
     setAnchorEl2(event.currentTarget);   
@@ -206,12 +126,15 @@ export default function Homepage(props) {
 const handleClose2 = () => {
   setAnchorEl2(null);
 };
-const handleClick3 = (event) => {    
+const handleClick3 = (event) => {  
   setAnchorEl3(event.currentTarget);   
 };
 const handleClose3 = () => {
 setAnchorEl3(null);
 };
+const handleCloseLocation = () => {
+  setAnchorEl4(null);
+  };
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -246,7 +169,69 @@ setAnchorEl3(null);
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const searchLocation =async (country)=>{
+    setCountry(country);
+    try{
+      let res = await axios_api.get(`hosting/getlocationsInCountry/${country}/`);
+
+      if(res.status === 200){
+        setAreaList(res.data.areaList);
+      }
+      else{
+        alert(res.status+": " + res.statusText);
+      }
+    }
+    catch(err){
+      alert(err);
+    }
+  }
+
   
+
+  function showCountryList(props){
+    return(
+      <Grid container  spacing={2}>
+        {countryList.map((country)=>(
+          <Grid item xs={4}>
+            <Button variant='outlined' color='inherit' onClick={(event)=>{searchLocation(country)}}>{country}</Button>
+            </Grid>
+        ))}
+      </Grid>
+    )
+  }
+  function showAreaList(props){
+    return(
+      <Grid container  spacing={2}>
+        {areaList.map((area)=>(
+          <Grid item xs={6}>
+            <Button variant='outlined' color='inherit' onClick={(event)=>{setArea(area)}}>{area}</Button>
+            </Grid>
+        ))}
+      </Grid>
+    )
+  }
+ 
+  const handleSearch = async(event)=>{
+      if(startDate == null & EndDate== null & guestno ==0 & area == ''){
+        alert('enter some input for search');
+      }else{      
+       if((startDate != null & EndDate == null) || (startDate == null & EndDate !=null)){
+          alert('enter both date');
+      }else if(startDate > EndDate){
+        alert('check-in Date should be less than check-out Date');
+      }else{
+        var search={
+          location: area,
+          startDate: startDate,
+          EndDate: EndDate,
+          guest: guestno
+        }
+        props.setHomepagesearch(search);
+        navigate('/homepagesearchresult');
+      }
+    }
+      
+  }
  
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -264,6 +249,7 @@ setAnchorEl3(null);
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
+      
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
@@ -322,6 +308,7 @@ setAnchorEl3(null);
     </Menu>
   );
  
+  
   
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -392,17 +379,34 @@ setAnchorEl3(null);
         Anywhere
       </Button>
       <StyledMenu
+       id="demo-customized-menu"
+       MenuListProps={{
+         'aria-labelledby': 'demo-customized-button',
+       }}
+        anchorEl={anchorEl1}
+        open={open1}
+        onClose={handleClose1}
+        
+      >
+        <MenuItem onClick={handleClose1} disableRipple>
+          <Grid container>
+          {showCountryList(props)}
+          </Grid>
+        </MenuItem>
+       
+      </StyledMenu>
+      <StyledMenu
         id="demo-customized-menu"
         MenuListProps={{
           'aria-labelledby': 'demo-customized-button',
         }}
-        anchorEl={anchorEl1}
-        open={open1}
-        onClose={handleClose1}
+        anchorEl={anchorEl4}
+        open={openLocation}
+        onClose={handleCloseLocation}
+
       >
-        <MenuItem onClick={handleClose1} disableRipple>
-          <SearchIcon />
-          Edit
+        <MenuItem onClick={handleCloseLocation} sx={{m:1}}disableRipple>
+         {showAreaList(props)}
         </MenuItem>
         
       </StyledMenu>
@@ -435,22 +439,30 @@ setAnchorEl3(null);
        <Grid container spacing={3}>
         <Grid item={6}>
         <DesktopDatePicker
-          label="start date"
-          inputFormat="MM/dd/yyyy"
-          //value={value}
-          //onChange={handleChange}
-          renderInput={(params) => <TextField {...params} />}
-        />
+                      label="check-in date"
+                      sx={{ mt: 5 }}
+                      value={startDate}
+                      minDate={new Date('2017-01-01')}
+                      onChange={(newValue) => {
+                        setstartDate(newValue);
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+
         
         </Grid>
         <Grid item={6}>
         <DesktopDatePicker
-          label="end date"
-          inputFormat="MM/dd/yyyy"
-          //value={value}
-          //onChange={handleChange}
-          renderInput={(params) => <TextField {...params} />}
-        />
+                      label="check-out date"
+                      sx={{ mt: 50,ml:20 }}
+                      value={EndDate}
+                      minDate={new Date('2017-01-01')}
+                      onChange={(newValue) => {
+                        setEndDate(newValue);
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+
         
         </Grid>
        </Grid>
@@ -482,25 +494,26 @@ setAnchorEl3(null);
          anchorEl={anchorEl3}
          open={open3}
          onClose={handleClose3}
+         sx={{mt:1}}
       >
         <MenuItem 
         //onClick={handleClose3} 
         disableRipple>
       
        
-              <Grid container gridAutoColumns={12} spacing={2} >
+              <Grid container gridAutoColumns={12}  spacing={2} >
                 
                 <Grid item xs={4}>
-                  <IconButton color="primary" sx={{mr:5}}  >
-                    <RemoveCircleOutlineRoundedIcon />
+                  <IconButton color="primary"  >
+                    <RemoveCircleOutlineRoundedIcon sx={{fontSize:100}} onClick={(event)=>{if(guestno != 0) setGuestNo(guestno-1)}}/>
                   </IconButton>
                 </Grid>
                 <Grid item xs={4}>
-                  <Typography variant='h6' >0</Typography>
+                  <Typography sx={{ml:2}} variant='h6' >{guestno}</Typography>
                 </Grid>
                 <Grid item xs={4}>
                   <IconButton color="primary"  >
-                    <AddCircleOutlineRoundedIcon />
+                    <AddCircleOutlineRoundedIcon onClick={(event)=>{setGuestNo(guestno+1)}} />
                   </IconButton>
                 </Grid>
               </Grid>
@@ -513,7 +526,7 @@ setAnchorEl3(null);
       </div>
       <div>
       <Button>
-        <SearchIcon onClick={()=>{navigate('/search')}}/>
+        <SearchIcon onClick={handleSearch}/>
       </Button>
       
       </div>
@@ -575,13 +588,7 @@ setAnchorEl3(null);
         </Toolbar>
       </AppBar>
       <MainSection/>
-      {/* {renderMobileMenu}
-      {renderMenu} */}
-      <ViewAllProperties 
-        properties={properties}
-        setSelectedPropertyForDetails = {props.setSelectedPropertyForDetails}
-        navigate = {(val) => {navigate(val)}}
-      />
+     
     </Box>
   );
 }

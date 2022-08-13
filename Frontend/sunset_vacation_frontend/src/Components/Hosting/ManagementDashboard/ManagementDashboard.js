@@ -175,6 +175,9 @@ export default function ManagementDashboard(props) {
                             Inbox
                         </MenuItem>
                     </StyledMenu>
+                    <Button align="right" color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
+                            onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
+                        Home</Button>
                 </Toolbar>
             </AppBar>
 

@@ -74,7 +74,7 @@ export default function ShowPropertyDetails(props) {
             .catch((err) => {
                 alert(err.message);
             })
-    },[props.token])
+    })
 
     let navigate = useNavigate();
 

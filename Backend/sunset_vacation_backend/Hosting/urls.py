@@ -34,7 +34,7 @@ urlpatterns = [
     # path('getsafetyitems/', views.getSafetyItemList, name="getsafetyitemlist"),
     # path('propertylist/', views.getPropertyDetails),
     path('recommandations/', views.Recommendations),
-    path('getSearchResult/<str:searchword>',views.getSearchResult),
+    path('getSearchResult/<str:searchword>/',views.getSearchResult),
     path('getCatagoryForSearch/',views.getCatagoryForSearch),
     path('getPropertyCatagory/',views.getPropertyCatagory),
     path('getUserStaticSearch/',views.getUserStaticSearch),
@@ -43,4 +43,7 @@ urlpatterns = [
     path('deleteGiftcard/<int:giftcard_id>',views.deleteGiftcard),
     path('getGiftcardList/',views.getGiftcardList),
     path('addrating/', views.addRating),
+    path('getlocationsInCountry/<str:country>/',views.getlocationsInCountry),
+    path('getCountryList/',views.getCountryList),
+    path('getHomepagesearchResult/',views.getHomepagesearchResult),
 ]
