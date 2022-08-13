@@ -534,7 +534,7 @@ setAnchorEl3(null);
               </Badge>
             </IconButton> */}
 
-            {props.isAdmin && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}
+            {/*{props.isAdmin && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}*/}
 
                       <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{{navigate('/search');}}}>search</Button>
 

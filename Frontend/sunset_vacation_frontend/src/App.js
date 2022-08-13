@@ -142,7 +142,7 @@ function App() {
   return (
    <BrowserRouter>
      <Routes>
-        <Route path='/' element={<Homepage setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} isAdmin={admin}/>
+        <Route path='/' element={<Homepage setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} />
         <Route path='/login' element={<Login loginRedirection={loginRedirection} isLoggedin={loggedIn} setAdmin={(value)=>setAdmin(value)}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
