@@ -54,6 +54,7 @@ export default function PropertyReservation(props){
                     adults = {props.adults}
                     children = {props.children}
                     setReceipt={(val) => {props.setReceipt(val)}}
+                    offers = {props.offers}
                 />
             </Elements>
         </Box>

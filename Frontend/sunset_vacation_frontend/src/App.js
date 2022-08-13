@@ -76,6 +76,7 @@ function App() {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
+  const [offers, setOffers] = useState([]);
 
   // ******************************* end ********************************
 
@@ -85,6 +86,7 @@ function App() {
 
   //***********************************check out form***************************
   const [receipt, setReceipt] = useState("");
+  // ******************************* end ********************************
 
 
   function handleSetSelectedAmenityList (val)  {
@@ -185,7 +187,7 @@ function App() {
         <Route path='/showOffers' element={<ShowOffer setflags={(val)=>{setFlags(val)}} property={property} token={token}/>}/>
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
 
-        <Route path='/search' element={<SearchPage setSelectedPropertyForDetails={(val) => {setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
+        <Route path='/search' element={<SearchPage setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
         <Route path='/searchResult' element={<SearchResult setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
         <Route path='/userStaticSearch' element={<UserStaticSearch setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
         <Route path='/showmore'  element={<ShowMore setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
@@ -215,6 +217,8 @@ function App() {
                 setLoggedIn = {(value)=>{setLoggedIn(value)}}
                 setUser = {(value) => {setUser(value)}}
                 setToken = {(t) => {setToken(t)}}
+                setOffers = {(val) => {setOffers(val)}}
+                offers = {offers}
               />
           } 
           />
@@ -240,6 +244,7 @@ function App() {
                 setUser = {(value) => {setUser(value)}}
                 setToken = {(t) => {setToken(t)}}
                 setReceipt={(val) => {setReceipt(val)}}
+                offers = {offers}
               />
             }
           />
@@ -248,6 +253,11 @@ function App() {
             element={
               <BookingConfirm
                 receipt={receipt}
+                setCheckInDate = {(val) => {setCheckInDate(val)}}
+                setCheckOutDate = {(val) => {setCheckOutDate(val)}}
+                setAdults = {(val) => {setAdults(val)}}
+                setChildren = {(val) => {setChildren(val)}}
+                setInfants = {(val) => {setInfants(val)}}
               />
             }
           />

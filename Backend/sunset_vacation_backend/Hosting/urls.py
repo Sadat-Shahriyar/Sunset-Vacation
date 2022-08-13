@@ -42,5 +42,5 @@ urlpatterns = [
     path('insertGiftcard/',views.insertGiftcard),
     path('deleteGiftcard/<int:giftcard_id>',views.deleteGiftcard),
     path('getGiftcardList/',views.getGiftcardList),
-    
+    path('addrating/', views.addRating),
 ]

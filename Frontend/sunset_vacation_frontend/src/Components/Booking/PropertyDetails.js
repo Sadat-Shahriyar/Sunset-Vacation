@@ -30,6 +30,8 @@ import MenuItem from '@mui/material/MenuItem';
 import AddCircleOutlineRounded from '@mui/icons-material/AddCircleOutlineRounded';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import ClearIcon from '@mui/icons-material/Clear';
+import ShowOffer from './ShowOffers';
+import axios from 'axios';
 
 const style = {
   position: 'absolute',
@@ -113,7 +115,41 @@ function ReservationCard(props){
         
     }
 
-    const handleReseveButton = async() => {
+    const handleReserveButton = async() => {
+        // try{
+            
+        //     let body = {property_id:props.propertyDetails.property.propertyID, 
+        //         checkInDate: props.checkInDate.toISOString().split('T')[0], 
+        //         checkOutDate: props.checkOutDate.toISOString().split('T')[0], 
+        //         noOfGuest: props.adults + props.children}
+
+        //     let availabilityResponse = await axios_api.post('booking/checkAvailabilityOfDate/', body,{
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         }
+        //     });
+
+        //     if(availabilityResponse.status === 200){
+                
+        //         if(availabilityResponse.data.available){
+        //             alert("available");
+        //         }
+        //         else{
+        //             alert("not available");
+        //         }
+        //     }
+        //     else{
+        //         alert("not ok");
+        //     }
+
+        //     console.log(availabilityResponse);
+        // }
+        // catch(err){
+        //     alert(err.message);
+        // }
+
+
+
         try{
             let response = await axios_api.get("users/verify/", 
             {
@@ -122,18 +158,44 @@ function ReservationCard(props){
                 }
             })
 
-
+            console.log(response);
             if(props.isLoggedin && response.data.valid){
-                props.navigate('/booking/property/reserve');
+
+                //check for the availability of the date
+                let body = {property_id:props.propertyDetails.property.propertyID, 
+                    checkInDate: props.checkInDate.toISOString().split('T')[0], 
+                    checkOutDate: props.checkOutDate.toISOString().split('T')[0], 
+                    noOfGuest: props.adults + props.children}
+    
+                let availabilityResponse = await axios_api.post('booking/checkAvailabilityOfDate/', body,{
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+    
+                if(availabilityResponse.status === 200){
+                    
+                    if(availabilityResponse.data.available){
+                        props.navigate('/booking/property/reserve');
+                    }
+                    else{
+                        alert("This property is not available for that time period");
+                    }
+                }
+                else{
+                    alert("This property is not available for that time period");
+                }
+                
             }
             else{
                 alert("Unauthorized");
-                props.setLoginRedirection('/booking/property/reserve');
+                props.setLoginRedirection('/booking/property/details');
                 props.navigate("/login");
             }
             
         }
         catch(error){
+            alert(error.message);
             props.setUser({});
             props.setToken("");
             props.setLoggedIn(false);
@@ -143,7 +205,7 @@ function ReservationCard(props){
             sessionStorage.setItem("loggedIn", false);
 
 
-            props.setLoginRedirection('/booking/property/reserve')
+            props.setLoginRedirection('/booking/property/details')
             props.navigate("/login");
         }
     }
@@ -319,7 +381,7 @@ function ReservationCard(props){
                                     color='inherit' 
                                     variant="contained" 
                                     sx={{mt:2,minHeight:50, maxHeight:50,minWidth:370, maxWidth:370, background: 'linear-gradient(to right bottom, #99029e, #eb11f2)' }}
-                                    onClick={() => {handleReseveButton()}}
+                                    onClick={() => {handleReserveButton()}}
                                 >
                                     Reserve
                                 </Button>
@@ -369,43 +431,6 @@ function ReservationCard(props){
 }
 
 
-function ViewImage(props) {
-  let cols = 2;
-  let rows = 2;
-  return (
-    <div>
-      <Modal
-        open={props.open}
-        onClose={props.handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-            <ImageList
-                sx={{
-                    width: 700,
-                    height: 500,
-                    // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
-                    transform: 'translateZ(0)',
-                }}
-                rowHeight={200}
-                gap={1}
-                >
-                    <ImageListItem cols={cols} rows={rows}>
-                        <img
-                        {...srcset(props.photo_url, 250, 200, rows, cols)}
-                        loading="lazy"
-                        />
-                    </ImageListItem>
-                    
-            </ImageList>
-        </Box>
-      </Modal>
-    </div>
-  );
-}
-
-
 function PropertyDetails(props){
     // console.log(props.propertyDetails);
     console.log(props.token)
@@ -415,6 +440,63 @@ function PropertyDetails(props){
         props.handleOpen();
     }
 
+    let ratinBG1 = 'white'
+    let ratinBG2 = 'white'
+    let ratinBG3 = 'white'
+    let ratinBG4 = 'white'
+    let ratinBG5 = 'white'
+
+    const handleRating = async(val) => {
+        props.setRating(val);
+        try{
+            if(props.isLoggedin){
+                let body = {rating:val, propertyID:props.propertyDetails.property.propertyID}
+                let response = await axios_api.post("hosting/addrating/", body,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization' : `Bearer ${props.token}`
+                    }
+                });
+
+                if(response.status === 200){
+                    console.log(response.statusText);
+                }
+            }
+            else{
+                props.setLoginRedirection('/booking/property/details' )
+                props.navigate("/login");
+            }
+        }
+        catch(err){
+            alert(err.message);
+        }
+    }
+
+    if(props.rating === 1){
+        ratinBG1='yellow'
+    }
+    else if(props.rating === 2){
+        ratinBG1='yellow';
+        ratinBG2='yellow'
+    }
+    else if(props.rating === 3){
+        ratinBG1='yellow';
+        ratinBG2='yellow'
+        ratinBG3='yellow'
+    }
+    else if(props.rating === 4){
+        ratinBG1='yellow';
+        ratinBG2='yellow'
+        ratinBG3='yellow'
+        ratinBG4='yellow'
+    }
+    else if(props.rating === 5){
+        ratinBG1='yellow';
+        ratinBG2='yellow'
+        ratinBG3='yellow'
+        ratinBG4='yellow'
+        ratinBG5='yellow'
+    }
     // console.log(props.review);
 
     const postReview = async(review, property_id) => {
@@ -595,6 +677,31 @@ function PropertyDetails(props){
                         setToken = {(t) => {props.setToken(t)}}
                     />
                 </Grid>
+                <Grid item xs={1}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(1)}} sx={{background:ratinBG1}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
+                <Grid item xs={1}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(2)}} sx={{background:ratinBG2}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
+                <Grid item xs={1}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(3)}} sx={{background:ratinBG3}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
+                <Grid item xs={1}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(4)}} sx={{background:ratinBG4}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
+                <Grid item xs={8}>
+                    <IconButton color="inherit" onClick={()=>{handleRating(5)}} sx={{background:ratinBG5}}>
+                        <StarBorderIcon />
+                    </IconButton> 
+                </Grid>
                 <Grid item xs={12}>
                     <Typography variant="h6" sx={{mt:5}}>Have any review?</Typography>
                 </Grid>
@@ -623,7 +730,6 @@ function PropertyDetails(props){
                         }
                     </List>
                 </Grid>
-                {/* {props.imgUrl === ""? null:<ViewImage photo_url={props.imgUrl} open={props.open} handleClose={props.handleClose}/>} */}
             </Grid>
         );
     }
@@ -640,6 +746,7 @@ export default function PropertyDetailsForBooking(props){
     const [imgUrl, setImgUrl] = React.useState("");
 
     const [review, setReview] = React.useState("");
+    const [rating, setRating] = React.useState(0);
 
     console.log(props)
     
@@ -653,6 +760,7 @@ export default function PropertyDetailsForBooking(props){
 
             if(response.status === 200){
                 setPropertyDetails(response.data);
+                props.setOffers(response.data.offers);
                 setMessage(response.data.property.title);
             }
         }
@@ -677,6 +785,9 @@ export default function PropertyDetailsForBooking(props){
     
     <Box sx={{ flexGrow: 1 }}>
       <ShowNavBar />
+      <ShowOffer
+        propertyDetails = {propertyDetails}
+      />
       <PropertyDetails 
         propertyDetails = {propertyDetails}
         open = {open}
@@ -704,6 +815,8 @@ export default function PropertyDetailsForBooking(props){
         setLoggedIn = {(value)=>{props.setLoggedIn(value)}}
         setUser = {(value) => {props.setUser(value)}}
         setToken = {(t) => {props.setToken(t)}}
+        rating={rating}
+        setRating={(val)=>{setRating(val); console.log(rating)}}
       />
     </Box>
     );
