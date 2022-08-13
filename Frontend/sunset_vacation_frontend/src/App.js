@@ -28,9 +28,6 @@ import AdminDashboard from "./Components/Hosting/ManagementDashboard/AdminDashbo
 import SearchPage from './Components/Homepage/SearchPage';
 import SearchResult from './Components/Homepage/SearchResult';
 import UserStaticSearch from './Components/Homepage/UserStaticSearch';
-
-import Reservation from "./Components/Hosting/ManagementDashboard/Reservations";
-import ShowReservation from "./Components/Hosting/ManagementDashboard/ShowReservation";
 import ShowMore from './Components/Homepage/ShowMore';
 import GiftCard from './Components/Hosting/Offer&Giftcard/GiftCard';
 
