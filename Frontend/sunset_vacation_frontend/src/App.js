@@ -36,7 +36,7 @@ import PropertyDetailsForBooking from './Components/Booking/PropertyDetails';
 import PropertyReservation from './Components/Booking/PropertyReservation';
 import BookingConfirm from './Components/Booking/BookingConfirm';
 
-
+import ShowGiftcard from './Components/Hosting/Offer&Giftcard/ShowGiftcard';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -182,16 +182,18 @@ function App() {
           element={<Navigate to="/" replace />}
         />
         <Route path='/createOffer' element={<Offer property={property} token={token}/>}/>
-        <Route path='/showOffers' element={<ShowOffer property={property} token={token}/>}/>
+        <Route path='/showOffers' element={<ShowOffer setflags={(val)=>{setFlags(val)}} property={property} token={token}/>}/>
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
 
-        <Route path='/search' element={<SearchPage setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
+        <Route path='/search' element={<SearchPage setSelectedPropertyForDetails={(val) => {setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
         <Route path='/searchResult' element={<SearchResult setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
         <Route path='/userStaticSearch' element={<UserStaticSearch setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
         <Route path='/showmore'  element={<ShowMore setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
         <Route path='/giftcard' element={<GiftCard token={token}/>}/>
-     
+                  
 
+        {/* <Route path='/search' element={<SearchPage setSelectedPropertyForDetails={(val) => {setSelectedPropertyForDetails(val)}}  setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} token={token}/>}/>
+        <Route path='/searchResult' element={<SearchResult selectedFac={selectedFac}  setflags={(val)=>{setFlags(val)}}  setSelectedFac={(f)=>{setSelectedFac(f)}} />}/> */}
         <Route 
           path='/booking/property/details' 
           element={
@@ -249,6 +251,8 @@ function App() {
               />
             }
           />
+
+        <Route  path='/showGiftcard'  element={<ShowGiftcard setflags={(val)=>{setFlags(val)}} token={token}/>}/>
 
      </Routes>
    </BrowserRouter>

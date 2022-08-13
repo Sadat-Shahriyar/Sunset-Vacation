@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import ShowFacility from './ShowFacility';
-import ShowFaq from './ShowFaq';
+
 export default function Redirect(props){
     
     let navigate=useNavigate();
@@ -17,6 +16,9 @@ export default function Redirect(props){
         navigate('/searchResult');
        }else if(flag === "filter"){
         navigate('/search');
+       }else if(flag === "giftcard"){
+        
+        navigate('/showGiftcard');
        }
       },[])
     return(

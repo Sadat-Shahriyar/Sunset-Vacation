@@ -23,52 +23,6 @@ import { axios_api } from '../../App';
 import SearchNav from './SearchNav';
 import Rating from '@mui/material/Rating';
 
-function ViewAllProperties(propertyData){
-  // console.log(props.properties);
-  // let propertyData = [];
-  // if(props.properties.data != undefined)
-  //   propertyData = props.properties.data;
-
-  const goToDetailsPage = (id) => {
-    props.setSelectedPropertyForDetails(id);
-    props.navigate("/booking/property/details");
-  }
-
-  let properties = propertyData.map((property) => {
-    return(
-      <Grid item xs={2.5} key={property.propertyID}>
-        <Card sx={{ maxWidth: 345, maxHeight:500, m:2}}>
-        <CardMedia
-          component="img"
-          height="250"
-          image={property.images[0].photo_url}
-          alt={property.title}
-        />
-        <CardContent>
-          <Typography sx={{fontFamily: 'Lucida Handwriting'}} gutterBottom variant="h5" component="div">
-            {property.title}
-          </Typography>
-          <Typography variant="body2" sx={{fontFamily: 'Lucida Handwriting'}} color="text.inherit">
-           $ {property.perNightCost} per night
-          </Typography>
-          <Typography variant="body2" >
-          <Rating name="half-rating-read" defaultValue={property.rating} precision={0.5} readOnly />
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="large" onClick={() => {goToDetailsPage(property.propertyID)}}>View Details</Button>
-        </CardActions>
-        </Card>
-      </Grid>
-    );
-  })
-  // let properties = "hello"
-  return(
-    <Grid container>
-      {properties}
-    </Grid>
-  );
-}
 
 
 export default function SearchPage(props) {
@@ -167,7 +121,55 @@ export default function SearchPage(props) {
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
-
+  function ViewAllProperties(propertyData){
+    // console.log(props.properties);
+    // let propertyData = [];
+    // if(props.properties.data != undefined)
+    //   propertyData = props.properties.data;
+  
+    const goToDetailsPage = (id) => {
+      
+      props.setSelectedPropertyForDetails(id);
+      //props.navigate("/booking/property/details");
+      navigate('/booking/property/details');
+    }
+  
+    let properties = propertyData.map((property) => {
+      return(
+        <Grid item xs={2.5} key={property.propertyID}>
+          <Card sx={{ maxWidth: 345, maxHeight:500, m:2}}>
+          <CardMedia
+            component="img"
+            height="250"
+            image={property.images[0].photo_url}
+            alt={property.title}
+          />
+          <CardContent>
+            <Typography sx={{fontFamily: 'Lucida Handwriting'}} gutterBottom variant="h5" component="div">
+              {property.title}
+            </Typography>
+            <Typography variant="body2" sx={{fontFamily: 'Lucida Handwriting'}} color="text.inherit">
+             $ {property.perNightCost} per night
+            </Typography>
+            <Typography variant="body2" >
+            <Rating name="half-rating-read" defaultValue={property.rating} precision={0.5} readOnly />
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button size="large" onClick={() => {goToDetailsPage(property.propertyID)}}>View Details</Button>
+          </CardActions>
+          </Card>
+        </Grid>
+      );
+    })
+    // let properties = "hello"
+    return(
+      <Grid container>
+        {properties}
+      </Grid>
+    );
+  }
+  
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
     <Menu

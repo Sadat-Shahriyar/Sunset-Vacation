@@ -39,5 +39,8 @@ urlpatterns = [
     path('getPropertyCatagory/',views.getPropertyCatagory),
     path('getUserStaticSearch/',views.getUserStaticSearch),
     path('getGuestList/',views.getGuestList),
+    path('insertGiftcard/',views.insertGiftcard),
+    path('deleteGiftcard/<int:giftcard_id>',views.deleteGiftcard),
+    path('getGiftcardList/',views.getGiftcardList),
     
 ]

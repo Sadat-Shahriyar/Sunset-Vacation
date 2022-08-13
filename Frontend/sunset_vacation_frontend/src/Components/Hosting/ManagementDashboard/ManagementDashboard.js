@@ -158,6 +158,10 @@ export default function ManagementDashboard(props) {
                             <CardGiftcardRoundedIcon/>
                             Create Gift card
                         </MenuItem>
+                        <MenuItem onClick={()=>{navigate('/showGiftcard')}} disableRipple>
+                            <CardGiftcardRoundedIcon/>
+                            show all Giftcard
+                        </MenuItem>
                         <MenuItem onClick={useReservation} disableRipple>
                             <CollectionsBookmarkIcon/>
                             Reservation

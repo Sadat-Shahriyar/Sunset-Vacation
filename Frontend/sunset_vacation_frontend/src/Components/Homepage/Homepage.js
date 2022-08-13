@@ -117,6 +117,7 @@ function ViewAllProperties(props){
     propertyData = props.properties.data;
 
   const goToDetailsPage = (id) => {
+    alert('hello');
     props.setSelectedPropertyForDetails(id);
     props.navigate("/booking/property/details");
   }

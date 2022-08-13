@@ -933,22 +933,26 @@ def getGuestList(request):
             rating=RatingsSerializer(rating,many=True)
             rating=sorted(rating.data, key=lambda d: d['rating'],reverse=True)
             list=[]
-            if len(rating) >2:
-                for r in rating[0:2]:
+            tempList=[]
+            if len(rating) >10:
+                for r in rating[0:10]:
                     user=User.objects.get(id=r['user_id'])
                     user=UserSerializer(user,many=True)
                     user=user.data[0]
                     user['rating']=r['rating']
-                    if user not in list:
+                    if user['id'] not in tempList:
                         list.append(user)
+                        tempList.append(user['id'])                    
+                        
             else:
                 for r in rating:
                     user=User.objects.filter(id=r['user_id'])
                     user=UserSerializer(user,many=True)
                     user=user.data[0]
                     user['rating']=r['rating']
-                    if user not in list:
+                    if user['id'] not in tempList:
                         list.append(user)
+                        tempList.append(user['id']) 
            
             dict={"guest":g,"list":list}
             guestList.append(dict)
@@ -956,4 +960,71 @@ def getGuestList(request):
             
     
     return Response({"list":guestList},status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def insertGiftcard(request):
+    print(request.data)
+    propertyInfo = Property.objects.get(propertyID=request.data["property_id"]);
     
+   
+    
+    for d in request.data['discountList']:
+
+        giftcard = GiftCard.objects.create(
+            type=request.data['offerType'],
+            discount=float(d['discount']),
+            expiry_date=request.data['expiryDate'],
+            propertyID = propertyInfo,
+            customMsg= request.data['msg']
+        )        
+        
+        for userid in d['list']:
+            
+            user=User.objects.filter(id=userid)
+    
+            UserGiftCardList.objects.create(
+                user_id= user[0],
+                used_flag= False,
+                giftcard_id= giftcard
+            )
+
+
+    return Response({"data": "sent"}, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getGiftcardList(request):
+    try:
+
+        user = UserSerializer(request.user).data
+        user = User.objects.get(id=user['id'])
+        property = Property.objects.filter(owner_id_id=user)
+        propertySerializer = PropertySerializer(property, many=True)
+
+        cards=[]
+        for property in propertySerializer.data:
+            giftcards =GiftCard.objects.filter(propertyID_id=property["propertyID"])
+            gSerializer = GiftCardSerializer(giftcards, many=True)
+            for offer in gSerializer.data:
+                sd=offer["expiry_date"]
+                offer["expiry_date"]=sd[0:10]
+                offer["title"]=property["title"]
+                users=UserGiftCardList.objects.filter(giftcard_id=offer['giftcard_id'])
+                users=UserGiftCardListSerializer(users,many=True)
+                guestList=users.data
+                offer['guestList']=guestList   
+                      
+                cards.append(offer)
+
+        return Response({"giftcards": cards}, status=status.HTTP_200_OK)
+
+    except GiftCard.DoesNotExist:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def deleteGiftcard(request, giftcard_id):
+    giftcard = GiftCard.objects.get(giftcard_id=giftcard_id)
+    giftcard.delete()
+    return Response({"msg": "successfully deleted giftcard"}, status=status.HTTP_200_OK)
