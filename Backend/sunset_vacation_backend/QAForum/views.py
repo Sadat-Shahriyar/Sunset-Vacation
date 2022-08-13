@@ -12,3 +12,5 @@ from django.db.models import Q
 from datetime import timedelta
 # Create your views here.
 
+def getAllQuestions(request):
+    return Response({"Hello": "hello"})
