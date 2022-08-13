@@ -102,6 +102,9 @@ export default function ManagementDashboard(props) {
         setAnchorEl(null);
         console.log(event.target.value);
     };
+    const AdminButton = (event) => {
+        navigate("/admin");
+    }
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
@@ -178,6 +181,7 @@ export default function ManagementDashboard(props) {
                             Inbox
                         </MenuItem>
                     </StyledMenu>
+                    {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}
                 </Toolbar>
             </AppBar>
 
