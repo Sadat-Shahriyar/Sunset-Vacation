@@ -66,6 +66,9 @@ export default function ManagementDashboard(props) {
     const useReservation = (event) => {
         navigate("/reservation");
     }
+    const useNotification = (event) => {
+        navigate("/notification");
+    }
     const useHandleHostNewPropertyButton = (event) => {
         navigate("/hostproperty");
     }
@@ -99,6 +102,9 @@ export default function ManagementDashboard(props) {
         setAnchorEl(null);
         console.log(event.target.value);
     };
+    const AdminButton = (event) => {
+        navigate("/admin");
+    }
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
@@ -166,7 +172,7 @@ export default function ManagementDashboard(props) {
                             <CollectionsBookmarkIcon/>
                             Reservation
                         </MenuItem>
-                        <MenuItem value="offer" onClick={useOfferpage} disableRipple>
+                        <MenuItem onClick={useNotification} disableRipple>
                             <NotificationsIcon/>
                             Notification
                         </MenuItem>
@@ -175,6 +181,7 @@ export default function ManagementDashboard(props) {
                             Inbox
                         </MenuItem>
                     </StyledMenu>
+                    {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}
                     <Button align="right" color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
                             onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
                         Home</Button>

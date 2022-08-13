@@ -60,7 +60,7 @@ def login(request):
     
     returnToken = str(token)
     user = UserSerializer(user).data
-    return Response({"email": email, "token":returnToken, "success": True}, status=status.HTTP_200_OK)
+    return Response({"email": email, "token":returnToken, "isAdmin":user["isAdmin"], "success": True}, status=status.HTTP_200_OK)
 
 
 @authentication_classes([TokenAuthentication])

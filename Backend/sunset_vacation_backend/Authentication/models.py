@@ -69,5 +69,7 @@ class User(AbstractBaseUser):
         blank=False,
         null=True)
 
+    isAdmin = models.BooleanField(default=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

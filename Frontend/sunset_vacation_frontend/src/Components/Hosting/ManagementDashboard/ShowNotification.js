@@ -24,14 +24,14 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 
-export default function ShowReservation(props) {
+export default function ShowNotification(props) {
     let navigate = useNavigate();
 
-    const [booking, setBooking] = React.useState({})
+    const [notification, setNotification] = React.useState({})
 
     React.useEffect(() => {
         // change here propertyId
-        fetch('http://localhost:8000/hosting/booking/' + props.booking.propertyID, {
+        fetch('http://localhost:8000/hosting/notification/' + props.notification.propertyID, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,9 +48,7 @@ export default function ShowReservation(props) {
             })
             .then((response) => response.json())
             .then((response) => {
-                console.log(response.booking)
-                setBooking(prevState => response.booking)
-                console.log(booking)
+                setNotification(prevState => response.notification)
             })
             .catch((err) => {
                 // alert(err.message);
@@ -65,7 +63,7 @@ export default function ShowReservation(props) {
 
             <Typography sx={{marginTop: "50px", fontFamily: "Lucida Handwriting"}} align='center' variant="h5"
                         component="h2">
-                Booking No {props.booking.propertyID}
+                Notification
             </Typography>
             <Card sx={{
                 width: '35%',
@@ -78,34 +76,18 @@ export default function ShowReservation(props) {
                 paddingLeft: "auto",
                 paddingRight: "auto"
             }}>
-                <CardContent>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Word of the Day
+                <CardContent sx={{marginTop: "15px", marginBottom: "15px"}}>
+                    <Typography sx={{ fontSize: 14 , fontFamily: "Lucida Handwriting"}} color="text.secondary" gutterBottom>
+                        notification sent {props.notification.time}
                     </Typography>
-                    <Typography variant="h5" component="div">
-                        hello
+                    <Typography variant="h4" component="div" sx={{paddingTop:"20px", fontFamily: "Lucida Handwriting"}}>
+                        {props.notification.title}
                     </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        adjective
+                    <Typography variant="h6" component="div" sx={{paddingTop:"30px", fontFamily: "Lucida Handwriting"}}>
+                       {props.notification.text}
                     </Typography>
-                    <Typography variant="body2">
-                        well meaning and kindly.
-                        <br />
-                        {'"a benevolent smile"'}
-                    </Typography>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Word of the Day
-                    </Typography>
-                    <Typography variant="h5" component="div">
-                        hello
-                    </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        adjective
-                    </Typography>
-                    <Typography variant="body2">
-                        well meaning and kindly.
-                        <br />
-                        {'"a benevolent smile"'}
+                    <Typography variant="h6" component="div" sx={{paddingTop:"30px", fontFamily: "Lucida Handwriting"}}>
+                       {props.notification.link}
                     </Typography>
                 </CardContent>
             </Card>

@@ -150,6 +150,9 @@ const handleCloseLocation = () => {
   const becomeAHostButton = (event) => {
     navigate("/hosting");
   }
+  const AdminButton = (event) => {
+    navigate("/admin");
+  }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -543,6 +546,9 @@ const handleCloseLocation = () => {
                
               </Badge>
             </IconButton> */}
+
+            {/*{props.isAdmin && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}*/}
+
                       <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{{navigate('/search');}}}>search</Button>
 
             <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>

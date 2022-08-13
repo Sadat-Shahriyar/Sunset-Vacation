@@ -22,12 +22,12 @@ import Editfacility from './Components/Hosting/ShowProperty/EditFacility';
 import Offer from './Components/Hosting/Offer&Giftcard/Offer';
 import OfferConfirmation from './Components/Hosting/Offer&Giftcard/OfferConfirmation';
 import ShowOffer from './Components/Hosting/Offer&Giftcard/ShowOffer';
+import Notification from "./Components/Hosting/ManagementDashboard/Notifications";
+import ShowNotification from "./Components/Hosting/ManagementDashboard/ShowNotification";
+import AdminDashboard from "./Components/Hosting/ManagementDashboard/AdminDashboard";
 import SearchPage from './Components/Homepage/SearchPage';
 import SearchResult from './Components/Homepage/SearchResult';
 import UserStaticSearch from './Components/Homepage/UserStaticSearch';
-
-import Reservation from "./Components/Hosting/ManagementDashboard/Reservations";
-import ShowReservation from "./Components/Hosting/ManagementDashboard/ShowReservation";
 import ShowMore from './Components/Homepage/ShowMore';
 import GiftCard from './Components/Hosting/Offer&Giftcard/GiftCard';
 
@@ -51,12 +51,12 @@ export const axios_api = axios.create({
 function App() {
   const [property, setProperty] = useState({});
   const [booking, setBooking] = useState({});
-
+  const [notification, setNotification] = useState({});
+  const [admin, setAdmin] = useState(sessionStorage.getItem("isAdmin"));
   const [loggedIn, setLoggedIn] = useState(sessionStorage.getItem("loggedIn"));
   const [user, setUser] = useState(sessionStorage.getItem("user"));
   const [token, setToken] = useState(sessionStorage.getItem("token"));
   const [selectedProperty, setSelectedProperty] = useState('');
-
   const [selectedFac,setSelectedFac]=useState('');
   const [display,setDisplay]=useState('none');
   var [flags,setFlags]=useState("");
@@ -150,8 +150,9 @@ function App() {
         <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
-        <Route path='/reservation' element={<Reservation token={token} setBooking={(booking)=>setBooking(booking)}/>}/>
-         <Route path='/showReservation' element={<ShowReservation booking={booking} setBooking={(booking)=>setBooking(booking)} token={token}/>}/>
+        <Route path='/admin' element={<AdminDashboard setProperty={(p)=>{setProperty(p)}}/>}/>
+        <Route path='/notification' element={<Notification token={token} setNotification={(notification)=>setNotification(notification)}/>}/>
+        <Route path='/showNotification' element={<ShowNotification notification={notification} setNotification={(notification)=>setNotification(notification)} token={token}/>}/>
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
         <Route path='/showPropertyDetails' element={<ShowPropertyDetails token = {token} property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>

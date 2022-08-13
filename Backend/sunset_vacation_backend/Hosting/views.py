@@ -15,37 +15,165 @@ from psycopg2.extras import NumericRange
 import datetime
 from django.db.models import Q
 
+@api_view(["POST"])
+def addCategory(request):
+    try:
+        # change delete this portion
+        category = FacilityCategory.objects.create(
+            category=request.data["category"]
+        )
+        categories = FacilityCategory.objects.all()
+        categorySerializer = FacilityCategorySerializer(categories, many=True)
+        # change add code for fetching booking here by user
+        return Response({"categories": categorySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["POST"])
+def addFacility(request):
+    try:
+        # change delete this portion
+        facility = Facility.objects.create(
+            catagory=request.data["category"],
+            subcatagory=request.data["subcategory"],
+            facility_name=request.data["facility"]
+        )
+        # change add code for fetching booking here by user
+        return Response({"message":"ok"},status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# Create your views here.
+@api_view(["GET"])
+def getPendingProperties(request):
+    try:
+        # change delete this portion
+        property = Property.objects.filter(published=True)
+        propertySerializer = PropertySerializer(property, many=True)
+        print(propertySerializer.data)
+        # change add code for fetching booking here by user
+        return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "405 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+@api_view(["PUT"])
+def approveProperty(request, propertyId):
+    try:
+        # change delete this portion
+        property = Property.objects.get(propertyID=propertyId)
+        property.approved = True
+        property.save()
+        user = User.objects.get(id=property.owner_id_id)
+        notification = Notification.objects.create(
+            user_id=user,
+            title="Published property with title- " + property.title,
+            text=request.data["message"]
+        )
+        property = Property.objects.filter(published=True).filter(approved=False)
+        propertySerializer = PropertySerializer(property, many=True)
+        # change add code for fetching booking here by user
+        return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 Bad request"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["PUT"])
+def rejectProperty(request, propertyId):
+    try:
+        # change delete this portion
+        property = Property.objects.get(propertyID=propertyId)
+        property.published = False
+        property.save()
+        user = User.objects.get(id=property.owner_id_id)
+        notification = Notification.objects.create(
+            user_id=user,
+            title=" Changes needed for property title- " + property.title,
+            text=request.data["message"]
+        )
+        property = Property.objects.filter(published=True).filter(approved=False)
+        propertySerializer = PropertySerializer(property, many=True)
+        # change add code for fetching booking here by user
+        return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "405 not found"}, status=status.HTTP_404_NOT_FOUND)
+
 # Create your views here.
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def getBooking(request):
+def getNotification(request):
     try:
         print(request.user)
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
         # change delete this portion
-        property = Property.objects.filter(owner_id_id=user)
-        propertySerializer = PropertySerializer(property, many=True)
+        notification = Notification.objects.filter(user_id_id=user, marked=False)
+        notificationSerializer = NotificationSerializer(notification, many=True)
         # change add code for fetching booking here by user
-        return Response({"bookings": propertySerializer.data}, status=status.HTTP_200_OK)
+        return Response({"notifications": notificationSerializer.data}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def getBookingId(request, booking_id):
+def getNotificationId(request, notification_id):
     try:
         print(request.user)
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
         # change delete this portion
-        property = Property.objects.filter(owner_id_id=user, propertyID=booking_id)
-        propertySerializer = PropertySerializer(property)
+        notification = Notification.objects.get(id=notification_id)
+        notificationSerializer = NotificationSerializer(notification)
+        print(notification)
         # change add code for fetching specific booking by id here
-        return Response({"booking": propertySerializer.data}, status=status.HTTP_200_OK)
+        return Response({"notification": notificationSerializer.data}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["DELETE"])
+def deleteNotification(request, notification_id):
+    notification = Notification.objects.get(id=notification_id)
+    notification.marked=True
+    notification.save()
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+    # change delete this portion
+    notification = Notification.objects.filter(user_id_id=user, marked=False)
+    notificationSerializer = NotificationSerializer(notification, many=True)
+    # change add code for fetching booking here by user
+    return Response({"notifications": notificationSerializer.data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def getFacilityCategories(request):
+    try:
+        # change delete this portion
+        print("hi1")
+        categories = FacilityCategory.objects.all()
+        print("hi")
+        categorySerializer = FacilityCategorySerializer(categories, many=True)
+        # change add code for fetching booking here by user
+        return Response({"categories": categorySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["GET"])
+def getFacilitySubcategories(request):
+    try:
+        # change delete this portion
+        subcategories = FacilitySubcategory.objects.all()
+        subcategorySerializer = FacilitySubcategorySerializer(subcategories, many=True)
+        # change add code for fetching booking here by user
+        return Response({"subcategories": subcategorySerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(["GET"])
 #@permission_classes([IsAuthenticated])
