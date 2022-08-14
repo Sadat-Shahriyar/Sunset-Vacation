@@ -197,18 +197,12 @@ def deletePropertyPhoto(request, photo_id):
 def getProperties(request):
     try:
         user = UserSerializer(request.user).data
-        # user=User.objects.get(id=1)
         user = User.objects.get(id=user['id'])
-        property = Property.objects.filter(owner_id_id=user,approved=True)
-
-        # return Response({"hello" : "hello"},status= status.HTTP_200_OK)
+        property = Property.objects.filter(owner_id_id=user)
         propertySerializer = PropertySerializer(property, many=True)
-        # print(propertySerializer.data)
+        
         return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
-        # if propertySerializer.is_valid():
-        #     return Response({"properties": propertySerializer.data}, status= status.HTTP_200_OK)
-        # else:
-        #     return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+       
     except Property.DoesNotExist:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
