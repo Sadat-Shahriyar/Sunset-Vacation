@@ -69,6 +69,16 @@ export default function ShowPropertyList(props) {
 
 
       }
+
+    function showStatus(approved){
+        if(approved === true){
+            return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" >Approved</Button>
+
+        }else{
+            return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" >waiting for approval</Button>
+
+        }
+    }
     function tableData(properties){
         return(
             <TableBody>
@@ -81,6 +91,9 @@ export default function ShowPropertyList(props) {
                     <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" value={property.title} onClick={() => { getSelectedProperty(property) }}>{property.title}</Button>
 
                     </TableCell>
+                    <TableCell component="th" scope="row">
+                        {showStatus(property.approved)}
+                        </TableCell>
                     {/* <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right"></TableCell> */}
                     <TableCell><Tooltip title="Delete">
                         <IconButton value={property.propertyID} onClick={()=>DeleteProperty(property)} >
@@ -103,6 +116,8 @@ export default function ShowPropertyList(props) {
               <TableCell align="right">Fat&nbsp;(g)</TableCell>
       <TableCell align="right">Carbs&nbsp;(g)</TableCell>*/}
                             <TableCell align="right"></TableCell>
+                            <TableCell align="right"></TableCell>
+
                         </TableRow>
                     </TableHead>
                    {tableData(properties)}
