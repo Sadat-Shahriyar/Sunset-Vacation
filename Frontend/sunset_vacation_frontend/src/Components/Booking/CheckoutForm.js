@@ -152,14 +152,14 @@ export default function CheckoutForm(props){
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>Check in date: </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkInDate.getDate()}</Typography>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkInDate.getFullYear() + '-' + props.checkInDate.getMonth() + '-' + props.checkInDate.getDate()}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>Check out date: </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkOutDate.getDate()}</Typography>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkOutDate.getFullYear() + '-' + props.checkOutDate.getMonth() + '-' + props.checkOutDate.getDate()}</Typography>
                     </Grid>
                   
                   {props.propertyDetails === null ? null : 
