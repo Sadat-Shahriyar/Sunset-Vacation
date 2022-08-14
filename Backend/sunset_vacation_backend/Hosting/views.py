@@ -50,7 +50,7 @@ def addFacility(request):
 def getPendingProperties(request):
     try:
         # change delete this portion
-        property = Property.objects.filter(published=True)
+        property = Property.objects.filter(published=True,approved=False)
         propertySerializer = PropertySerializer(property, many=True)
         print(propertySerializer.data)
         # change add code for fetching booking here by user
@@ -199,7 +199,7 @@ def getProperties(request):
         user = UserSerializer(request.user).data
         # user=User.objects.get(id=1)
         user = User.objects.get(id=user['id'])
-        property = Property.objects.filter(owner_id_id=user)
+        property = Property.objects.filter(owner_id_id=user,approved=True)
 
         # return Response({"hello" : "hello"},status= status.HTTP_200_OK)
         propertySerializer = PropertySerializer(property, many=True)
@@ -534,7 +534,7 @@ def publishProperty(request):
     amenityList = request.data['amenityList'].strip().split(",")
 
    
-    if(len(amenityList) >0):
+    if(amenityList[0]!= '' and len(amenityList) >0):
 
         for amenity in amenityList:
             facility = Facility.objects.get(facility_name=amenity)
@@ -548,7 +548,7 @@ def publishProperty(request):
    
     guestFavs = request.data['guestFavs'].strip().split(",")
     
-    if(len(guestFavs) >0):
+    if(guestFavs[0] !='' and len(guestFavs) >0):
      
         print("print:", len(guestFavs))
 
@@ -563,7 +563,7 @@ def publishProperty(request):
     safetyItems = request.data['safetyItems'].strip().split(",")
 
     
-    if(len(safetyItems) >0 ):
+    if(safetyItems[0]!='' and len(safetyItems) >0 ):
 
         for item in safetyItems:
             facility = Facility.objects.get(facility_name=item)
@@ -632,7 +632,7 @@ def photoUpload(request):
 
 @api_view(['GET'])
 def getAllPropertiesForHomePage(request):
-    properites = Property.objects.filter(published=True)
+    properites = Property.objects.filter(published=True,approved=True)
     propertySerializer = PropertySerializer(properites, many=True)
     # print(propertySerializer.data)
     propertyData = propertySerializer.data
@@ -747,7 +747,7 @@ def insertOffer(request):
     return Response({"data": "sent"}, status=status.HTTP_200_OK)
 
 def calculateRating():
-    properties=Property.objects.all()
+    properties=Property.objects.filter()
     propertySerializer = PropertySerializer(properties, many=True)
     propertyRating=[]
     for property in propertySerializer.data:
@@ -764,6 +764,7 @@ def calculateRating():
             rating=float(f'{rating:.2f}')
         dict={"propertyID":property['propertyID'],"rating":rating}
         propertyRating.append(dict)
+    
     return propertyRating
 
 
@@ -782,7 +783,7 @@ def Recommendations(request):
     ratings=sorted(ratingSerializer.data, key=lambda d: d['rating'],reverse=True)
     ratingList=[]
     for r in ratings:
-        properties=Property.objects.filter(propertyID=r["propertyID"])
+        properties=Property.objects.filter(propertyID=r["propertyID"],approved=True)
         propertySerializer = PropertySerializer(properties, many=True)
         for property in propertySerializer.data:
             photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
@@ -801,7 +802,7 @@ def Recommendations(request):
     offers=sorted(offerSerializer.data, key=lambda d:d['amount'],reverse=True)
     offerList=[]
     for offer in offers:
-        properties=Property.objects.filter(propertyID=offer["propertyID"])
+        properties=Property.objects.filter(propertyID=offer["propertyID"],approved=True)
         propertySerializer = PropertySerializer(properties, many=True)
     
         for property in propertySerializer.data:
@@ -826,7 +827,7 @@ def Recommendations(request):
     s=PropertyFacilities.objects.annotate( similarity=vector).filter(similarity__gt=0.3).order_by('-similarity')
     p =PropertyFacilitiesSerializer(s, many=True)
     for f in p.data:
-        properties=Property.objects.filter(propertyID=f["propertyID"])
+        properties=Property.objects.filter(propertyID=f["propertyID"],approved=True)
         propertySerializer = PropertySerializer(properties, many=True)
         for property in propertySerializer.data:
             photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
@@ -866,10 +867,10 @@ def Recommendations(request):
         list=[]
         # vector=(TrigramSimilarity('address',country))
         # s=Property.objects.annotate( similarity=vector).filter(similarity__gt=0.1).order_by('-similarity')
-        s=Property.objects.filter(address__search=country)    
+        s=Property.objects.filter(address__search=country,approved=True)    
         p =PropertySerializer(s, many=True)
         for x in p.data:
-            properties=Property.objects.filter(propertyID=x["propertyID"])
+            properties=Property.objects.filter(propertyID=x["propertyID"],approved=True)
             propertySerializer = PropertySerializer(properties, many=True)
         
             for property in propertySerializer.data:
@@ -888,10 +889,10 @@ def Recommendations(request):
         list=[]
         # vector=(TrigramSimilarity('address',country))
         # s=Property.objects.annotate( similarity=vector).filter(similarity__gt=0.4).order_by('-similarity')   
-        s=Property.objects.filter(address__search=country) 
+        s=Property.objects.filter(address__search=country,approved=True) 
         p =PropertySerializer(s, many=True)
         for x in p.data:
-            properties=Property.objects.filter(propertyID=x["propertyID"])
+            properties=Property.objects.filter(propertyID=x["propertyID"],approved=True)
             propertySerializer = PropertySerializer(properties, many=True)
         
             for property in propertySerializer.data:
@@ -958,14 +959,16 @@ def getSearchResult(request,searchword):
     p =PropertyFacilitiesSerializer(s, many=True)
     allRelatedProperties=[]
     for x in p.data:
-        properties=Property.objects.filter(propertyID=x["propertyID"])
+        properties=Property.objects.filter(propertyID=x["propertyID"],approved=True)
         propertySerializer = PropertySerializer(properties, many=True)
     
         for property in propertySerializer.data:
             photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
             photoSerializer = PropertyPhotoSerializer(photos, many=True)
             property['images'] = photoSerializer.data
+            print('------------------',property,'---------------------')
             idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+            
             property['rating']=propertyRating[idx]['rating']
             if property not in allRelatedProperties:
                 allRelatedProperties.append(property)
@@ -982,7 +985,7 @@ def getOfferList(request):
 
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
-        property = Property.objects.filter(owner_id_id=user)
+        property = Property.objects.filter(owner_id_id=user,approved=True)
         propertySerializer = PropertySerializer(property, many=True)
 
         offers=[]
@@ -1016,9 +1019,10 @@ def getPropertyCatagory(request):
 def getUserStaticSearch(request):
     facility=request.data['facility']
     minprice=float(request.data['minprice'])
-    maxprice=float(request.data['maxprice'])
+    maxprice=float(request.data['maxprice'])+1
     placetypes=request.data['placeType']
     propertytypes=request.data['propertyType']
+    
 
     propertyRating=Ratings.objects.all()
     propertyRating=RatingsSerializer(propertyRating,many=True)
@@ -1046,7 +1050,10 @@ def getUserStaticSearch(request):
                     photoSerializer = PropertyPhotoSerializer(photos, many=True)                
                     property['images'] = photoSerializer.data
                     idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
-                    property['rating']=propertyRating[idx]['rating']
+                    if not idx == None :
+                        property['rating']=propertyRating[idx]['rating']
+                    else:
+                        property['rating']=0
                     property['count']=1
                     propertyIDList.append(id)
                     propertyList.append(property)           
@@ -1065,7 +1072,10 @@ def getUserStaticSearch(request):
                 photoSerializer = PropertyPhotoSerializer(photos, many=True)                
                 property['images'] = photoSerializer.data
                 idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
-                property['rating']=propertyRating[idx]['rating']
+                if not idx == None :
+                    property['rating']=propertyRating[idx]['rating']
+                else:
+                    property['rating']=0
                 property['count']=1
                 propertyIDList.append(id)
                 propertyList.append(property)   
@@ -1083,14 +1093,17 @@ def getUserStaticSearch(request):
                 photoSerializer = PropertyPhotoSerializer(photos, many=True)                
                 property['images'] = photoSerializer.data
                 idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
-                property['rating']=propertyRating[idx]['rating']
+                if not idx == None :
+                    property['rating']=propertyRating[idx]['rating']
+                else:
+                    property['rating']=0
                 property['count']=1
                 propertyIDList.append(id)
                 propertyList.append(property)   
 
     properties=Property.objects.filter(perNightCost__contained_by=NumericRange(minprice,maxprice))
     propertySerailizer=PropertySerializer(properties,many=True)
-    print(propertySerailizer.data)
+    # print(propertySerailizer.data)
     for property in propertySerailizer.data:
         id=property['propertyID']
         if id in propertyIDList:
@@ -1100,8 +1113,12 @@ def getUserStaticSearch(request):
             photos = PropertyPhotos.objects.filter(property_id=id)
             photoSerializer = PropertyPhotoSerializer(photos, many=True)                
             property['images'] = photoSerializer.data
-            idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
-            property['rating']=propertyRating[idx]['rating']
+            idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == id), None)
+           
+            if not idx == None :
+                property['rating']=propertyRating[idx]['rating']
+            else:
+                property['rating']=0
             property['count']=1
             propertyIDList.append(id)
             propertyList.append(property) 
@@ -1199,7 +1216,7 @@ def getGiftcardList(request):
 
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
-        property = Property.objects.filter(owner_id_id=user)
+        property = Property.objects.filter(owner_id_id=user,approved=True)
         propertySerializer = PropertySerializer(property, many=True)
 
         cards=[]
@@ -1232,7 +1249,7 @@ def deleteGiftcard(request, giftcard_id):
 
 @api_view(["GET"])
 def getCountryList(request):
-    locations=Property.objects.filter().values_list('address')    
+    locations=Property.objects.filter(approved=True).values_list('address')    
     countryList=[]    
     for location in locations:        
         l=location[0].split(',')
@@ -1245,7 +1262,7 @@ def getCountryList(request):
 @api_view(["GET"])
 def getlocationsInCountry(request,country):
     areaList=[]
-    locations=Property.objects.filter(address__search=country).values_list('address') 
+    locations=Property.objects.filter(address__search=country,approved=True).values_list('address') 
     d=['1','2','3','4','5','6','7','8','9','0']
     for location in locations:        
         l=location[0].split(',')
@@ -1273,10 +1290,10 @@ def getHomepagesearchResult(request):
     
     if  location != '' and guest > 0 :   
         print('both:',location,' ',guest)     
-        s=Property.objects.filter(Q(address__search=location) & Q(noOfGuests__gte=guest) )   
+        s=Property.objects.filter(Q(address__search=location) & Q(noOfGuests__gte=guest) & Q(approved=True) )   
         p =PropertySerializer(s, many=True)
         for x in p.data:
-            properties=Property.objects.filter(propertyID=x["propertyID"])
+            properties=Property.objects.filter(propertyID=x["propertyID"],approved=True)
             propertySerializer = PropertySerializer(properties, many=True)
             for property in propertySerializer.data:
                 photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
@@ -1287,10 +1304,10 @@ def getHomepagesearchResult(request):
                     propertyList.append(property)
     elif location == '' and guest >0:
         print('guest:',guest)
-        s=Property.objects.filter(noOfGuests>=guest)
+        s=Property.objects.filter(noOfGuests>=guest,approved=True)
         p =PropertySerializer(s, many=True)
         for x in p.data:
-            properties=Property.objects.filter(propertyID=x["propertyID"])
+            properties=Property.objects.filter(propertyID=x["propertyID"],approved=True)
             propertySerializer = PropertySerializer(properties, many=True)
             for property in propertySerializer.data:
                 photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
@@ -1301,10 +1318,10 @@ def getHomepagesearchResult(request):
                     propertyList.append(property)
     elif location != '' and guest==0:
         print('location: ',location )
-        s=Property.objects.filter(address__search=location )
+        s=Property.objects.filter(address__search=location ,approved=True)
         p =PropertySerializer(s, many=True)
         for x in p.data:
-            properties=Property.objects.filter(propertyID=x["propertyID"])
+            properties=Property.objects.filter(propertyID=x["propertyID"],approved=True)
             propertySerializer = PropertySerializer(properties, many=True)
 
             for property in propertySerializer.data:

@@ -20,12 +20,7 @@ export default function ShowPropertyList(props) {
     const [properties, setProperties] = React.useState([])
 
     React.useEffect(() => {
-        // fetch("http://localhost:8000/hosting/" + `${props.userId}/`, {
-        //     method:"GET",
-        //     headers: {
-        //     'Content-type': 'application/json'
-        //     }
-        // })
+      
         fetch(`http://localhost:8000/hosting/propertylist/`, {
             method: 'GET',
             headers: { 
