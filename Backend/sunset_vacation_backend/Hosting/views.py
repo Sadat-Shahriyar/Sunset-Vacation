@@ -198,7 +198,7 @@ def getProperties(request):
     try:
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
-        property = Property.objects.filter(owner_id_id=user)
+        property = Property.objects.filter(owner_id_id=user).order_by("-propertyID")
         propertySerializer = PropertySerializer(property, many=True)
         
         return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
