@@ -67,6 +67,7 @@ def approveProperty(request, propertyId):
         property = Property.objects.get(propertyID=propertyId)
         property.approved = True
         property.save()
+        print(request.data)
         user = User.objects.get(id=property.owner_id_id)
         notification = Notification.objects.create(
             user_id=user,
@@ -88,6 +89,7 @@ def rejectProperty(request, propertyId):
         property = Property.objects.get(propertyID=propertyId)
         property.published = False
         property.save()
+        print(request.data)
         user = User.objects.get(id=property.owner_id_id)
         notification = Notification.objects.create(
             user_id=user,
@@ -1241,6 +1243,13 @@ def getGiftcardList(request):
 def deleteGiftcard(request, giftcard_id):
     giftcard = GiftCard.objects.get(giftcard_id=giftcard_id)
     giftcard.delete()
+    return Response({"msg": "successfully deleted giftcard"}, status=status.HTTP_200_OK)
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def deleteOffer(request, offer_id):
+    offer = Offer.objects.get(offer_id=offer_id)
+    offer.delete()
     return Response({"msg": "successfully deleted giftcard"}, status=status.HTTP_200_OK)
 
 

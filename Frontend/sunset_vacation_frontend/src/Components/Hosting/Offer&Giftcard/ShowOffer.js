@@ -50,21 +50,32 @@ export default function ShowOffer(props) {
     function getSelectedOffer(property) {
         
     }
-    function  DeleteOffer(property) {
-        // console.log(property.propertyID)
-        // const requestOptions = {
-        //     method: 'DELETE',
-        //     headers: { 'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${props.token}` },
-        //     body: JSON.stringify(props.property)
-        // };
-        // fetch(`http://localhost:8000/hosting/deleteProperty/` + `${property.propertyID}`, requestOptions)
-        // .then(response => response.json())
-        // .then(data => {
-        //     console.log("delete successsfully")
-        //     props.setflags("propertylist");
-        //     navigate('/showProperty/Redirect');
-        // });
+    function  DeleteOffer(offer) {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json',
+            'Authorization':  `Bearer ${props.token}` },
+           
+          };
+          fetch(`http://localhost:8000/hosting/deleteOffer/` + `${offer.offer_id}`, requestOptions)
+          .then((response) => {
+            if (response.ok) {
+                return response
+            }
+            else {
+                let err = new Error(response.status + ": " + response.text);
+                throw err;
+            }
+        })
+        .then((response) => response.json())
+        .then((response) => {
+           
+            props.setflags("offer");
+                navigate('/showProperty/Redirect');
+        })
+        .catch((err) => {
+            alert(err.message);
+        })
 
 
       }
@@ -120,7 +131,7 @@ export default function ShowOffer(props) {
             {<ManagementDashboard />}
 
             <Typography sx={{marginTop:"50px", fontFamily:"Lucida Handwriting"}}align='center' variant="h5" component="h2">
- Your Listings
+ Offers List
 </Typography>;
 
             {tableListing(offers)}

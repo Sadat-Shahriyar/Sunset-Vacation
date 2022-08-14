@@ -139,9 +139,12 @@ def checkAvailabilityOfDate(request):
     print(date1 < date2)
 
     if propertyData['entirePrivateOrShared'] == 'An entire place':
+        print("hello")
         if len(bookedDates) > 0:
+            print("hello1")
             return Response({'available': False}, status=status.HTTP_200_OK)
         
+        print("hello3")
         return Response({'available': True}, status=status.HTTP_200_OK)
     
     elif propertyData['entirePrivateOrShared'] == "A private room":

@@ -34,7 +34,7 @@ export default function ConfirmationPage(props){
                     <Card variant='outlined' elevation={5} sx={{maxWidth: 700, ml: 50, mt:30}} >
                         <CardContent>
                             <Typography sx={{ fontSize: 40 }} color="text.secondary" gutterBottom>
-                                You property has been published!!!
+                                You property has been listed for approval. You will get a notification soon!!!
                             </Typography>
                         </CardContent>
                         <CardActions>

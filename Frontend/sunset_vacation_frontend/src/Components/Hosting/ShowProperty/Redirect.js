@@ -19,6 +19,8 @@ export default function Redirect(props){
        }else if(flag === "giftcard"){
         
         navigate('/showGiftcard');
+       }else if(flag === "offer"){
+        navigate('/showOffers');
        }
       },[])
     return(

@@ -70,11 +70,14 @@ export default function ShowPropertyList(props) {
 
       }
 
-    function showStatus(approved){
+    function showStatus(approved,published){
         if(approved === true){
             return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" >Approved</Button>
 
-        }else{
+        }else if(approved === false & published === false){
+            return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" >Rejected</Button>
+
+        }else if(approved===false & published === true){
             return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" >waiting for approval</Button>
 
         }
@@ -92,7 +95,7 @@ export default function ShowPropertyList(props) {
 
                     </TableCell>
                     <TableCell component="th" scope="row">
-                        {showStatus(property.approved)}
+                        {showStatus(property.approved,property.published)}
                         </TableCell>
                     {/* <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right"></TableCell> */}
                     <TableCell><Tooltip title="Delete">

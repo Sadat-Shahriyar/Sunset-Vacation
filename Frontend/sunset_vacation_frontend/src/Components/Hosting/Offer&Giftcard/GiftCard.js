@@ -88,6 +88,13 @@ export default function GiftCard (props) {
             .then((response) => response.json())
             .then((response) => {
                 setProperties(response.properties)
+                var t=[]
+                response.properties.map((property)=>{
+                if(property['approved'] === true){
+                t.push(property);
+                }
+      })
+      setProperties(t);
             })
             .catch((err) => {
                 alert(err.message);

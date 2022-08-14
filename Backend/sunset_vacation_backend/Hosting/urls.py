@@ -54,4 +54,5 @@ urlpatterns = [
     path('getlocationsInCountry/<str:country>/',views.getlocationsInCountry),
     path('getCountryList/',views.getCountryList),
     path('getHomepagesearchResult/',views.getHomepagesearchResult),
+    path('deleteOffer/<int:offer_id>/',views.deleteOffer),
 ]

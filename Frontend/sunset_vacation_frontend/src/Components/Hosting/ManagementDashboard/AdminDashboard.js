@@ -199,7 +199,7 @@ export default function AdminDashboard(props) {
     };
 
     function changeDescription(event) {
-        props.property.description = event.target.value;
+        setMessage(event.target.value);
     }
 
     function handleSubmit(event) {
@@ -293,7 +293,7 @@ export default function AdminDashboard(props) {
 
     }
     function handleSubmitApprove(event) {
-        setMessage(event.target.value);
+        //setMessage(event.target.value);
         const data={
             message: message
         }
@@ -324,7 +324,7 @@ export default function AdminDashboard(props) {
     }
 
     function handleSubmitReject(event) {
-        setMessage(event.target.value);
+        //setMessage(event.target.value);
         const data = {
             message: message
         }
@@ -482,49 +482,7 @@ export default function AdminDashboard(props) {
                     </Typography>
                     {/* <Button disabled></Button> */}
 
-                    <Button
-                        id="demo-customized-button"
-                        aria-controls={open ? 'demo-customized-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        variant="inherit"
-                        sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", paddingLeft: "30px"}}
-                        disableElevation
-                        onClick={handleClick}
-                        endIcon={<KeyboardArrowDownIcon/>}
-                    >
-                        Menu
-                    </Button>
-                    <StyledMenu
-                        id="demo-customized-menu"
-                        MenuListProps={{
-                            'aria-labelledby': 'demo-customized-button',
-                        }}
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                    >
-                        <MenuItem value="offer" onClick={useOfferpage} disableRipple>
-                            <LocalOfferRoundedIcon/>
-                            Create Offer
-                        </MenuItem>
-                        <MenuItem onClick={handleClose} disableRipple>
-                            <CardGiftcardRoundedIcon/>
-                            Create Gift card
-                        </MenuItem>
-                        <MenuItem onClick={useReservation} disableRipple>
-                            <CollectionsBookmarkIcon/>
-                            Reservation
-                        </MenuItem>
-                        <MenuItem value="offer" onClick={useNotification} disableRipple>
-                            <NotificationsIcon/>
-                            Notification
-                        </MenuItem>
-                        <MenuItem onClick={handleClose} disableRipple>
-                            <MailIcon/>
-                            Inbox
-                        </MenuItem>
-                    </StyledMenu>
+                   <Button variant='text' color='inherit' sx={{fontFamily: 'Lucida Handwriting',ml:10,fontSize:20}} onClick={(event)=>{navigate('/')}} >Home</Button>
                 </Toolbar>
             </AppBar>
             {showAdmin(props)}

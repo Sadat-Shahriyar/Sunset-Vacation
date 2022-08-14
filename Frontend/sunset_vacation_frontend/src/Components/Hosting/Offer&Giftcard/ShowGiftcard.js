@@ -136,7 +136,7 @@ export default function ShowGiftcard(props){
         <div>
             <ManagementDashboard/>
             <Typography sx={{marginTop:"50px", fontFamily:"Lucida Handwriting"}}align='center' variant="h5" component="h2">
- Your Listings
+ GiftCard List
 </Typography>;
 
             {tableListing(giftcards)}

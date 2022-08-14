@@ -712,7 +712,7 @@ function PropertyDetails(props){
                     <Typography variant='h6' sx={{mt:5}}>Want to rate this property?</Typography>
                 </Grid>
                 <Grid item xs={9}>
-                    <Rating name="half-rating" defaultValue={0} precision={0.5} sx={{mt:5.5}} onChange={(event) => {handleRating(event.target.value)}}/>
+                    <Rating readOnly name="half-rating" defaultValue={0} precision={0.5} sx={{mt:5.5}} onChange={(event) => {handleRating(event.target.value)}}/>
                 </Grid>
                 
                 <Grid item xs={12}>
