@@ -553,8 +553,8 @@ const handleCloseLocation = () => {
 
             <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{{navigate('/search');}}}>search</Button>
             {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}
-            
-            <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{navigate('/inbox')}}>Inbox</Button>
+
+            {sessionStorage.getItem("loggedIn") &&<Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{navigate('/inbox')}}>Inbox</Button>}
             <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>
             {/* <IconButton
               size="large"

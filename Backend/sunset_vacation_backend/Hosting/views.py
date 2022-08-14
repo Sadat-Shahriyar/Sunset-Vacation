@@ -110,7 +110,7 @@ def getNotification(request):
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
         # change delete this portion
-        notification = Notification.objects.filter(user_id_id=user, marked=False)
+        notification = Notification.objects.filter(user_id_id=user, marked=False).order_by("-id")
         notificationSerializer = NotificationSerializer(notification, many=True)
         # change add code for fetching booking here by user
         return Response({"notifications": notificationSerializer.data}, status=status.HTTP_200_OK)
