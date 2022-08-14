@@ -68,21 +68,23 @@ export default function Login(props) {
       if(response.status === 200){
         props.setUser(response.data);
         props.setToken(response.data.token);
+        props.setAdmin(response.data.isAdmin);
         props.setLoggedIn(true);
-        
         sessionStorage.setItem("user", response.data)
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("loggedIn", true);
+        sessionStorage.setItem("isAdmin",response.data.isAdmin);
         navigate(props.loginRedirection)
       }
       else{
         props.setUser({});
         props.setToken("");
         props.setLoggedIn(false);
-
+        props.setAdmin(false);
         sessionStorage.setItem("user", {});
         sessionStorage.setItem("token", "");
         sessionStorage.setItem("loggedIn", false);
+        sessionStorage.setItem("isAdmin", false);
         alert("Invalid email or password");
       }
       console.log(response.data);

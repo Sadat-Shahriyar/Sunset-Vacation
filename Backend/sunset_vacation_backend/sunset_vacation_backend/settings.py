@@ -110,10 +110,10 @@ WSGI_APPLICATION = 'sunset_vacation_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sunset_vacation', 
-        'USER': 'postgres', 
+        'NAME': 'sunset_vacation',
+        'USER': 'postgres',
         'PASSWORD': 'root',
-        'HOST': '127.0.0.1', 
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }

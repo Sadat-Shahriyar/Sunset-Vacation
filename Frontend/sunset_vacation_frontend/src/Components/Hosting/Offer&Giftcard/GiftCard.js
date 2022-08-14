@@ -66,6 +66,7 @@ export default function GiftCard (props) {
     const [discountType,setDiscountType]=React.useState('');
     //discount values
     const [discount,setDiscount]=React.useState([]);
+    const [d,setD]=React.useState('');
     const [checked,setChecked]=React.useState([false,false,false,false]);
     React.useEffect(() => {
         fetch(`http://localhost:8000/hosting/propertylist/`, {
@@ -319,17 +320,19 @@ export default function GiftCard (props) {
             alert(err.message);
         }
     }
-    function handleDiscount(type,value){
+    function handleDiscount  (type,value){
+        setD(value);        
+        console.log(d);
         if (type === 'same'){
-            setDiscount([{'type':'same','discount':value}]);
+            setDiscount([{'type':'same','discount':d}]);
         }else{
             var t=[...discount]
             var p=t.find(element => element['type'] === type); 
             if (p != null ){
-                t[type]=value;
+                t[type]=d;
                 
             } else{
-                t.push({'type':type,'discount': value});
+                t.push({'type':type,'discount': d});
             }
             setDiscount(t);
         }
@@ -668,6 +671,7 @@ function showGuestList(props){
                 </Typography>
                 <TextField
                 label="Discount"
+                defaultValue={d}
                 id="outlined-start-adornment"
                 sx={{ m: 1, width: '25ch' }}
                 InputProps={{

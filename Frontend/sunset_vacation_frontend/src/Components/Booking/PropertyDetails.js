@@ -206,7 +206,7 @@ function ReservationCard(props){
             sessionStorage.setItem("user", {});
             sessionStorage.setItem("token", "");
             sessionStorage.setItem("loggedIn", false);
-
+            sessionStorage.setItem("isAdmin", false);
 
             props.setLoginRedirection('/booking/property/details')
             props.navigate("/login");
