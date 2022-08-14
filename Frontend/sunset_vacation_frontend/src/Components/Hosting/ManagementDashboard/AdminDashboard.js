@@ -130,6 +130,7 @@ export default function AdminDashboard(props) {
             })
             .then((response) => response.json())
             .then((response) => {
+                console.log(response.subcategories)
                 setSubcategories(response.subcategories)
             })
             .catch((err) => {
@@ -399,7 +400,7 @@ export default function AdminDashboard(props) {
                                     onChange={changeCategory}
                                 >
                                     {categories.map((item,index)=>{
-                                        return(  <MenuItem key={index} value={item.category}>{item.category}</MenuItem>)})}
+                                        return(  <MenuItem key={index} value={item.catagory}>{item.catagory}</MenuItem>)})}
                                 </Select>
                             </FormControl>
                             <FormControl sx={{ m: 0.5, minWidth: 230 }}>
@@ -412,7 +413,7 @@ export default function AdminDashboard(props) {
                                     onChange={changeSubcategory}
                                 >
                                     {subcategories.map((item,index)=>{
-                                        return(  <MenuItem key={index} value={item.subcategory}>{item.subcategory}</MenuItem>)})}
+                                        return(  <MenuItem key={index} value={item.subcatagory}>{item.subcatagory}</MenuItem>)})}
                                 </Select>
                             </FormControl>
                             <br/>
