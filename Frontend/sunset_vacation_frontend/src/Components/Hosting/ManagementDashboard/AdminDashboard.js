@@ -285,7 +285,6 @@ export default function AdminDashboard(props) {
             })
             .then((response) => response.json())
             .then((response) => {
-                setCategories(response.categories)
             })
             .catch((err) => {
                 console.log(err.message);
@@ -445,6 +444,11 @@ export default function AdminDashboard(props) {
                                     sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 4}}>Request Change</Button>
                         </Grid>
                         <Grid item xs={4}>
+                            <label><p style={{
+                                "fontFamily": "Lucida Handwriting",
+                                "fontSize": "35px",
+                                "color": "black"
+                            }}>Pending Property approval</p></label>
                             {properties.map((item,index)=>{
                                 return( <div key={index}>
                                         <List  sx={{  width: '100%', bgcolor: 'background.paper', marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} component="nav" aria-label="mailbox folders">

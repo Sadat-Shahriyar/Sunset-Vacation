@@ -19,13 +19,11 @@ from django.db.models import Q
 def addCategory(request):
     try:
         # change delete this portion
-        category = FacilityCategory.objects.create(
-            category=request.data["category"]
+        #spelling mistake
+        category = Catagory.objects.create(
+            description=request.data["category"]
         )
-        categories = FacilityCategory.objects.all()
-        categorySerializer = FacilityCategorySerializer(categories, many=True)
-        # change add code for fetching booking here by user
-        return Response({"categories": categorySerializer.data}, status=status.HTTP_200_OK)
+        return Response({"message": "category added"}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
