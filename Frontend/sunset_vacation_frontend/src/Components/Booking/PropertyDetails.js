@@ -31,7 +31,10 @@ import AddCircleOutlineRounded from '@mui/icons-material/AddCircleOutlineRounded
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import ClearIcon from '@mui/icons-material/Clear';
 import ShowOffer from './ShowOffers';
-import axios from 'axios';
+import Divider from '@mui/material/Divider';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+
+import Rating from '@mui/material/Rating';
 
 const style = {
   position: 'absolute',
@@ -94,7 +97,7 @@ function ReservationCard(props){
     const setCheckInDate = (date) =>{
         let checkIn = new Date(date);
         let checkOut = new Date(props.checkOutDate);
-        if(checkOut.getDate() - checkIn.getDate() < 1){
+        if(checkOut.getTime() - checkIn.getTime() < 1){
             alert("Check in date must be smaller than check out date");
         }
         else{
@@ -106,7 +109,7 @@ function ReservationCard(props){
     const setCheckOutDate = (date) =>{
         let checkIn = new Date(props.checkInDate);
         let checkOut = new Date(date);
-        if(checkOut.getDate() - checkIn.getDate() < 1){
+        if(checkOut.getTime() - checkIn.getTime() < 1){
             alert("Check out date must be greater than check in date");
         }
         else{
@@ -447,7 +450,7 @@ function PropertyDetails(props){
     let ratinBG5 = 'white'
 
     const handleRating = async(val) => {
-        props.setRating(val);
+        // props.setRating(val);
         try{
             if(props.isLoggedin){
                 let body = {rating:val, propertyID:props.propertyDetails.property.propertyID}
@@ -472,32 +475,6 @@ function PropertyDetails(props){
         }
     }
 
-    if(props.rating === 1){
-        ratinBG1='yellow'
-    }
-    else if(props.rating === 2){
-        ratinBG1='yellow';
-        ratinBG2='yellow'
-    }
-    else if(props.rating === 3){
-        ratinBG1='yellow';
-        ratinBG2='yellow'
-        ratinBG3='yellow'
-    }
-    else if(props.rating === 4){
-        ratinBG1='yellow';
-        ratinBG2='yellow'
-        ratinBG3='yellow'
-        ratinBG4='yellow'
-    }
-    else if(props.rating === 5){
-        ratinBG1='yellow';
-        ratinBG2='yellow'
-        ratinBG3='yellow'
-        ratinBG4='yellow'
-        ratinBG5='yellow'
-    }
-    // console.log(props.review);
 
     const postReview = async(review, property_id) => {
         try{
@@ -538,22 +515,40 @@ function PropertyDetails(props){
         // console.log(property_id);
     }
 
+    
     if(props.propertyDetails === null){
         return(
             <CircularIndeterminate/>
         );
     }
-    else{
+    else{    
         
+        let rating = 0;
+        for(let i = 0; i < props.propertyDetails.ratings.length; i++){
+            rating = rating + props.propertyDetails.ratings[i].rating
+        }
+
+        let finalRating = 0
+        if(props.propertyDetails.ratings.length > 0){
+            finalRating = rating/props.propertyDetails.ratings.length;
+        }
+
         let idx = 1;
         return(
-            <Grid container sx={{ ml:17, maxWidth:1300}}>
+            <Grid container sx={{ ml:17, maxWidth:1300, mb:30}}>
                 <Grid item xs={12}>
                     <Typography variant="h3" sx={{mt:5, fontFamily:"Lucida Handwriting"}}>{props.propertyDetails.property.title}</Typography>
                 </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="body1" sx={{mt:1}}>{props.propertyDetails.property.address}</Typography>
-                </Grid>
+                {finalRating === 0 ? 
+                    <Grid item xs={12}>
+                        <Typography variant="body1" sx={{mt:1}}>{props.propertyDetails.reviews.length} reviews, {props.propertyDetails.property.address}</Typography>
+                    </Grid>:
+                    <Grid item xs={12}>
+                        <Button disabled  color='inherit' startIcon={<StarBorderIcon/>}>{finalRating} ,{props.propertyDetails.reviews.length} reviews, {props.propertyDetails.property.address}</Button>
+                        {/* <Typography variant="body1" sx={{mt:1}}>{finalRating} star, {props.propertyDetails.property.address}</Typography> */}
+                    </Grid>
+                }
+                
                 <Grid item xs={6}>
                     {/* <ImageList
                         sx={{
@@ -652,7 +647,27 @@ function PropertyDetails(props){
                             <Typography variant="body1" sx={{mt:1, mb:3}}>{props.propertyDetails.property.noOfGuests} guests, {props.propertyDetails.property.noOfBedrooms} bedrooms, {props.propertyDetails.property.noOfBeds} beds, {props.propertyDetails.property.noOfBathrooms} bathrooms</Typography>
                             <hr />
                         </Grid>
-                        
+                        {/* {Advertisements()} */}
+                        {props.propertyDetails.ads.length > 0 ? 
+                         props.propertyDetails.ads.map((ad) => {
+                            return(
+                                <Grid item xs={12}>
+                                        <Card>
+                                            <CardContent>
+                                                <Typography variant="h6" component="div">
+                                                    {ad.Title}
+                                                </Typography>
+
+                                                <Typography variant="body1" component="div">
+                                                    {ad.Description}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                </Grid>
+                            );
+                        }):
+                        <div></div>
+                        }
                     </Grid>
                 </Grid>
                 <Grid item xs={5} sx={{mt:5}}>
@@ -677,59 +692,76 @@ function PropertyDetails(props){
                         setToken = {(t) => {props.setToken(t)}}
                     />
                 </Grid>
-                <Grid item xs={1}>
-                    <IconButton color="inherit" onClick={()=>{handleRating(1)}} sx={{background:ratinBG1}}>
-                        <StarBorderIcon />
-                    </IconButton> 
+
+                <Grid item xs={12}>
+                    <Typography sx={{mt:3}} variant='h6'> What this place offers?</Typography>
                 </Grid>
-                <Grid item xs={1}>
-                    <IconButton color="inherit" onClick={()=>{handleRating(2)}} sx={{background:ratinBG2}}>
-                        <StarBorderIcon />
-                    </IconButton> 
+
+                {props.propertyDetails.facilities.map((facility) => {
+                    return(
+                        <Grid item xs={3}>
+                            <Card sx={{mt:1, maxWidth:252}}>
+                                <CardContent>
+                                    <Typography variant='body1'>{facility.facility_name_id}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    );
+                })}
+                <Grid item xs={3}>
+                    <Typography variant='h6' sx={{mt:5}}>Want to rate this property?</Typography>
                 </Grid>
-                <Grid item xs={1}>
-                    <IconButton color="inherit" onClick={()=>{handleRating(3)}} sx={{background:ratinBG3}}>
-                        <StarBorderIcon />
-                    </IconButton> 
+                <Grid item xs={9}>
+                    <Rating name="half-rating" defaultValue={0} precision={0.5} sx={{mt:5.5}} onChange={(event) => {handleRating(event.target.value)}}/>
                 </Grid>
-                <Grid item xs={1}>
-                    <IconButton color="inherit" onClick={()=>{handleRating(4)}} sx={{background:ratinBG4}}>
-                        <StarBorderIcon />
-                    </IconButton> 
-                </Grid>
-                <Grid item xs={8}>
-                    <IconButton color="inherit" onClick={()=>{handleRating(5)}} sx={{background:ratinBG5}}>
-                        <StarBorderIcon />
-                    </IconButton> 
-                </Grid>
+                
                 <Grid item xs={12}>
                     <Typography variant="h6" sx={{mt:5}}>Have any review?</Typography>
                 </Grid>
 
                 <Grid item xs={6}>
-                    <TextField value={props.review} id="standard-basic" label="Review" variant="standard"  onChange={(event)=> {props.setReview(event.target.value)}}/>
+                    <TextField value={props.review} id="standard-basic" label="Review" variant="standard" sx={{minWidth:600, maxWidth:600}}  onChange={(event)=> {props.setReview(event.target.value)}}/>
                 </Grid>
                 <Grid item xs={6}>
                     <Button onClick={()=>{postReview(props.review, props.propertyDetails.property.propertyID )}}>Post review</Button>
                 </Grid>
+
+                {props.propertyDetails.reviews.length > 0 ? 
                 <Grid item xs={12}>
-                    <Typography variant="h6" sx={{mt:1}}>All review</Typography>
-                </Grid>
+                    <Typography variant="h6" sx={{mt:5}}>All review</Typography>
+                </Grid>: <div></div>
+                }
+                {
+                props.propertyDetails.reviews.map((review) => {
+                    return(
+                        <Grid item xs={6}>
+                            <Card sx={{mt:1}}>
+                                <CardContent>
+                                    <Typography variant='h6' component='div'>
+                                        {review.username}
+                                    </Typography>
+                                    <Typography variant='body1' component='div'>
+                                        {review.review}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    );
+                })
+                }
                 <Grid item xs={12}>
-                    <List>
-                        {
-                            props.propertyDetails.reviews.map((review)=>{
-                                return(
-                                    <ListItem disablePadding>
-                                        <ListItemButton>
-                                            <ListItemText primary={review.username + ": " + review.review} />
-                                        </ListItemButton>
-                                    </ListItem>
-                                );
-                            })
-                        }
-                    </List>
+                    {/* <Divider sx={{mt:10, fontWeight:'bold'}}/> */}
+                    <hr style={{marginTop:50}}/>
                 </Grid>
+
+                <Grid item xs={6}>
+                    {/* <Typography sx={{mt:5}} variant='h6'>Hosted by {props.propertyDetails.property.ownerName}</Typography> */}
+                    <Button size='large' sx={{mt:5, fontSize:20}} color='inherit' startIcon={<AccountCircleOutlinedIcon  fontSize='large'/>}>Hosted by {props.propertyDetails.property.ownerName}</Button>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button size='large' sx={{mt:5}} variant='contained' onClick={() => {props.navigate("/booking/property/contacthost")}}>Contact host</Button>
+                </Grid>
+                
             </Grid>
         );
     }

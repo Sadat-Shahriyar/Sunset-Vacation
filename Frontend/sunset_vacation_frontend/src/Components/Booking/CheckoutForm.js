@@ -152,14 +152,14 @@ export default function CheckoutForm(props){
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>Check in date: </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkInDate.getDate()}</Typography>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkInDate.getFullYear() + '-' + (props.checkInDate.getMonth() + 1) + '-' + props.checkInDate.getDate()}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>Check out date: </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkOutDate.getDate()}</Typography>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkOutDate.getFullYear() + '-' + (props.checkOutDate.getMonth() + 1) + '-' + props.checkOutDate.getDate()}</Typography>
                     </Grid>
                   
                   {props.propertyDetails === null ? null : 
@@ -182,7 +182,7 @@ export default function CheckoutForm(props){
                         offerIdx++;
                         let offerStartDate = new Date(off.startDate);
                         let offerEndDate = new Date(off.endDate);
-                        if( props.checkInDate.getDate() - offerStartDate.getDate() >= 0 && offerEndDate.getDate() - props.checkOutDate.getDate()>= 0){
+                        if( props.checkInDate.getTime() - offerStartDate.getTime() >= 0 && offerEndDate.getTime() - props.checkOutDate.getTime()>= 0){
                           totalOfferAmount = totalOfferAmount + off.amount;
                           return(
                             <ListItem id={offerIdx} sx={{width:500, fontSize:16}}>

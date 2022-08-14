@@ -207,8 +207,8 @@ export default function AdminDashboard(props) {
     }
 
     function showProperty(property) {
-        props.setProperty(property);
-        navigate('/showPropertyDetails/'+property.propertyID);
+        props.setSelectedPropertyForDetails(property.propertyID);
+        navigate('/booking/property/details');
     }
     function editStatus(property) {
         setPropertyId(property.propertyID);

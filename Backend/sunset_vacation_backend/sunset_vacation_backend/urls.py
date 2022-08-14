@@ -24,6 +24,7 @@ urlpatterns = [
      path('hosting/', include('Hosting.urls')),
      path('booking/', include('Booking.urls')),
      path('qa/', include('QAForum.urls')),
+     path('message/', include('Messaging.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -704,8 +704,10 @@ def addRating(request):
 
     data = request.data
     print(data)
-    rating = Ratings.objects.filter(user_id_id=user).values()
+    
     property = Property.objects.get(propertyID=data['propertyID'])
+
+    rating = Ratings.objects.filter(user_id_id=user, propertyID_id=property).values()
 
     if len(rating) == 0:
         
@@ -731,6 +733,7 @@ def insertOffer(request):
     #print(request.data)
     propertyInfo = Property.objects.get(propertyID=request.data["property_id"]);
     
+    print(request.data)
     offer = Offer.objects.create(
         startDate=request.data["startDate"],
         endDate=request.data["endDate"],

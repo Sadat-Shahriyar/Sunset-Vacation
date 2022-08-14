@@ -176,12 +176,12 @@ export default function ManagementDashboard(props) {
                             <NotificationsIcon/>
                             Notification
                         </MenuItem>
-                        <MenuItem onClick={handleClose} disableRipple>
+                        <MenuItem onClick={()=>{navigate('/inbox')}} disableRipple>
                             <MailIcon/>
                             Inbox
                         </MenuItem>
                     </StyledMenu>
-                    {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}
+                    {/* {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>} */}
                     <Button align="right" color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
                             onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
                         Home</Button>

@@ -272,7 +272,7 @@ class Messaging(models.Model):
         null=True
     )
     time=models.DateTimeField(
-        default=None,
+        default=datetime.now,
         null=True
     )
 
