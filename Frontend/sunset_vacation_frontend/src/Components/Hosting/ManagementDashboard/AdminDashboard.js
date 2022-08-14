@@ -446,7 +446,7 @@ export default function AdminDashboard(props) {
                         <Grid item xs={4}>
                             <label><p style={{
                                 "fontFamily": "Lucida Handwriting",
-                                "fontSize": "35px",
+                                "fontSize": "25px",
                                 "color": "black"
                             }}>Pending Property approval</p></label>
                             {properties.map((item,index)=>{
