@@ -150,9 +150,9 @@ const handleCloseLocation = () => {
   const becomeAHostButton = (event) => {
     navigate("/hosting");
   }
-  const AdminButton = (event) => {
-    navigate("/admin");
-  }
+  // const AdminButton = (event) => {
+  //   navigate("/admin");
+  // }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -311,7 +311,9 @@ const handleCloseLocation = () => {
     </Menu>
   );
  
-  
+  const AdminButton = (event) => {
+      navigate("/admin");
+  }
   
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -549,8 +551,10 @@ const handleCloseLocation = () => {
 
             {/*{props.isAdmin && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}*/}
 
-                      <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{{navigate('/search');}}}>search</Button>
-
+            <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{{navigate('/search');}}}>search</Button>
+            {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}
+            
+            <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={()=>{navigate('/inbox')}}>Inbox</Button>
             <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={becomeAHostButton}>Become a host</Button>
             {/* <IconButton
               size="large"

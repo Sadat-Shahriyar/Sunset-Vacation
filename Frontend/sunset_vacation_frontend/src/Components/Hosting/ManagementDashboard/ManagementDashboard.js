@@ -181,7 +181,7 @@ export default function ManagementDashboard(props) {
                             Inbox
                         </MenuItem>
                     </StyledMenu>
-                    {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>}
+                    {/* {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>} */}
                     <Button align="right" color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
                             onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
                         Home</Button>

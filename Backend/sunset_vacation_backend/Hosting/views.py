@@ -733,6 +733,7 @@ def insertOffer(request):
     #print(request.data)
     propertyInfo = Property.objects.get(propertyID=request.data["property_id"]);
     
+    print(request.data)
     offer = Offer.objects.create(
         startDate=request.data["startDate"],
         endDate=request.data["endDate"],

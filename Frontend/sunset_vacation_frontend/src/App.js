@@ -152,7 +152,7 @@ function App() {
         <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
-        <Route path='/admin' element={<AdminDashboard setProperty={(p)=>{setProperty(p)}}/>}/>
+        <Route path='/admin' element={<AdminDashboard  setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/notification' element={<Notification token={token} setNotification={(notification)=>setNotification(notification)}/>}/>
         <Route path='/showNotification' element={<ShowNotification notification={notification} setNotification={(notification)=>setNotification(notification)} token={token}/>}/>
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />

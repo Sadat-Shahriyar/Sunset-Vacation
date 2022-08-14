@@ -97,7 +97,7 @@ function ReservationCard(props){
     const setCheckInDate = (date) =>{
         let checkIn = new Date(date);
         let checkOut = new Date(props.checkOutDate);
-        if(checkOut.getDate() - checkIn.getDate() < 1){
+        if(checkOut.getTime() - checkIn.getTime() < 1){
             alert("Check in date must be smaller than check out date");
         }
         else{
@@ -109,7 +109,7 @@ function ReservationCard(props){
     const setCheckOutDate = (date) =>{
         let checkIn = new Date(props.checkInDate);
         let checkOut = new Date(date);
-        if(checkOut.getDate() - checkIn.getDate() < 1){
+        if(checkOut.getTime() - checkIn.getTime() < 1){
             alert("Check out date must be greater than check in date");
         }
         else{
