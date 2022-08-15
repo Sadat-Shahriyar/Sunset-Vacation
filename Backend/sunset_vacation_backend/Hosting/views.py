@@ -19,13 +19,11 @@ from django.db.models import Q
 def addCategory(request):
     try:
         # change delete this portion
-        category = FacilityCategory.objects.create(
-            category=request.data["category"]
+        #spelling mistake
+        category = Catagory.objects.create(
+            description=request.data["category"]
         )
-        categories = FacilityCategory.objects.all()
-        categorySerializer = FacilityCategorySerializer(categories, many=True)
-        # change add code for fetching booking here by user
-        return Response({"categories": categorySerializer.data}, status=status.HTTP_200_OK)
+        return Response({"message": "category added"}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -112,7 +110,7 @@ def getNotification(request):
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
         # change delete this portion
-        notification = Notification.objects.filter(user_id_id=user, marked=False)
+        notification = Notification.objects.filter(user_id_id=user, marked=False).order_by("-id")
         notificationSerializer = NotificationSerializer(notification, many=True)
         # change add code for fetching booking here by user
         return Response({"notifications": notificationSerializer.data}, status=status.HTTP_200_OK)
@@ -156,11 +154,14 @@ def getFacilityCategories(request):
     try:
         # change delete this portion
         print("hi1")
-        categories = FacilityCategory.objects.all()
-        print("hi")
-        categorySerializer = FacilityCategorySerializer(categories, many=True)
+        categories = Facility.objects.values("catagory").distinct()
+        # category=[]
+        # for i in categories:
+        #     category.append(i["catagory"])
+        # print("hi")
+        # categorySerializer = FacilityCategorySerializer(categories, many=True)
         # change add code for fetching booking here by user
-        return Response({"categories": categorySerializer.data}, status=status.HTTP_200_OK)
+        return Response({"categories": categories}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -168,11 +169,12 @@ def getFacilityCategories(request):
 @api_view(["GET"])
 def getFacilitySubcategories(request):
     try:
-        # change delete this portion
-        subcategories = FacilitySubcategory.objects.all()
-        subcategorySerializer = FacilitySubcategorySerializer(subcategories, many=True)
-        # change add code for fetching booking here by user
-        return Response({"subcategories": subcategorySerializer.data}, status=status.HTTP_200_OK)
+        subcategories = Facility.objects.values("subcatagory").distinct()
+        # subcategory = []
+        # for i in subcategories:
+        #     print(i)
+        #     subcategory.append(i["subcatagory"])
+        return Response({"subcategories": subcategories}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -200,7 +202,7 @@ def getProperties(request):
     try:
         user = UserSerializer(request.user).data
         user = User.objects.get(id=user['id'])
-        property = Property.objects.filter(owner_id_id=user)
+        property = Property.objects.filter(owner_id_id=user).order_by("-propertyID")
         propertySerializer = PropertySerializer(property, many=True)
         
         return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)

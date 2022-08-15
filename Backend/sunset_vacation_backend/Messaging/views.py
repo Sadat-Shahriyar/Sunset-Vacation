@@ -21,7 +21,6 @@ from datetime import timedelta
 @permission_classes([IsAuthenticated])
 def senMessage(request):
 
-    print("heloooooooooo")
     data = request.data
     sender = UserSerializer(request.user).data
     sender = User.objects.get(id=sender['id'])
@@ -37,6 +36,7 @@ def senMessage(request):
     print(MessagingSerializer(message).data)
 
     return Response({"success":True}, status = status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

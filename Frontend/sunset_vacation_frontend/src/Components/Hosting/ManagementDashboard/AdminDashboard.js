@@ -130,6 +130,7 @@ export default function AdminDashboard(props) {
             })
             .then((response) => response.json())
             .then((response) => {
+                console.log(response.subcategories)
                 setSubcategories(response.subcategories)
             })
             .catch((err) => {
@@ -285,7 +286,6 @@ export default function AdminDashboard(props) {
             })
             .then((response) => response.json())
             .then((response) => {
-                setCategories(response.categories)
             })
             .catch((err) => {
                 console.log(err.message);
@@ -400,7 +400,7 @@ export default function AdminDashboard(props) {
                                     onChange={changeCategory}
                                 >
                                     {categories.map((item,index)=>{
-                                        return(  <MenuItem key={index} value={item.category}>{item.category}</MenuItem>)})}
+                                        return(  <MenuItem key={index} value={item.catagory}>{item.catagory}</MenuItem>)})}
                                 </Select>
                             </FormControl>
                             <FormControl sx={{ m: 0.5, minWidth: 230 }}>
@@ -413,7 +413,7 @@ export default function AdminDashboard(props) {
                                     onChange={changeSubcategory}
                                 >
                                     {subcategories.map((item,index)=>{
-                                        return(  <MenuItem key={index} value={item.subcategory}>{item.subcategory}</MenuItem>)})}
+                                        return(  <MenuItem key={index} value={item.subcatagory}>{item.subcatagory}</MenuItem>)})}
                                 </Select>
                             </FormControl>
                             <br/>
@@ -445,6 +445,11 @@ export default function AdminDashboard(props) {
                                     sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 4}}>Request Change</Button>
                         </Grid>
                         <Grid item xs={4}>
+                            <label><p style={{
+                                "fontFamily": "Lucida Handwriting",
+                                "fontSize": "25px",
+                                "color": "black"
+                            }}>Pending Property approval</p></label>
                             {properties.map((item,index)=>{
                                 return( <div key={index}>
                                         <List  sx={{  width: '100%', bgcolor: 'background.paper', marginTop: "10px", marginLeft: "auto", marginRight: "auto"}} component="nav" aria-label="mailbox folders">

@@ -8,7 +8,7 @@ import NavBar from './NavBar';
 export default function Homepage(props) {  
   return (
     <Box sx={{ flexGrow: 1 }}>
-      
+
       <NavBar
       setHomepagesearch={(val)=>{props.setHomepagesearch(val)}}
       isLoggedin={props.isLoggedin}
