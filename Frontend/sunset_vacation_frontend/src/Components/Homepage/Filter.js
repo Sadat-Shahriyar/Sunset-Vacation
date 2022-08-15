@@ -174,7 +174,7 @@ export default function Filter(props) {
 
   function filterSearch(props) {
     return (
-      <Box id="overlay"  sx={{   display: displayFunc(),flexWrap: 'wrap' }} >     
+      <Box id="overlay"  sx={{   display: displayFunc(),flexWrap: 'wrap',position:'fixed' }} >     
      
         <Paper elevation={6} sx={{ ":hover": "none", padding: 4 }}>
           <Typography sx={{ marginTop: "0px", fontFamily: "Lucida Handwriting" }} align='center' variant="h5" component="h5">

@@ -147,7 +147,7 @@ function App() {
   return (
    <BrowserRouter>
      <Routes>
-        <Route path='/' element={<Homepage setHomepagesearch={(val)=>{setHomepagesearch(val)}} setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} />
+        <Route path='/' element={<Homepage isLoggedin={loggedIn} setflags={(val)=>{setFlags(val)}}  setHomepagesearch={(val)=>{setHomepagesearch(val)}} setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} />
         <Route path='/login' element={<Login setAdmin={(val)=>{setAdmin(val)}} loginRedirection={loginRedirection} isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
@@ -196,10 +196,10 @@ function App() {
         <Route path='/showOffers' element={<ShowOffer setflags={(val)=>{setFlags(val)}} property={property} token={token}/>}/>
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
 
-        <Route path='/search' element={<SearchPage setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
-        <Route path='/searchResult' element={<SearchResult setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
-        <Route path='/userStaticSearch' element={<UserStaticSearch setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
-        <Route path='/showmore'  element={<ShowMore setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
+        <Route path='/search' element={<SearchPage isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
+        <Route path='/searchResult' element={<SearchResult isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
+        <Route path='/userStaticSearch' element={<UserStaticSearch isLoggedin={loggedIn} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
+        <Route path='/showmore'  element={<ShowMore isLoggedin={loggedIn} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
         <Route path='/giftcard' element={<GiftCard token={token}/>}/>
                   
 
@@ -293,7 +293,7 @@ function App() {
         <Route path='viewanswer' element={<ViewAnswer />}/>
         <Route path='qahome' element={<QaHome />}/>
 
-        <Route path='/homepagesearchresult' element={<HomePageSearchResult setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} homepagesearch={homepagesearch}/>}/>
+        <Route path='/homepagesearchresult' element={<HomePageSearchResult isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} homepagesearch={homepagesearch}/>}/>
         <Route 
           path='/inbox' 
           element={

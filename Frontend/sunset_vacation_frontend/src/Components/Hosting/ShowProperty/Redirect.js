@@ -21,6 +21,8 @@ export default function Redirect(props){
         navigate('/showGiftcard');
        }else if(flag === "offer"){
         navigate('/showOffers');
+       }else if(flag === 'homepagesearchresult'){
+        navigate('/homepagesearchresult');
        }
       },[])
     return(

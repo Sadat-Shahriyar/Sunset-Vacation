@@ -102,6 +102,7 @@ export default function SearchNav(props){
   alignItems="center"
   minHeight="10vh"
   mt="5px"
+ 
 >
   
 <Grid container columns={16}>
