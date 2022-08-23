@@ -21,12 +21,25 @@ def getMessages(request):
     try:
         print(request.user)
         user = UserSerializer(request.user).data
-        messages = Messaging.objects.filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id']))
+        # messages = Messaging.objects.filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id']))
         uniqueSender = Messaging.objects.filter(~Q(sender_id_id=user['id'])).values("sender_id_id").distinct()
         print(uniqueSender)
         uniqueReceiver = Messaging.objects.filter(~Q(receiver_id_id=user['id'])).values("receiver_id_id").distinct()
         print(uniqueReceiver)
-        messagesSerializer = MessagingSerializer(messages, many=True)
+        # messagesSerializer = MessagingSerializer(messages, many=True)
+        uniqueUser = []
+        for i in uniqueSender:
+            uniqueUser.append(i['sender_id_id'])
+        for i in uniqueReceiver:
+            uniqueUser.append(i['receiver_id_id'])
+        uniqueUser = list(set(uniqueUser))
+        print(uniqueUser)
+        lastMessageArray = []
+        for i in uniqueUser:
+            lastMessage = Messaging.objects.filter(Q(sender_id_id=i) | Q(receiver_id_id=i)).order_by("-time")
+            if lastMessage:
+                lastMessageArray.append(lastMessage[0])
+        messagesSerializer = MessagingSerializer(lastMessageArray, many=True)
         return Response({"messages": messagesSerializer.data}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
