@@ -15,6 +15,22 @@ from psycopg2.extras import NumericRange
 import datetime
 from django.db.models import Q
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getMessages(request):
+    try:
+        print(request.user)
+        user = UserSerializer(request.user).data
+        messages = Messaging.objects.filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id']))
+        uniqueSender = Messaging.objects.filter(~Q(sender_id_id=user['id'])).values("sender_id_id").distinct()
+        print(uniqueSender)
+        uniqueReceiver = Messaging.objects.filter(~Q(receiver_id_id=user['id'])).values("receiver_id_id").distinct()
+        print(uniqueReceiver)
+        messagesSerializer = MessagingSerializer(messages, many=True)
+        return Response({"messages": messagesSerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
 @api_view(["POST"])
 def addCategory(request):
     try:
