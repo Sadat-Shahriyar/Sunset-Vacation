@@ -15,6 +15,18 @@ from django.db.models import Q
 from datetime import timedelta
 
 # Create your views here.
+# @api_view(["PATCH"])
+# @permission_classes([IsAuthenticated])
+# def markMessage(request,messageId):
+    # try:
+        # print(request.user)
+        # user = UserSerializer(request.user).data
+        # messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id'])).order_by("-time")
+        # messagesSerializer = MessagingSerializer(messages, many=True)
+        # return Response({"messages": messagesSerializer.data}, status=status.HTTP_200_OK)
+    # except Exception:
+    #     return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 @api_view(["GET"])
@@ -55,7 +67,8 @@ def getMessages(request):
             uniqueUserName.append(filteredUserSerializer['name'])
         lastMessageArray = []
         for i in range(len(uniqueUser)):
-            lastMessage = Messaging.objects.filter(Q(sender_id_id=uniqueUser[i]) | Q(receiver_id_id=uniqueUser[i])).order_by("-time")
+            lastMessage = Messaging.objects.filter((Q(sender_id_id=uniqueUser[i]) & Q(receiver_id_id=user["id"])) | (Q(receiver_id_id=uniqueUser[i]) & Q(sender_id_id=user["id"]))).order_by("-time")
+            print("hi")
             lastMessageSerializer = MessagingSerializer(lastMessage[0]).data
             print("hi")
             print(lastMessageSerializer)
