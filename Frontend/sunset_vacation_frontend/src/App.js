@@ -44,10 +44,22 @@ import QaHome from './Components/QAForum/QaHome';
 import HomePageSearchResult from './Components/Homepage/HomePageSearchResult';
 import ContactHost from './Components/Booking/ContactHost';
 import Inbox from './Components/Messaging/Inbox';
+import Profile from './Components/Profile/Profile';
+import MyBookings from './Components/Profile/MyBookings/MyBookings';
+import BookingDetails from './Components/Profile/MyBookings/BookingDetails';
+import HostingBookingDetails from './Components/Hosting/ManagementDashboard/HostingBookingDetails';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
 })
+
+
+const dummyFunc = ({match}) => {
+  console.log("hello");
+  let booking_id = match.params.id;
+  console.log(booking_id);
+  return (<BookingDetails id={booking_id}/>);
+}
 
 
 function App() {
@@ -300,6 +312,47 @@ function App() {
             <Inbox 
               token = {token}
               isLoggedin={loggedIn}
+            />
+          }
+        />
+
+        <Route 
+          path='/profile' 
+          element={
+            <Profile 
+              token = {token}
+              isLoggedin={loggedIn}
+            />
+          }
+        />
+        <Route 
+          path='/my-bookings' 
+          element={
+            <MyBookings 
+              token = {token}
+              isLoggedin={loggedIn}
+            />
+          }
+        />
+
+        <Route 
+          path='/booking/details/:booking_id' 
+          element={
+            <BookingDetails 
+              token = {token}
+              isLoggedin={loggedIn}
+              setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} 
+            />
+          }
+        />
+
+        <Route 
+          path='/hosting/booking/details/:booking_id' 
+          element={
+            <HostingBookingDetails 
+              token = {token}
+              isLoggedin={loggedIn}
+              setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} 
             />
           }
         />

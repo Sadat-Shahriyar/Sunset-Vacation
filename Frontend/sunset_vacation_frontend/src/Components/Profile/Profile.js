@@ -1,15 +1,16 @@
-import * as React from 'react';
+import { Box } from '@mui/system';
+import * as React from 'react'
 import { useNavigate } from 'react-router-dom';
-import { axios_api } from '../../../App';
-import ManagementDashboard from './ManagementDashboard';
+import { axios_api } from '../../App';
+import ProfileNavbar from './ProfileNavbar';
 
-export default function ManagementDashboardAccessControl(props){
+export default function Profile(props){
     let navigate = useNavigate();
 
     console.log(props.isLoggedin);
     console.log(props.token);
-    
-    React.useEffect(() => {
+
+    React.useEffect(()=>{
         const tokenVerifier = async() => {
             try{
                 let response = await axios_api.get("users/verify/", 
@@ -25,21 +26,26 @@ export default function ManagementDashboardAccessControl(props){
                 }
                 else{
                     alert("Unauthorized");
-                    props.setLoginRedirection('/hosting')
+                    props.setLoginRedirection('/profile')
                     navigate("/login");
                 }
                 
             }
             catch(error){
-                props.setLoginRedirection('/hosting')
+                props.setLoginRedirection('/profile')
                 navigate("/login");
             }
         }
         
         tokenVerifier();
+    }, []);
 
-    },[navigate, props])
-   
-    return (<ManagementDashboard isLoggedin={props.isLoggedin} token={props.token}/>);
-    
+    return(
+        <Box sx={{ flexGrow: 1 }}>
+            <ProfileNavbar 
+                isLoggedin={props.isLoggedin}
+            />
+            <h1>Profile</h1>
+        </Box>
+    );
 }

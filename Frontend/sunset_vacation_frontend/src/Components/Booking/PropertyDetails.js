@@ -816,7 +816,9 @@ export default function PropertyDetailsForBooking(props){
     return(
     
     <Box sx={{ flexGrow: 1 }}>
-      <ShowNavBar />
+      <ShowNavBar 
+        isLoggedin={props.isLoggedin}
+      />
       <ShowOffer
         propertyDetails = {propertyDetails}
       />

@@ -96,7 +96,7 @@ export default function CheckoutForm(props){
 
         console.log(paymentMethod);
 
-        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount-totalOfferAmount, discount:0,
+        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount-totalOfferAmount, discount:totalOfferAmount,
                        checkInDate:props.checkInDate.toISOString().split('.')[0] + 'Z', 
                         checkOutDate:props.checkOutDate.toISOString().split('.')[0] + 'Z',
                          noOfGuests:props.adults+props.children,

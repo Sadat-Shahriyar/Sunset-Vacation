@@ -18,6 +18,8 @@ import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LocalOfferRoundedIcon from '@mui/icons-material/LocalOfferRounded';
 import CardGiftcardRoundedIcon from '@mui/icons-material/CardGiftcardRounded';
+import { Grid } from '@mui/material';
+import Content from './ManagementDashboardContent';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -62,6 +64,9 @@ const StyledMenu = styled((props) => (
 
 export default function ManagementDashboard(props) {
     const navigate = useNavigate();
+
+    const [bookingData, setBookingData] = React.useState([]);
+
 
     const useReservation = (event) => {
         navigate("/reservation");
@@ -187,7 +192,11 @@ export default function ManagementDashboard(props) {
                         Home</Button>
                 </Toolbar>
             </AppBar>
-
+            <Grid container sx={{mt:8, ml:20, maxWidth:1300, mb:20}}>
+                <Grid item xs={12}>
+                    <Content setBookingData={(val) => {setBookingData(val)}} bookingData={bookingData} token={props.token}/>
+                </Grid>
+            </Grid>
         </Box>
     );
 
