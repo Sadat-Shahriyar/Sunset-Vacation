@@ -81,8 +81,8 @@ def getMessages(request):
                 lastMessageSerializer["name"] = uniqueUserName[i]
                 lastMessageSerializer['sender_name'] = "You: "
             lastMessageSerializer["orgMssage"] = lastMessageSerializer["message"]
-            if len(lastMessageSerializer["message"]) > 70:
-                lastMessageSerializer["message"] = lastMessageSerializer["message"][:70]+"..."
+            if len(lastMessageSerializer["message"]) > 60:
+                lastMessageSerializer["message"] = lastMessageSerializer["message"][:60]+"..."
             print(lastMessageSerializer)
             lastMessageArray.append(lastMessageSerializer)
         messages = sorted(lastMessageArray, key=lambda d: d['time'], reverse=True)

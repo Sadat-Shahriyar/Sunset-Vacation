@@ -59,7 +59,7 @@ export default function Inbox(props){
                                         <TableRow
                                             hover
                                             key={message.message_id}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 },}}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 }, paddingRight:5}}
                                             onClick={() => {handleReply(message)}}
                                         >
                                             <TableCell  sx={{ paddingLeft:5, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15}}>{message.name}</TableCell>
