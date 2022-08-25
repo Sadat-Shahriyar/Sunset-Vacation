@@ -70,13 +70,22 @@ export default function InboxNavbar(props) {
     function mouseOut(event) {
         event.target.style.color = "white";
     }
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = (event) => {
+        setAnchorEl(null);
+        console.log(event.target.value);
+    };
+
 
    
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
                 <Toolbar>
-
                     <Typography
                         variant="h6"
                         noWrap
@@ -85,12 +94,13 @@ export default function InboxNavbar(props) {
                     >
                         <p style={{"fontFamily": "Jokerman", "fontSize": "25px"}}>Inbox</p>
                     </Typography>
-
                     <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
                         Home
                     </Button>
-
-                    
+                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={()=>{navigate('/inbox')}} disableRipple onMouseOver={mouseOver} onMouseOut={mouseOut}>
+                        <MailIcon/>
+                        Inbox
+                    </Button>
                 </Toolbar>
             </AppBar>
 

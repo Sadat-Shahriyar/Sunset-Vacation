@@ -10,10 +10,12 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Grid } from '@mui/material';
 import ReplyMessage from './ReplyMessage';
+import {fontWeight} from "@mui/system";
 
 function ViewMessages(props){
 
     const handleReply = (message) => {
+        
         props.setMessageToReply(message);
         props.setReply(true);
     }
@@ -38,10 +40,8 @@ function ViewMessages(props){
                                         onClick={() => {handleReply(message)}}
                                     >
                                         <TableCell  sx={{ paddingLeft:5, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15}}>{message.name}</TableCell>
-                                        <TableCell  sx={{ paddingLeft:2, fontFamily: "Lucida Handwriting", fontWeight:'light', fontSize:13}}>{message.sender_name} {message.message}</TableCell>
-                                        <TableCell align="left">
-                                            <Button onClick={() => {handleReply(message)}}>Reply</Button>
-                                        </TableCell>
+                                        <TableCell  sx={{ paddingLeft:5, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15}}>{message.msg_id} {String(message.marked)}</TableCell>
+                                        <TableCell  sx={{ paddingLeft:2, fontFamily: "Lucida Handwriting", fontSize:13,  fontWeight: message.marked  ? "light": "bold"}} >{message.sender_name} {message.message}</TableCell>
                                     </TableRow>
                                 );
                             })}
