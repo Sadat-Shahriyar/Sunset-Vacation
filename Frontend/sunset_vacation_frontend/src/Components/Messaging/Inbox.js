@@ -19,13 +19,13 @@ function ViewMessages(props){
     }
 
     return (
-        <Grid container sx={{maxWidth:1000, ml:40, mt:5}}>
+        <Grid container sx={{maxWidth:900, ml:40, mt:5}}>
             <Grid item xs={12}>
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Table sx={{ minWidth: 650, }} aria-label="simple table">
                         <TableHead sx={{background:'pink'}}>
                             <TableRow >
-                                <TableCell align="center" colSpan={2}>Messages</TableCell>
+                                <TableCell align="center" colSpan={3}>Messages</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -33,11 +33,12 @@ function ViewMessages(props){
                                 return(
                                     <TableRow
                                         key={message.message_id}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 },}}
+
                                     >
-                                        <TableCell align="center">{message.sender_name}: {message.message}</TableCell>
-                                        <TableCell align="center">
+                                        <TableCell  sx={{ paddingLeft:5, fontWeight:"bold"}}>{message.name}</TableCell>
+                                        <TableCell  sx={{ paddingLeft:2}}>{message.sender_name} {message.message}</TableCell>
+                                        <TableCell align="left">
                                             <Button onClick={() => {handleReply(message)}}>Reply</Button>
                                         </TableCell>
                                     </TableRow>

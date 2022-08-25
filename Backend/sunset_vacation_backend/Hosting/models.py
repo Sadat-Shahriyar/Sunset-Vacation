@@ -266,7 +266,7 @@ class Messaging(models.Model):
     sender_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE,related_name="sender")
     receiver_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE,related_name="receiver")
     message=models.CharField(
-        max_length=100,
+        max_length=200,
         default=None,
         blank=False,
         null=True
