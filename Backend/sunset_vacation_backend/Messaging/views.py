@@ -47,14 +47,40 @@ def getMessages(request):
         for i in uniqueReceiver:
             uniqueUser.append(i['receiver_id_id'])
         uniqueUser = list(set(uniqueUser))
+        uniqueUserName = []
         print(uniqueUser)
+        for userId in uniqueUser:
+            filteredUser = User.objects.get(id=userId)
+            filteredUserSerializer = UserSerializer(filteredUser).data
+            uniqueUserName.append(filteredUserSerializer['name'])
         lastMessageArray = []
-        for i in uniqueUser:
-            lastMessage = Messaging.objects.filter(Q(sender_id_id=i) | Q(receiver_id_id=i)).order_by("-time")
-            if lastMessage:
-                lastMessageArray.append(lastMessage[0])
-        messagesSerializer = MessagingSerializer(lastMessageArray, many=True)
-        messages = sorted(messagesSerializer.data, key=lambda d: d['time'], reverse=True)
+        for i in range(len(uniqueUser)):
+            lastMessage = Messaging.objects.filter(Q(sender_id_id=uniqueUser[i]) | Q(receiver_id_id=uniqueUser[i])).order_by("-time")
+            lastMessageSerializer = MessagingSerializer(lastMessage[0]).data
+            print("hi")
+            print(lastMessageSerializer)
+            print(lastMessageSerializer["sender_id"])
+            print(lastMessageSerializer["receiver_id"])
+            if lastMessageSerializer["sender_id"] == uniqueUser[i]:
+                lastMessageSerializer['sender_name'] = uniqueUserName[i]
+                lastMessageSerializer["receiver_name"] = "You"
+            else:
+                lastMessageSerializer['sender_name'] = "You"
+                lastMessageSerializer["receiver_name"] = uniqueUserName[i]
+            print(lastMessageSerializer)
+            lastMessageArray.append(lastMessageSerializer)
+        messages = sorted(lastMessageArray, key=lambda d: d['time'], reverse=True)
+        # messagesWithName = []
+        # print("hi0")
+        # for i in range(len(uniqueUser)):
+        #     print("hello")
+        #     for message in messages:
+        #         print("hi1")
+        #         print(message)
+        #         if message["sender_id"] == uniqueUser[i]:
+        #             print("hi2")
+        #             message['sender_name'] = uniqueUserName[i]
+        #             print("hi3")
         return Response({"messages": messages}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
