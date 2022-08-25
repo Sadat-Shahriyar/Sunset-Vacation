@@ -146,7 +146,7 @@ export default function ReplyMessage(props) {
 
     return (
         <div>
-            <InboxNavbar/>
+            <InboxNavbar reply={props.reply} setReply = {(val) => {props.setReply(val)}}/>
             <MainView
                 message={message}
                 setMessage={(val) => {

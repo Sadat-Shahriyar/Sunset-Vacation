@@ -45,6 +45,7 @@ import HomePageSearchResult from './Components/Homepage/HomePageSearchResult';
 import ContactHost from './Components/Booking/ContactHost';
 import Inbox from './Components/Messaging/Inbox';
 import ReplyMessage from "./Components/Messaging/ReplyMessage";
+import InboxNavbar from "./Components/Messaging/InboxNavbar";
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -72,6 +73,7 @@ function App() {
   const [searchresults, setSearchResults] = useState([]);
   const [showMore,setShowMore]=useState({});
   const [homepagesearch,setHomepagesearch]=useState({});
+  const [reply, setReply] = useState(false);
 
   
 
@@ -301,15 +303,18 @@ function App() {
             <Inbox 
               token = {token}
               isLoggedin={loggedIn}
+              setReply={(val)=>{setReply(val)}}
+              reply={reply}
             />
           }
         />
          {/*<Route*/}
-         {/*    path='/showMessageThread'*/}
+         {/*    path='/messageThread'*/}
          {/*    element={*/}
          {/*        <ReplyMessage*/}
          {/*            token = {token}*/}
          {/*            isLoggedin={loggedIn}*/}
+         {/*            setMessageToReply={(val)=>{setMessageToReply(val)}}*/}
          {/*        />*/}
          {/*    }*/}
          {/*/>*/}

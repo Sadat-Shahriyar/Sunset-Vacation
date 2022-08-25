@@ -80,6 +80,11 @@ export default function InboxNavbar(props) {
         console.log(event.target.value);
     };
 
+    const showInbox = (event) => {
+        props.setReply(false);
+        navigate('/inbox');
+    };
+
 
    
     return (
@@ -97,10 +102,9 @@ export default function InboxNavbar(props) {
                     <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
                         Home
                     </Button>
-                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={(event)=>{navigate('/inbox')}} disableRipple onMouseOver={mouseOver} onMouseOut={mouseOut}>
-                        <MailIcon/>
-                        Inbox
-                    </Button>
+                    {props.reply && <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={showInbox} disableRipple onMouseOver={mouseOver} onMouseOut={mouseOut}>
+                        All Messages
+                    </Button>}
                 </Toolbar>
             </AppBar>
 

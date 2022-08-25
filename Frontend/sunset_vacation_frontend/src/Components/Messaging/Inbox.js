@@ -72,7 +72,7 @@ export default function Inbox(props){
 
     const [messages, setMessages] = React.useState([])
     const [messageToReply, setMessageToReply] = React.useState(null);
-    const [reply, setReply] = React.useState(false);
+    // const [reply, setReply] = React.useState(false);
     const fetchMessages = async()=>{
         try{
             let response = await axios_api.get('message/getMessages/', {
@@ -95,26 +95,27 @@ export default function Inbox(props){
         fetchMessages()
     }, [])
 
-    if(reply){
+    if(props.reply){
         return(
             <ReplyMessage
                 messageToReply = {messageToReply}
                 token = {props.token}
                 isLoggedin={props.isLoggedin}
                 setMessageToReply={(val) => {setMessageToReply(val)}}
-                setReply = {(val) => {setReply(val)}}
+                reply={props.reply}
+                setReply = {(val) => {props.setReply(val)}}
             />
         );
     }
     else{
         return(
             <div>
-                <InboxNavbar />
+                <InboxNavbar reply={props.reply} setReply = {(val) => {props.setReply(val)}}/>
                 <ViewMessages
                     messages = {messages}
                     token = {props.token}
                     setMessageToReply = {(val) => {setMessageToReply(val)}}
-                    setReply = {(val) => {setReply(val)}}
+                    setReply = {(val) => {props.setReply(val)}}
                 />
             </div>
         );
