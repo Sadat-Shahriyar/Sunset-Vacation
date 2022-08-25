@@ -22,22 +22,23 @@ function ViewMessages(props){
         <Grid container sx={{maxWidth:900, ml:40, mt:5}}>
             <Grid item xs={12}>
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650, }} aria-label="simple table">
-                        <TableHead sx={{background:'pink'}}>
+                    <Table sx={{ minWidth: 650,  }} aria-label="simple table">
+                        <TableHead sx={{background:'pink', }}>
                             <TableRow >
-                                <TableCell align="center" colSpan={3}>Messages</TableCell>
+                                <TableCell align="center" colSpan={3} sx={{fontFamily: "Lucida Handwriting"}}>Messages</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {props.messages.map((message) => {
                                 return(
                                     <TableRow
+                                        hover
                                         key={message.message_id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 },}}
-
+                                        onClick={() => {handleReply(message)}}
                                     >
-                                        <TableCell  sx={{ paddingLeft:5, fontWeight:"bold"}}>{message.name}</TableCell>
-                                        <TableCell  sx={{ paddingLeft:2}}>{message.sender_name} {message.message}</TableCell>
+                                        <TableCell  sx={{ paddingLeft:5, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15}}>{message.name}</TableCell>
+                                        <TableCell  sx={{ paddingLeft:2, fontFamily: "Lucida Handwriting", fontWeight:'light', fontSize:13}}>{message.sender_name} {message.message}</TableCell>
                                         <TableCell align="left">
                                             <Button onClick={() => {handleReply(message)}}>Reply</Button>
                                         </TableCell>
