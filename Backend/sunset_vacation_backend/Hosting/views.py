@@ -17,6 +17,18 @@ from django.db.models import Q
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+def getMessagesById(request,userId):
+    try:
+        print(request.user)
+        user = UserSerializer(request.user).data
+        messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id'])).order_by("-time")
+        messagesSerializer = MessagingSerializer(messages, many=True)
+        return Response({"messages": messagesSerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getMessages(request):
     try:
         print(request.user)

@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     #path('<int:user_id>/', views.getProperties),
+    path('getMessages/<int:userId>', views.getMessagesById),
     path('getMessages/', views.getMessages),
     path('addCategory/', views.addCategory),
     path('addFacility/', views.addFacility),
