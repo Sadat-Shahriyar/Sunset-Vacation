@@ -17,52 +17,97 @@ from datetime import timedelta
 # Create your views here.
 
 
-@api_view(['POST'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def senMessage(request):
+def getMessagesById(request,userId):
+    try:
+        print(request.user)
+        user = UserSerializer(request.user).data
+        messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id'])).order_by("-time")
+        messagesSerializer = MessagingSerializer(messages, many=True)
+        return Response({"messages": messagesSerializer.data}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    data = request.data
-    sender = UserSerializer(request.user).data
-    sender = User.objects.get(id=sender['id'])
-
-    receiver = User.objects.get(id=data['receiver_id'])
-
-    message = Messaging.objects.create(
-        sender_id=sender,
-        receiver_id=receiver,
-        message=data['message']
-    )
-
-    print(MessagingSerializer(message).data)
-
-    return Response({"success":True}, status = status.HTTP_200_OK)
-
-
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def getMessages(request):
-    user = UserSerializer(request.user).data
-    user = User.objects.get(id=user['id'])
+    try:
+        print(request.user)
+        user = UserSerializer(request.user).data
+        # messages = Messaging.objects.filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id']))
+        uniqueSender = Messaging.objects.filter(~Q(sender_id_id=user['id'])).values("sender_id_id").distinct()
+        print(uniqueSender)
+        uniqueReceiver = Messaging.objects.filter(~Q(receiver_id_id=user['id'])).values("receiver_id_id").distinct()
+        print(uniqueReceiver)
+        # messagesSerializer = MessagingSerializer(messages, many=True)
+        uniqueUser = []
+        for i in uniqueSender:
+            uniqueUser.append(i['sender_id_id'])
+        for i in uniqueReceiver:
+            uniqueUser.append(i['receiver_id_id'])
+        uniqueUser = list(set(uniqueUser))
+        print(uniqueUser)
+        lastMessageArray = []
+        for i in uniqueUser:
+            lastMessage = Messaging.objects.filter(Q(sender_id_id=i) | Q(receiver_id_id=i)).order_by("-time")
+            if lastMessage:
+                lastMessageArray.append(lastMessage[0])
+        messagesSerializer = MessagingSerializer(lastMessageArray, many=True)
+        messages = sorted(messagesSerializer.data, key=lambda d: d['time'], reverse=True)
+        return Response({"messages": messages}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    # message_objects = Messaging.objects.filter(Q(sender_id=user) | Q(receiver_id=user))
-    message_objects = Messaging.objects.filter(receiver_id=user)
-    messageSerializer = MessagingSerializer(message_objects, many=True)
-    messages=sorted(messageSerializer.data, key=lambda d:d['time'],reverse=True)
 
-    allmessages = []
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def senMessage(request):
+#
+#     data = request.data
+#     sender = UserSerializer(request.user).data
+#     sender = User.objects.get(id=sender['id'])
+#
+#     receiver = User.objects.get(id=data['receiver_id'])
+#
+#     message = Messaging.objects.create(
+#         sender_id=sender,
+#         receiver_id=receiver,
+#         message=data['message']
+#     )
+#
+#     print(MessagingSerializer(message).data)
+#
+#     return Response({"success":True}, status = status.HTTP_200_OK)
 
-    for message in messages:
-        m = Messaging.objects.filter(msg_id=message['msg_id'])[0]
-        ms = MessagingSerializer(m).data
-        sender = User.objects.get(id=ms['sender_id'])
-        sender_serializer = UserSerializer(sender).data
 
-        allmessages.append({"sender_id": ms['sender_id'],"message": ms['message'], "sender_name": sender_serializer['name'], "message_id": ms['msg_id'] })
-    # sender_values = message_objects.values('sender_id').distinct()
-    # receiver_values = message_objects.values('receiver_id').distinct()
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def getMessages(request):
+#     user = UserSerializer(request.user).data
+#     user = User.objects.get(id=user['id'])
+#
+#     # message_objects = Messaging.objects.filter(Q(sender_id=user) | Q(receiver_id=user))
+#     message_objects = Messaging.objects.filter(receiver_id=user)
+#     messageSerializer = MessagingSerializer(message_objects, many=True)
+#     messages=sorted(messageSerializer.data, key=lambda d:d['time'],reverse=True)
+#
+#     allmessages = []
+#
+#     for message in messages:
+#         m = Messaging.objects.filter(msg_id=message['msg_id'])[0]
+#         ms = MessagingSerializer(m).data
+#         sender = User.objects.get(id=ms['sender_id'])
+#         sender_serializer = UserSerializer(sender).data
+#
+#         allmessages.append({"sender_id": ms['sender_id'],"message": ms['message'], "sender_name": sender_serializer['name'], "message_id": ms['msg_id'] })
+#     # sender_values = message_objects.values('sender_id').distinct()
+#     # receiver_values = message_objects.values('receiver_id').distinct()
+#
+#     # print(allmessages)
+#     # print(sender_values)
+#     # print(receiver_values)
+#
+#     return Response({"messages": allmessages}, status=status.HTTP_200_OK)
 
-    # print(allmessages)
-    # print(sender_values)
-    # print(receiver_values)
 
-    return Response({"messages": allmessages}, status=status.HTTP_200_OK)
