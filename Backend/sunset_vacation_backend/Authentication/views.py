@@ -108,8 +108,9 @@ def token_creation_time_valid(token):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def verifyToken(request):
+    user = UserSerializer(request.user).data
     token = request.user.auth_token
     if token_creation_time_valid(token):
-        return Response({"token": str(token), "valid": True}, status=status.HTTP_200_OK)
+        return Response({"token": str(token), "valid": True, "id":user["id"]}, status=status.HTTP_200_OK)
     else:
         return Response({"token": "", "valid": False}, status=status.HTTP_401_UNAUTHORIZED)

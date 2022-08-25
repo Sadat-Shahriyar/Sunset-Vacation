@@ -37,6 +37,7 @@ def getMessagesById(request,userId):
         print(request.user)
         user = UserSerializer(request.user).data
         messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id'])).order_by("-time")
+        print("hi")
         messagesSerializer = MessagingSerializer(messages, many=True)
         return Response({"messages": messagesSerializer.data}, status=status.HTTP_200_OK)
     except Exception:
