@@ -14,18 +14,19 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from datetime import timedelta
 
-# Create your views here.
-# @api_view(["PATCH"])
-# @permission_classes([IsAuthenticated])
-# def markMessage(request,messageId):
-    # try:
-        # print(request.user)
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def markMessage(request,messageId):
+    try:
         # user = UserSerializer(request.user).data
-        # messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id'])).order_by("-time")
-        # messagesSerializer = MessagingSerializer(messages, many=True)
-        # return Response({"messages": messagesSerializer.data}, status=status.HTTP_200_OK)
-    # except Exception:
-    #     return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
+        # print(user["id"])
+        message = Messaging.objects.get(msg_id=messageId)
+        message.marked = True
+        message.save()
+        return Response({"message": "okay"}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 
