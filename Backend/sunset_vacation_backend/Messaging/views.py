@@ -35,11 +35,12 @@ def markMessage(request,messageId):
 def getMessagesById(request,userId):
     try:
         print(request.user)
-        user = UserSerializer(request.user).data
-        messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id'])).order_by("-time")
-        print("hi")
+        user1 = UserSerializer(request.user).data
+        user2 = User.objects.get(id=userId)
+        user2 = UserSerializer(user2).data
+        messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user1['id'])|Q(receiver_id_id=user1['id'])).order_by("-time")
         messagesSerializer = MessagingSerializer(messages, many=True)
-        return Response({"messages": messagesSerializer.data}, status=status.HTTP_200_OK)
+        return Response({"messages": messagesSerializer.data, "userName": user1["name"], "friendName": user2["name"]}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -49,6 +50,7 @@ def getMessages(request):
     try:
         print(request.user)
         user = UserSerializer(request.user).data
+        userName = user["name"]
         # messages = Messaging.objects.filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id']))
         uniqueSender = Messaging.objects.filter(~Q(sender_id_id=user['id'])).values("sender_id_id").distinct()
         print(uniqueSender)
@@ -99,7 +101,7 @@ def getMessages(request):
         #             print("hi2")
         #             message['sender_name'] = uniqueUserName[i]
         #             print("hi3")
-        return Response({"messages": messages}, status=status.HTTP_200_OK)
+        return Response({"messages": messages, "userName":userName}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
