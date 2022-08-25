@@ -97,7 +97,7 @@ export default function InboxNavbar(props) {
                     <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
                         Home
                     </Button>
-                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={()=>{navigate('/inbox')}} disableRipple onMouseOver={mouseOver} onMouseOut={mouseOut}>
+                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={(event)=>{navigate('/inbox')}} disableRipple onMouseOver={mouseOver} onMouseOut={mouseOut}>
                         <MailIcon/>
                         Inbox
                     </Button>

@@ -44,6 +44,7 @@ import QaHome from './Components/QAForum/QaHome';
 import HomePageSearchResult from './Components/Homepage/HomePageSearchResult';
 import ContactHost from './Components/Booking/ContactHost';
 import Inbox from './Components/Messaging/Inbox';
+import ReplyMessage from "./Components/Messaging/ReplyMessage";
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -303,6 +304,15 @@ function App() {
             />
           }
         />
+         {/*<Route*/}
+         {/*    path='/showMessageThread'*/}
+         {/*    element={*/}
+         {/*        <ReplyMessage*/}
+         {/*            token = {token}*/}
+         {/*            isLoggedin={loggedIn}*/}
+         {/*        />*/}
+         {/*    }*/}
+         {/*/>*/}
      </Routes>
    </BrowserRouter>
   );

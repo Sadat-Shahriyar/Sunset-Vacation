@@ -12,29 +12,36 @@ import CardContent from "@mui/material/CardContent";
 
 export default function ReplyMessage(props) {
     const [message, setMessage] = React.useState("");
-    let userId = props.messageToReply.sender_id;
-    let friendId = props.messageToReply.receive_id;
+    const [userId, setUserId] =  React.useState("");
+    const [friendId, setFriendId] = React.useState("");
+    const [userName, setUserName] = React.useState("");
+    const [friendName, setFriendName] = React.useState("");
     const [messageThread, setMessageThread] = React.useState([]);
 
     const fetchMessages = async () => {
-        console.log(props.messageToReply);
         try {
+            console.log(props.messageToReply);
             let response = await axios_api.get("users/verify/",
                 {
                     headers: {
                         'Authorization': `Bearer ${props.token}`
                     }
                 })
-
-            console.log(response.data.id);
-            if (userId !== response.data.id) {
-                friendId = userId;
-                userId = response.data.id;
+            let localFriendId = "";
+            if (props.messageToReply.sender_id !== response.data.id) {
+                setFriendId(props.messageToReply.sender_id);
+                setUserId(props.messageToReply.receiver_id);
+                localFriendId = props.messageToReply.sender_id;
+            }else{
+                setFriendId(props.messageToReply.receiver_id);
+                setUserId(props.messageToReply.sender_id);
+                localFriendId = props.messageToReply.receiver_id;
             }
-            // console.log(userId);
-            // console.log(friendId);
+            console.log("userId: "+userId);
+            console.log("friendId: "+friendId);
+            console.log("localfriendId: "+localFriendId);
 
-            let messageResponse = await axios_api.get('message/getMessages/'+friendId,  {
+            let messageResponse = await axios_api.get('message/getMessages/'+localFriendId,  {
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${props.token}`
@@ -42,8 +49,10 @@ export default function ReplyMessage(props) {
             })
 
             if (messageResponse.status === 200) {
-                setMessageThread(messageResponse.data.messages)
-                console.log(messageResponse.data.messages)
+                console.log(messageResponse.data);
+                setFriendName(messageResponse.data.friendName);
+                setUserName(messageResponse.data.userName+"(You)");
+                setMessageThread(messageResponse.data.messages);
                 // props.setReply(false);
                 // props.navigate('/inbox');
             }
@@ -101,29 +110,32 @@ export default function ReplyMessage(props) {
 
 
         return (
-            <Grid container sx={{maxWidth: 1300,  ml:20, mt:5}}>
-                <Grid item xs={3}></Grid>
+            <Grid container sx={{maxWidth: 1400,  ml:10, mt:5}}>
+                <Grid item xs={2}></Grid>
                 <Grid item xs={6}>
                     {/*<TextField variant='standard' value={props.message} onChange={(event) => {*/}
                     {/*    props.setMessage(event.target.value)*/}
                     {/*}}/>*/}
-                    <Card >
+                    {messageThread.map((message,index)=>{
+                        return(
+                            <Card sx={{minWidth: 900, mb:1}} key={index}>
                         <CardContent>
-                            <Typography sx={{ paddingX:1, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15}}>
-                                Umama
+                            <Typography sx={{ paddingX:1, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:16}}>
+                                { message.sender_id === userId ? userName : friendName}
+                                <Typography variant="subtitle" sx={{ padding:1, fontFamily: "Lucida Handwriting", fontSize:10, mb: 1.5}}  color="text.secondary">
+                                    {message.time}
+                                </Typography>
                             </Typography>
 
                             <Typography variant="body2" sx={{ padding:1, fontFamily: "Lucida Handwriting", fontSize:13}}>
-                                What do you want to know about? You can also frequestly asked section. What do you want to know about? You can also frequestly asked section.
-                            </Typography>
-                            <Typography variant="subtitle" sx={{ padding:1, fontFamily: "Lucida Handwriting", fontSize:10, mb: 1.5}}  color="text.secondary">
-                                What do you want to know about
+                                {message.message}
                             </Typography>
 
                         </CardContent>
                     </Card>
+                    )})}
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     {/*<Button onClick={() => {*/}
                     {/*    handleSubmit()*/}
                     {/*}}>Send reply</Button>*/}
