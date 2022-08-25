@@ -62,11 +62,11 @@ def getMessages(request):
             print(lastMessageSerializer["sender_id"])
             print(lastMessageSerializer["receiver_id"])
             if lastMessageSerializer["sender_id"] == uniqueUser[i]:
+                lastMessageSerializer['name'] = uniqueUserName[i]
                 lastMessageSerializer['sender_name'] = uniqueUserName[i]
-                lastMessageSerializer["receiver_name"] = "You"
             else:
+                lastMessageSerializer["name"] = uniqueUserName[i]
                 lastMessageSerializer['sender_name'] = "You"
-                lastMessageSerializer["receiver_name"] = uniqueUserName[i]
             print(lastMessageSerializer)
             lastMessageArray.append(lastMessageSerializer)
         messages = sorted(lastMessageArray, key=lambda d: d['time'], reverse=True)

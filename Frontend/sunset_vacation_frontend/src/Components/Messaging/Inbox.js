@@ -58,7 +58,7 @@ export default function Inbox(props){
     const [reply, setReply] = React.useState(false);
     const fetchMessages = async()=>{
         try{
-            let response = await axios_api.get('message/getmessages/', {
+            let response = await axios_api.get('message/getMessages/', {
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization' : `Bearer ${props.token}`
