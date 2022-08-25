@@ -38,7 +38,9 @@ def getMessagesById(request,userId):
         user1 = UserSerializer(request.user).data
         user2 = User.objects.get(id=userId)
         user2 = UserSerializer(user2).data
-        messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user1['id'])|Q(receiver_id_id=user1['id'])).order_by("-time")
+        print(user1["name"])
+        print(user2["name"])
+        messages = Messaging.objects.filter(Q(sender_id_id=userId)|Q(receiver_id_id=userId)).filter(Q(sender_id_id=user1['id'])|Q(receiver_id_id=user1['id'])).order_by("time")
         messagesSerializer = MessagingSerializer(messages, many=True)
         return Response({"messages": messagesSerializer.data, "userName": user1["name"], "friendName": user2["name"]}, status=status.HTTP_200_OK)
     except Exception:
