@@ -108,25 +108,27 @@ def getMessages(request):
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def senMessage(request):
-#
-#     data = request.data
-#     sender = UserSerializer(request.user).data
-#     sender = User.objects.get(id=sender['id'])
-#
-#     receiver = User.objects.get(id=data['receiver_id'])
-#
-#     message = Messaging.objects.create(
-#         sender_id=sender,
-#         receiver_id=receiver,
-#         message=data['message']
-#     )
-#
-#     print(MessagingSerializer(message).data)
-#
-#     return Response({"success":True}, status = status.HTTP_200_OK)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def senMessage(request):
+
+    data = request.data
+    sender = UserSerializer(request.user).data
+    sender = User.objects.get(id=sender['id'])
+
+    receiver = User.objects.get(id=data['receiver_id'])
+    print(sender)
+    print(receiver)
+    print(data)
+    message = Messaging.objects.create(
+        sender_id=sender,
+        receiver_id=receiver,
+        message=data['message'],
+        marked=True,
+    )
+    print(message)
+
+    return Response({"success":True}, status = status.HTTP_200_OK)
 
 
 # @api_view(['GET'])

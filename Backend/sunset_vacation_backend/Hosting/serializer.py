@@ -177,9 +177,6 @@ class MessagingSerializer(serializers.ModelSerializer):
         max_length=200,
         required=False
     )
-    time=serializers.DateTimeField(
-        required=False
-    )
     marked = serializers.BooleanField(
         required=False
     )

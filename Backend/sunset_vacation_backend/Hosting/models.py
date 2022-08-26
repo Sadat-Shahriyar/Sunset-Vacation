@@ -273,6 +273,7 @@ class Messaging(models.Model):
     )
     time=models.DateTimeField(
         default=datetime.now,
+        blank=True,
         null=True
     )
     marked=models.BooleanField(
