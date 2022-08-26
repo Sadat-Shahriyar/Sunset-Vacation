@@ -67,6 +67,9 @@ export default function ReplyMessage(props) {
     }, [])
 
     function MainView(props) {
+        const handleSubmit2 = async() =>{
+
+        }
 
         const handleSubmit = async () => {
             console.log(props.message);
@@ -116,9 +119,10 @@ export default function ReplyMessage(props) {
                     {/*<TextField variant='standard' value={props.message} onChange={(event) => {*/}
                     {/*    props.setMessage(event.target.value)*/}
                     {/*}}/>*/}
+                    <div style={{minWidth: 900, maxHeight: 450, minHeight:450, overflow: "hidden", overflowY: 'scroll'}}>
                     {messageThread.map((message,index)=>{
                         return(
-                            <Card sx={{minWidth: 900, mb:1}} key={index}>
+                            <Card sx={{minWidth: 900, mb:1, backgroundColor:message.sender_id === userId? 'pink': 'white'}} key={index}>
                         <CardContent>
                             <Typography sx={{ paddingX:1, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:16}}>
                                 { message.sender_id === userId ? userName : friendName}
@@ -134,6 +138,19 @@ export default function ReplyMessage(props) {
                         </CardContent>
                     </Card>
                     )})}
+                </div>
+                    {/*<div style={{*/}
+                    {/*    display: 'flex',*/}
+                    {/*    alignItems: 'center'*/}
+                    {/*}}>*/}
+                    {/*<TextField*/}
+                    {/*    sx={{minWidth: 770, mt:2, mr:2}}*/}
+                    {/*    id="outlined-textarea"*/}
+                    {/*    rows={2}*/}
+                    {/*    placeholder="Send Reply"*/}
+                    {/*    onChange={handleSubmit2}/>*/}
+                    {/*    <Button variant="contained" sx={{minWidth: 100, mt:1}}>Send </Button>*/}
+                    {/*</div>*/}
                 </Grid>
                 <Grid item xs={2}>
                     {/*<Button onClick={() => {*/}
