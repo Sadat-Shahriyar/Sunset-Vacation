@@ -139,18 +139,18 @@ export default function ReplyMessage(props) {
                     </Card>
                     )})}
                 </div>
-                    {/*<div style={{*/}
-                    {/*    display: 'flex',*/}
-                    {/*    alignItems: 'center'*/}
-                    {/*}}>*/}
-                    {/*<TextField*/}
-                    {/*    sx={{minWidth: 770, mt:2, mr:2}}*/}
-                    {/*    id="outlined-textarea"*/}
-                    {/*    rows={2}*/}
-                    {/*    placeholder="Send Reply"*/}
-                    {/*    onChange={handleSubmit2}/>*/}
-                    {/*    <Button variant="contained" sx={{minWidth: 100, mt:1}}>Send </Button>*/}
-                    {/*</div>*/}
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}>
+                    <TextField
+                        sx={{minWidth: 770, mt:2, mr:2}}
+                        id="outlined-textarea"
+                        rows={2}
+                        placeholder="Send Reply"
+                        onChange={handleSubmit2}/>
+                        <Button variant="contained" sx={{minWidth: 100, mt:1}}>Send </Button>
+                    </div>
                 </Grid>
                 <Grid item xs={2}>
                     {/*<Button onClick={() => {*/}
