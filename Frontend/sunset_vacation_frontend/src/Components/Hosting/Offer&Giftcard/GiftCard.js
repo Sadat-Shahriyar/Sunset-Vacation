@@ -239,8 +239,7 @@ export default function GiftCard (props) {
     const  handleSubmit = async() =>{
     
         var list=[]
-        console.log('-----------------');
-        console.log(discount);
+        var valid=1;
         if(discountType === 'same'){
             var guestList=[]
             for(var i=0;i<allGuest.length;i++){
@@ -268,7 +267,12 @@ export default function GiftCard (props) {
             }
             var l=discount.find(element => element['type'] === 'same');  
             var dict={'list': guestList,'discount': l.discount };
-            if (guestList.length > 0) list.push(dict);
+            if (guestList.length > 0) {
+                list.push(dict);
+            }else{
+                valid=0;
+                alert('no guest for giftcard')
+            }
         }else{
             for (var j=0;j<discount.length;j++){
                 var l=discount[j]
@@ -299,40 +303,48 @@ export default function GiftCard (props) {
                     var dict={'list': guestList,'discount': l.discount };
                     if (guestList.length > 0) list.push(dict);
                 }
-                
+                if (guestList.length > 0) {
+                    list.push(dict);
+                }else{
+                    valid=0;
+                    alert('no guest for giftcard')
+                }
+            }
+        }
+        if(valid ===1){
+            const body={
+                expiryDate: expiryDate,
+                property_id: property,
+                offerType: type,
+                msg: msg,
+                discountList: list,
+            };
+           
+              try{
+                let response = await axios_api.post('hosting/insertGiftcard/', body,{
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization' : `Bearer ${props.token}`
+                    }
+                });
+    
+                console.log(response.data);
+    
+                if(response.status === 200){
+                    
+                    navigate('/showGiftcard');
+                }
+                else{
+                  let err = new Error(response.status + ": " + response.statusText);
+                  throw err;
+                }
+            }
+            catch(err){
+                alert(err.message);
             }
         }
         
-        const body={
-            expiryDate: expiryDate,
-            property_id: property,
-            offerType: type,
-            msg: msg,
-            discountList: list,
-        };
        
-          try{
-            let response = await axios_api.post('hosting/insertGiftcard/', body,{
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization' : `Bearer ${props.token}`
-                }
-            });
-
-            console.log(response.data);
-
-            if(response.status === 200){
-                
-                navigate('/showGiftcard');
-            }
-            else{
-              let err = new Error(response.status + ": " + response.statusText);
-              throw err;
-            }
-        }
-        catch(err){
-            alert(err.message);
-        }
     }
     function handleDiscount  (type,value){
         console.log(discount);
@@ -356,7 +368,7 @@ export default function GiftCard (props) {
     function showAllGuestList(props){
         if(allGuest.length > 0){
         return(
-            <Grid item xs={4}>
+            <Grid item xs={6}>
                  <Typography sx={{ marginTop: "30px",textDecoration:"underline", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h6" component="h6">
      All guest
     </Typography>
@@ -375,8 +387,8 @@ export default function GiftCard (props) {
                     key={g.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>               
                    
-                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{g.name}</TableCell>
-                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{g.lastVisited}</TableCell>
+                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="center">{g.name}</TableCell>
+                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="center">{g.lastVisited}</TableCell>
                 
                     <TableCell><Tooltip title="Delete">
                         <IconButton value={g.id} onClick={(event)=>{deleteFromAllGuest(g)}} >
@@ -396,7 +408,7 @@ export default function GiftCard (props) {
     function showMostFrequentlyVisitedList(props){
         if(mostFrequentlyVisited.length > 0){
         return(
-           <Grid item xs={4}>
+           <Grid item xs={6}>
             <Typography sx={{ marginTop: "30px",textDecoration:"underline", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h6" component="h6">
      Most frequently Visited
     </Typography>
@@ -415,8 +427,8 @@ export default function GiftCard (props) {
                     key={g.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>               
                    
-                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{g.name}</TableCell>
-                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{g.totalVisited}</TableCell>
+                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="center">{g.name}</TableCell>
+                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="center">{g.count}</TableCell>
                 
                     <TableCell><Tooltip title="Delete">
                         <IconButton value={g.id} onClick={(event)=>{deleteFromMostFrequentGuest(g)}} >
@@ -435,7 +447,7 @@ export default function GiftCard (props) {
     function showRecentlyVisitedList(props){
         if(RecentlyVisited.length > 0){
         return(
-            <Grid item xs={4}>
+            <Grid item xs={6}>
              <Typography sx={{ marginTop: "30px",textDecoration:"underline", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h6" component="h6">
      Recently Visited
      </Typography>
@@ -454,8 +466,8 @@ export default function GiftCard (props) {
                      key={g.id}
                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>               
                     
-                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{g.name}</TableCell>
-                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{g.lastVisited}</TableCell>
+                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="center">{g.name}</TableCell>
+                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="center">{g.lastVisited}</TableCell>
                  
                      <TableCell><Tooltip title="Delete">
                          <IconButton value={g.id} onClick={(event)=>{deleteFromRecentGuest(g)}} >
@@ -474,7 +486,7 @@ export default function GiftCard (props) {
     function showRatingGiverList(props){
        if(bestRatingGiver.length >0){
         return(
-            <Grid item xs={4}>
+            <Grid item xs={6}>
              <Typography sx={{ marginTop: "30px",textDecoration:"underline", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h6" component="h6">
      Best rating givers
      </Typography>
@@ -493,8 +505,8 @@ export default function GiftCard (props) {
                      key={g.id}
                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>               
                     
-                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{g.name}</TableCell>
-                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{g.rating}</TableCell>
+                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="center">{g.name}</TableCell>
+                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="center">{g.rating}</TableCell>
                  
                      <TableCell><Tooltip title="Delete">
                          <IconButton value={g.id} onClick={(event)=>{deleteFromRatingGuest(g)}} >
@@ -513,12 +525,12 @@ export default function GiftCard (props) {
     }
 function showGuestList(props){
     return(
-        <div>
+        <Grid container >
             {showAllGuestList(props)}
             {showRatingGiverList(props)}
             {showMostFrequentlyVisitedList(props)}
             {showRecentlyVisitedList(props)}
-        </div>
+        </Grid>
     )
 }
     function showGiftCardpage(props){
@@ -776,11 +788,7 @@ function showGuestList(props){
                         </Grid>
                         
                         </Grid>
-                        <Grid container columns={12}>
-                            <Grid item xs={12}>
-                                {showGuestList(props)}
-                            </Grid>
-                        </Grid>
+                        {showGuestList(props)}
                         </Paper>
                     </Grid>                  
                 </Grid>

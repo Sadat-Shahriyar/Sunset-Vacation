@@ -54,7 +54,7 @@ import ForumHome from './Components/QAForum/ForumHome';
 import CreatePost from './Components/QAForum/CreatePost';
 import MyPost from './Components/QAForum/MyPost';
 import EditPost from './Components/QAForum/EditPost';
-
+import ViewAPost from './Components/QAForum/ViewAPost';
 import ShowUserGiftCard from './Components/Homepage/ShowUserGiftCard';
 
 export const axios_api = axios.create({
@@ -218,9 +218,9 @@ function App() {
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
 
         <Route path='/search' element={<SearchPage isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
-        <Route path='/searchResult' element={<SearchResult isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}}  token={token} />}/>
+        <Route path='/searchResult' element={<SearchResult setSelectedPropertyForDetails={(val) => {setSelectedPropertyForDetails(val)}} isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}}  token={token} />}/>
         <Route path='/userStaticSearch' element={<UserStaticSearch isLoggedin={loggedIn} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}}  token={token} />} />
-        <Route path='/showmore'  element={<ShowMore isLoggedin={loggedIn} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
+        <Route path='/showmore'  element={<ShowMore isLoggedin={loggedIn} setSelectedPropertyForDetails={(val) => {setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
         <Route path='/giftcard' element={<GiftCard token={token}/>}/>
                   
 
@@ -318,7 +318,8 @@ function App() {
         <Route path='/editPost' element={<EditPost selectedQuestionForEdit={selectedQuestionForEdit} token={token} />}/>
         <Route path='/forumMyhome' element={<MyPost token={token} setSelectedQuestionForEdit={(val)=>{setSelectedQuestionForEdit(val)}} setflags={(val)=>{setFlags(val)}}   setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} />}/>
         <Route path='/homepagesearchresult' element={<HomePageSearchResult isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} homepagesearch={homepagesearch}/>}/>
-       
+        <Route path='/viewpost/:id' element={<ViewAPost token={token} setSelectedQuestionForEdit={(val)=>{setSelectedQuestionForEdit(val)}} setflags={(val)=>{setFlags(val)}}   setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} />}/>
+
         <Route 
           path='/inbox' 
           element={

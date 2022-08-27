@@ -234,3 +234,17 @@ def getGiftcards(request):
         giftcardLists.append(property)
     return Response({'giftcards':giftcardLists},status=status.HTTP_200_OK)
         
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def deleteNotification(request,id):
+    n=Notification.objects.get(id=id)
+    n.delete()
+    return Response({'msg':'deleted successfully'},status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def markNotification(request,id):
+    notification=Notification.objects.get(id=id)        
+    notification.marked=True
+    notification.save()
+    return Response({'msg':'updated successfully'},status=status.HTTP_200_OK)
