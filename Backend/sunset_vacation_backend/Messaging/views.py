@@ -112,7 +112,7 @@ def senMessage(request):
     data = request.data
     sender = UserSerializer(request.user).data
     sender = User.objects.get(id=sender['id'])
-
+    print("hi")
     receiver = User.objects.get(id=data['receiver_id'])
     print(sender)
     print(receiver)
@@ -124,22 +124,7 @@ def senMessage(request):
         marked=False,
     )
     print(message)
-
-   
-    new=[]
-    read=[]
-    notification=Notification.objects.filter(user_id=user['id'])
-    notification=NotificationSerializer(notification,many=True)    
-    for n in notification.data:
-        if n['marked'] == True :
-            read.append(n)
-        else:
-            new.append(n)
-    # print(new)
-    # print(read)
-    dict={'new':new,'read':read}
-    l=len(new)
-    return Response({'notifications':dict,'len':l},status=status.HTTP_200_OK)
+    return Response({'success':True},status=status.HTTP_200_OK)
 
 # @api_view(['GET'])
 # @permission_classes([IsAuthenticated])

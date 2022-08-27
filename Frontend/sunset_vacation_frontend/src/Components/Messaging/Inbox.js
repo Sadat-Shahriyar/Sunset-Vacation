@@ -66,7 +66,7 @@ function ViewMessages(props){
                     <Table sx={{ minWidth: 650,  }} aria-label="simple table">
                         <TableHead sx={{background:'pink', }}>
                             <TableRow >
-                                <TableCell align="center" colSpan={3} sx={{fontFamily: "Lucida Handwriting"}}>Messages</TableCell>
+                                <TableCell align="center" colSpan={2} sx={{fontFamily: "Lucida Handwriting"}}>Messages</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -75,11 +75,11 @@ function ViewMessages(props){
                                     <TableRow
                                         key={message.msg_id}
                                         hover
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 }, paddingRight:5}}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 }, paddingRight:5,}}
                                         onClick={() => {handleReply(message)}}
                                     >
-                                        <TableCell  sx={{ paddingLeft:5, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15}}>{message.name}</TableCell>
-                                        <TableCell  sx={{ paddingLeft:2, fontFamily: "Lucida Handwriting", fontSize:13,  fontWeight: message.marked  ? "light": "bold"}} >{message.sender_name} {message.message}</TableCell>
+                                        <TableCell sx={{width:'25%', paddingLeft:5,fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15,}}>{message.name}</TableCell>
+                                        <TableCell align="left"  sx={{ paddingLeft:2, fontFamily: "Lucida Handwriting", fontSize:13, fontWeight: message.marked  ? "light": "bold"}} >{message.sender_name} {message.message}</TableCell>
                                     </TableRow>
                                 );
                             })}
