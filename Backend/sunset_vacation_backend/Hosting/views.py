@@ -90,11 +90,20 @@ def addFacility(request):
 def getPendingProperties(request):
     try:
         # change delete this portion
-        property = Property.objects.filter(published=True,approved=False)
-        propertySerializer = PropertySerializer(property, many=True)
+        properties = Property.objects.filter(published=True,approved=False)
+        propertySerializer = PropertySerializer(properties, many=True)
+        propertiesData = propertySerializer.data
         print(propertySerializer.data)
+        
+        allProperty = []
+        for property in propertiesData:
+            propertyPhotos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
+            photosSerializer = PropertyPhotoSerializer(propertyPhotos, many=True).data
+            property["photos"] = photosSerializer
+            allProperty.append(property)
         # change add code for fetching booking here by user
-        return Response({"properties": propertySerializer.data}, status=status.HTTP_200_OK)
+        print(propertiesData)
+        return Response({"properties": allProperty}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "405 not found"}, status=status.HTTP_404_NOT_FOUND)
 

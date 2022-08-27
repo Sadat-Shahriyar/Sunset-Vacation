@@ -210,7 +210,7 @@ export default function AdminDashboard(props) {
     function showProperty(property) {
         // props.setSelectedPropertyForDetails(property.propertyID);
         // navigate('/booking/property/details');
-        navigate(`/hosting/propertydetails/${property.propertyID}`);
+        navigate(`/admin/propertydetails/${property.propertyID}`);
     }
     function editStatus(property) {
         setPropertyId(property.propertyID);
@@ -426,11 +426,16 @@ export default function AdminDashboard(props) {
                             />
                             <Button variant="contained" onClick={addFacility}
                                     sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 5}} endIcon={<DesktopMacIcon sx={{ color: 'white' }}/>}>Add Facility</Button>
-                            <label><p style={{
-                                "fontFamily": "Lucida Handwriting",
-                                "fontSize": "15px",
-                                "color": "black"
-                            }}>Property Status Update</p></label>
+                            {/* <label>
+                                <p 
+                                style={{
+                                    "fontFamily": "Lucida Handwriting",
+                                    "fontSize": "15px",
+                                    "color": "black"
+                                }}>
+                                    Property Status Update
+                                </p>
+                            </label>
                             <TextField
                                 disabled={!edit}
                                 sx={{minWidth: 460 }}
@@ -443,7 +448,7 @@ export default function AdminDashboard(props) {
                             <Button  variant="contained" onClick={handleSubmitApprove} disabled={!edit}
                                      sx={{bgcolor: '#282c34', marginTop: 2}} endIcon={<ThumbUpOffAltIcon sx={{ color: 'white' }}/>}>Approve</Button>
                             <Button variant="contained" onClick={handleSubmitReject}  disabled={!edit} endIcon={<ThumbDownOutlinedIcon sx={{ color: 'white' }} />}
-                                    sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 4}}>Request Change</Button>
+                                    sx={{bgcolor: '#282c34', marginTop: 2, marginLeft: 4}}>Request Change</Button> */}
                         </Grid>
                         <Grid item xs={4}>
                             <label><p style={{

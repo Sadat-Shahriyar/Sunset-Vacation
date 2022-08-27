@@ -245,7 +245,7 @@ export default function NavBar(props) {
           sx={{mt:5}}
         >
           <MenuItem sx={{fontFamily:'Lucida Handwriting'}} onClick={handleLogin}>Login</MenuItem>
-          <MenuItem sx={{fontFamily:'Lucida Handwriting'}}  onClick={handleLogOut}>Profile</MenuItem>
+          <MenuItem sx={{fontFamily:'Lucida Handwriting'}}  onClick={goToProfile}>Profile</MenuItem>
           <MenuItem sx={{fontFamily:'Lucida Handwriting'}} onClick={(event)=>{navigate('/showUserGiftcard')}}>GiftCard</MenuItem>
           <MenuItem sx={{fontFamily:'Lucida Handwriting'}}  onClick={handleLogOut}>Logout</MenuItem>
         </Menu>
