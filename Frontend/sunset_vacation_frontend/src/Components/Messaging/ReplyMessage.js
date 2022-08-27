@@ -69,151 +69,48 @@ export default function ReplyMessage(props) {
     const [replyMessage, setReplyMessage] = React.useState("");
 
     function changeReplyMessage(event) {
-        console.log(event.target.value);
         setReplyMessage(event.target.value);
     }
 
-    // function MainView(props) {
-
-        const handleSubmit = async () => {
-            try {
-                console.log("hnadle submit friend id: " + friendId);
-                setReplyMessage('hello');
-                console.log("hadle submit reply message: " + replyMessage);
-                if (replyMessage.length < 1) {
-                    alert("The message length 0");
-                    return;
-                }
-                if (replyMessage.length > 200) {
-                    alert("The message length exceeded max length 200");
-                    return;
-                }
-                let body = {
-                    receiver_id: friendId,
-                    message: replyMessage
-                }
-
-                let messageResponse = await axios_api.post('message/sendMessage/', body, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        'Authorization': `Bearer ${props.token}`
-                    }
-                })
-
-                if (messageResponse.status === 200) {
-                    props.setReply(false);
-                    setReplyMessage('');
-                    alert("The message has been sent");
-                    // props.navigate('/inbox');
-                }
-
-                console.log("hell3")
-            } catch (error) {
-                alert(error.message);
+    const handleSubmit = async () => {
+        try {
+            console.log("hnadle submit friend id: " + friendId);
+            console.log("hadle submit reply message: " + replyMessage);
+            if (replyMessage.length < 1) {
+                alert("The message length 0");
+                return;
             }
+            if (replyMessage.length > 200) {
+                alert("The message length exceeded max length 200");
+                return;
+            }
+            let body = {
+                receiver_id: friendId,
+                message: replyMessage
+            }
+
+            let messageResponse = await axios_api.post('message/sendMessage/', body, {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${props.token}`
+                }
+            })
+            setReplyMessage("");
+            fetchMessages()
+        } catch (error) {
+            alert(error.message);
         }
-
-
-        // return (
-        //     <Grid container sx={{maxWidth: 1400, ml: 10, mt: 5}}>
-        //         <Grid item xs={2}></Grid>
-        //         <Grid item xs={6}>
-        //             {/*<TextField variant='standard' value={props.message} onChange={(event) => {*/}
-        //             {/*    props.setMessage(event.target.value)*/}
-        //             {/*}}/>*/}
-        //             <div style={{
-        //                 minWidth: 900,
-        //                 maxHeight: 450,
-        //                 minHeight: 450,
-        //                 overflow: "hidden",
-        //                 overflowY: 'scroll'
-        //             }}>
-        //                 {messageThread.map((message, index) => {
-        //                     return (
-        //                         <Card sx={{
-        //                             minWidth: 900,
-        //                             mb: 1,
-        //                             backgroundColor: message.sender_id === userId ? 'pink' : 'white'
-        //                         }} key={index}>
-        //                             <CardContent>
-        //                                 <Typography sx={{
-        //                                     paddingX: 1,
-        //                                     fontWeight: "bold",
-        //                                     fontFamily: "Lucida Handwriting",
-        //                                     fontSize: 16
-        //                                 }}>
-        //                                     {message.sender_id === userId ? userName : friendName}
-        //                                     <Typography variant="subtitle" sx={{
-        //                                         padding: 1,
-        //                                         fontFamily: "Lucida Handwriting",
-        //                                         fontSize: 10,
-        //                                         mb: 1.5
-        //                                     }} color="text.secondary">
-        //                                         {message.time}
-        //                                     </Typography>
-        //                                 </Typography>
-        //
-        //                                 <Typography variant="body2"
-        //                                             sx={{padding: 1, fontFamily: "Lucida Handwriting", fontSize: 13}}>
-        //                                     {message.message}
-        //                                 </Typography>
-        //
-        //                             </CardContent>
-        //                         </Card>
-        //                     )
-        //                 })}
-        //             </div>
-        //             <div style={{
-        //                 display: 'flex',
-        //                 alignItems: 'center'
-        //             }}>
-        //                 <TextField
-        //                     sx={{minWidth: 770, mt: 2, mr: 2}}
-        //                     id="outlined-textarea"
-        //                     multiline
-        //                     rows={2}
-        //                     placeholder="Send Reply"
-        //                     onChange={changeReplyMessage}
-        //                     value={replyMessage}
-        //                     />
-        //                 <Button variant="contained" sx={{minWidth: 100, mt: 1}} onClick={handleSubmit}>Send</Button>
-        //             </div>
-        //         </Grid>
-        //         <Grid item xs={2}>
-        //             {/*<Button onClick={() => {*/}
-        //             {/*    handleSubmit()*/}
-        //             {/*}}>Send reply</Button>*/}
-        //         </Grid>
-        //     </Grid>
-        // );
-    // }
+    }
 
     return (
         <div>
             <InboxNavbar reply={props.reply} setReply={(val) => {
                 props.setReply(val)
             }}/>
-            {/*<MainView*/}
-            {/*    message={message}*/}
-            {/*    setMessage={(val) => {*/}
-            {/*        setMessage(val)*/}
-            {/*    }}*/}
-            {/*    token={props.token}*/}
-            {/*    messageToReply={props.messageToReply}*/}
-            {/*    isLoggedin={props.isLoggedin}*/}
-            {/*    setReply={(val) => {*/}
-            {/*        props.setReply(val)*/}
-            {/*    }}*/}
-            {/*    setMessageToReply={(val) => {*/}
-            {/*        props.setMessageToReply(val)*/}
-            {/*    }}*/}
-            {/*/>*/}
             <Grid container sx={{maxWidth: 1400, ml: 10, mt: 5}}>
-                <Grid item xs={2}></Grid>
+                <Grid item xs={2}>
+                </Grid>
                 <Grid item xs={6}>
-                    {/*<TextField variant='standard' value={props.message} onChange={(event) => {*/}
-                    {/*    props.setMessage(event.target.value)*/}
-                    {/*}}/>*/}
                     <div style={{
                         minWidth: 900,
                         maxHeight: 450,
@@ -273,9 +170,6 @@ export default function ReplyMessage(props) {
                     </div>
                 </Grid>
                 <Grid item xs={2}>
-                    {/*<Button onClick={() => {*/}
-                    {/*    handleSubmit()*/}
-                    {/*}}>Send reply</Button>*/}
                 </Grid>
             </Grid>
         </div>
