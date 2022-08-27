@@ -8,6 +8,7 @@ from .models import *
 from .serializer import *
 from Authentication.models import *
 from Authentication.serializers import *
+from Booking.models import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.postgres.search import  SearchQuery, SearchRank, SearchVector,TrigramSimilarity
@@ -883,7 +884,7 @@ def Recommendations(request):
     propertyList.append(dict)
 
     #-----------location based search-------------------
-    locations=Property.objects.filter().values_list('address')
+    locations=Property.objects.filter(approved=True).values_list('address')
     
     countryList=[]
     areaList=[]
@@ -1179,10 +1180,26 @@ def getGuestList(request):
     data=request.data['body']
     guest=data["guest"]
     property_id=data["property"]
-
+    print('propertyid:',property_id)
     for g in guest:
         if g == 'All guests':
-            print('all')
+            booking=Booking.objects.filter(property_id_id=property_id)
+            print('len:',len(booking))
+            print(booking._meta.fields[1])
+            # bs=sorted(booking, key=lambda d: d['checkout_date'],reverse=True)
+            # print(bs)
+            # list=[]
+            # tempList=[]
+            # for b in bs:
+            #     user=User.objects.get(b['user_id'])
+            #     user=UserSerializer(user,many=True)
+            #     user=user[0]
+            #     user['last visited']=b['checkout_date']
+            #     if user['id'] not in tempList:
+            #         list.append(user)
+            #         tempList.append(user['id'])
+            # dict={"guest":g,"list":list}
+            # guestList.append(dict)
         elif g == 'Recently visited':
             print('recent')
         elif g == 'Most frequently visted':
@@ -1229,7 +1246,7 @@ def insertGiftcard(request):
    
     
     for d in request.data['discountList']:
-
+        print(d['discount'])
         giftcard = GiftCard.objects.create(
             type=request.data['offerType'],
             discount=float(d['discount']),

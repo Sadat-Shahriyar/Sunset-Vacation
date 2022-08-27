@@ -125,8 +125,21 @@ def senMessage(request):
     )
     print(message)
 
-    return Response({"success":True}, status = status.HTTP_200_OK)
-
+   
+    new=[]
+    read=[]
+    notification=Notification.objects.filter(user_id=user['id'])
+    notification=NotificationSerializer(notification,many=True)    
+    for n in notification.data:
+        if n['marked'] == True :
+            read.append(n)
+        else:
+            new.append(n)
+    # print(new)
+    # print(read)
+    dict={'new':new,'read':read}
+    l=len(new)
+    return Response({'notifications':dict,'len':l},status=status.HTTP_200_OK)
 
 # @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
@@ -158,3 +171,63 @@ def senMessage(request):
 #     return Response({"messages": allmessages}, status=status.HTTP_200_OK)
 
 
+
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getNotification(request):
+    user = UserSerializer(request.user).data
+    #user=User.objects.get(id=user['id'])
+    
+   
+    new=[]
+    read=[]
+    notification=Notification.objects.filter(user_id=user['id'])
+    notification=NotificationSerializer(notification,many=True)    
+    for n in notification.data:
+        if n['marked'] == True :
+            read.append(n)
+        else:
+            new.append(n)
+    # print(new)
+    # print(read)
+    dict={'new':new,'read':read}
+    l=len(new)
+    return Response({'notifications':dict,'len':l},status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getUserInfo(request):
+    user = UserSerializer(request.user).data
+
+    # user=User.objects.filter(id=user[id])
+    userdetails=user
+    # print(userdetails)
+    return Response({'user':userdetails},status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getGiftcards(request):
+    user = UserSerializer(request.user).data 
+    giftcardList= UserGiftCardList.objects.filter(user_id=user['id'])
+    giftcardList=UserGiftCardListSerializer(giftcardList,many=True)
+    giftcardLists=[]
+    for giftcard in giftcardList.data:
+        g=GiftCard.objects.get(giftcard_id=giftcard['giftcard_id'])
+        g=GiftCardSerializer(g).data       
+        
+        property=Property.objects.get(propertyID=g['propertyID'])
+        property = PropertySerializer(property).data
+        photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
+        photoSerializer = PropertyPhotoSerializer(photos, many=True)
+        property['images'] = photoSerializer.data
+
+        property['discount']=g['discount']
+        property['type']=g['type']
+        property['expiryDate']=g['expiry_date'][0:10]
+        property['customMsg']=g['customMsg']
+        property['id']=g['giftcard_id']
+        giftcardLists.append(property)
+    return Response({'giftcards':giftcardLists},status=status.HTTP_200_OK)
+        

@@ -35,6 +35,7 @@ import Divider from '@mui/material/Divider';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
 import Rating from '@mui/material/Rating';
+import LocationMap from './Location';
 
 const style = {
   position: 'absolute',
@@ -60,6 +61,11 @@ function srcset(image, width, height, rows = 1, cols = 1) {
   }
 
 function ReservationCard(props){
+
+    const [checkInTimeAdded, setCheckInTimeAdded] = React.useState(false);
+    const [checkOutTimeAdded, setCheckOutTimeAdded] = React.useState(false);
+    const [viewReservationButton, setViewReservationButton] = React.useState(false);
+
     console.log(props.token);
     const checkInMinDate = new Date();
     let today = new Date();
@@ -94,29 +100,65 @@ function ReservationCard(props){
         }
     }
 
-    const setCheckInDate = (date) =>{
-        let checkIn = new Date(date);
-        let checkOut = new Date(props.checkOutDate);
-        if(checkOut.getTime() - checkIn.getTime() < 1){
-            alert("Check in date must be smaller than check out date");
+    const checkForAvailabilityOfDate = () => {
+        if(checkInTimeAdded === true && checkOutTimeAdded === true){
+            let checkIn = new Date(props.checkInDate);
+            let checkOut = new Date(props.checkOutDate);
+
+            if(checkOut.getTime() - checkIn.getTime() < 1){
+                alert("Check in date must be smaller than check out date");
+            }
+            else{
+                setViewReservationButton(true);
+            }
         }
-        else{
-            props.setCheckInDate(date);
-        }
-        
     }
 
-    const setCheckOutDate = (date) =>{
-        let checkIn = new Date(props.checkInDate);
-        let checkOut = new Date(date);
-        if(checkOut.getTime() - checkIn.getTime() < 1){
-            alert("Check out date must be greater than check in date");
-        }
-        else{
-            props.setCheckOutDate(checkOut);
-        }
+    // const setCheckInDate = (date) =>{
+    //     let checkIn = new Date(date);
+    //     let checkOut = new Date(props.checkOutDate);
+    //     if(checkOut.getTime() - checkIn.getTime() < 1){
+    //         alert("Check in date must be smaller than check out date");
+    //     }
+    //     else{
+    //         props.setCheckInDate(date);
+    //     }
         
+    // }
+
+    const setCheckInDate = (date) =>{
+        props.setCheckInDate(date);
     }
+
+    // const setCheckInDate = (date) =>{
+    //     let checkIn = new Date(date);
+    //     props.setCheckInDate(checkIn);
+    //     setCheckInTimeAdded(true);
+    //     checkForAvailabilityOfDate();
+    // }
+
+    // const setCheckOutDate = (date) =>{
+    //     let checkIn = new Date(props.checkInDate);
+    //     let checkOut = new Date(date);
+    //     if(checkOut.getTime() - checkIn.getTime() < 1){
+    //         alert("Check out date must be greater than check in date");
+    //     }
+    //     else{
+    //         props.setCheckOutDate(checkOut);
+    //     }
+        
+    // }
+
+    const setCheckOutDate = (date) =>{
+        props.setCheckOutDate(date);
+    }
+
+    // const setCheckOutDate = (date) =>{
+    //     let checkOut = new Date(date);
+    //     props.setCheckOutDate(checkOut);
+    //     setCheckOutTimeAdded(true);
+    //     checkForAvailabilityOfDate();
+    // }
 
     const handleReserveButton = async() => {
         // try{
@@ -151,66 +193,73 @@ function ReservationCard(props){
         //     alert(err.message);
         // }
 
-
-
-        try{
-            let response = await axios_api.get("users/verify/", 
-            {
-                headers: {
-                    'Authorization' : `Bearer ${props.token}`
-                }
-            })
-
-            console.log(response);
-            if(props.isLoggedin && response.data.valid){
-
-                //check for the availability of the date
-                let body = {property_id:props.propertyDetails.property.propertyID, 
-                    checkInDate: props.checkInDate.toISOString().split('T')[0], 
-                    checkOutDate: props.checkOutDate.toISOString().split('T')[0], 
-                    noOfGuest: props.adults + props.children}
-    
-                let availabilityResponse = await axios_api.post('booking/checkAvailabilityOfDate/', body,{
+        let checkIn = new Date(props.checkInDate);
+        let checkOut = new Date(props.checkOutDate);
+        if(checkOut.getTime() - checkIn.getTime() < 1){
+            alert("Check in date must be smaller than check out date");
+        }
+        else{
+            try{
+                let response = await axios_api.get("users/verify/", 
+                {
                     headers: {
-                        "Content-Type": "application/json",
+                        'Authorization' : `Bearer ${props.token}`
                     }
-                });
+                })
     
-                if(availabilityResponse.status === 200){
-                    
-                    if(availabilityResponse.data.available){
-                        props.navigate('/booking/property/reserve');
+                console.log(response);
+                if(props.isLoggedin && response.data.valid){
+    
+                    //check for the availability of the date
+                    let body = {property_id:props.propertyDetails.property.propertyID, 
+                        checkInDate: props.checkInDate.toISOString().split('T')[0], 
+                        checkOutDate: props.checkOutDate.toISOString().split('T')[0], 
+                        noOfGuest: props.adults + props.children}
+        
+                    let availabilityResponse = await axios_api.post('booking/checkAvailabilityOfDate/', body,{
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    });
+        
+                    if(availabilityResponse.status === 200){
+                        
+                        if(availabilityResponse.data.available){
+                            props.navigate('/booking/property/reserve');
+                        }
+                        else{
+                            alert("This property is not available for that time period");
+                        }
                     }
                     else{
                         alert("This property is not available for that time period");
                     }
+                    
                 }
                 else{
-                    alert("This property is not available for that time period");
+                    alert("Unauthorized");
+                    props.setLoginRedirection('/booking/property/details');
+                    props.navigate("/login");
                 }
                 
             }
-            else{
-                alert("Unauthorized");
-                props.setLoginRedirection('/booking/property/details');
+            catch(error){
+                alert(error.message);
+                props.setUser({});
+                props.setToken("");
+                props.setLoggedIn(false);
+                
+                sessionStorage.setItem("user", {});
+                sessionStorage.setItem("token", "");
+                sessionStorage.setItem("loggedIn", false);
+                sessionStorage.setItem("isAdmin", false);
+    
+                props.setLoginRedirection('/booking/property/details')
                 props.navigate("/login");
             }
-            
         }
-        catch(error){
-            alert(error.message);
-            props.setUser({});
-            props.setToken("");
-            props.setLoggedIn(false);
-            
-            sessionStorage.setItem("user", {});
-            sessionStorage.setItem("token", "");
-            sessionStorage.setItem("loggedIn", false);
-            sessionStorage.setItem("isAdmin", false);
 
-            props.setLoginRedirection('/booking/property/details')
-            props.navigate("/login");
-        }
+        
     }
 
     return(
@@ -550,64 +599,7 @@ function PropertyDetails(props){
                 }
                 
                 <Grid item xs={6}>
-                    {/* <ImageList
-                        sx={{
-                            width: 1200,
-                            height: 400,
-                            // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
-                            transform: 'translateZ(0)',
-                        }}
-                        rowHeight={200}
-                        gap={1}
-                        >
-                        {props.propertyDetails.photos.map((item) => {
-                            let cols, rows;
-                            if(idx % 3 === 1){
-                                cols = 2;
-                                rows = 2;
-                            }
-                            else if(idx === props.propertyDetails.photos.length && idx % 3 === 2){
-                                cols = 2;
-                                rows = 2;
-                            }
-                            else{
-                                cols = 1;
-                                rows = 1;
-                            }
-
-                            idx++;
-
-                            return (
-                            <ImageListItem key={item.id} cols={cols} rows={rows}>
-                                <img
-                                {...srcset(item.photo_url, 250, 200, rows, cols)}
-                                alt={item.id}
-                                loading="lazy"
-                                onClick={()=>{handleShowImage(item.photo_url)}}
-                                />
-                                <ImageListItemBar
-                                sx={{
-                                    background:
-                                    'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-                                    'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-                                }}
-                                title={idx-1}
-                                position="top"
-                                actionIcon={
-                                    <IconButton
-                                        sx={{ color: 'white' }}
-                                        aria-label={`star ${idx-1}`}
-                                        onClick={()=>{handleShowImage(item.photo_url)}}
-                                    >
-                                        <StarBorderIcon />
-                                    </IconButton>
-                                }
-                                actionPosition="left"
-                                />
-                            </ImageListItem>
-                            );
-                        })}
-                    </ImageList> */}
+                    
                     <Paper elevation={5} sx={{mt:5, paddingTop:1, paddingLeft:1, paddingRight:0.8, paddingBottom:0.5}}>
                         <img src={props.propertyDetails.photos[0].photo_url} style={{maxWidth: 740, minWidth:740, maxHeight:385,minHeight:385}}/>
                     </Paper>
@@ -708,13 +700,110 @@ function PropertyDetails(props){
                         </Grid>
                     );
                 })}
+                {/* <Grid item xs={3}>
+                    <Typography variant='h6' sx={{mt:5}}>Want to rate this property?</Typography>
+                </Grid>
+                <Grid item xs={9}>
+                    <Rating readOnly name="half-rating" defaultValue={0} precision={0.5} sx={{mt:5.5}} onChange={(event) => {handleRating(event.target.value)}}/>
+                </Grid> */}
+                
+                {/* <Grid item xs={12}>
+                    <Typography variant="h6" sx={{mt:5}}>Have any review?</Typography>
+                </Grid>
+
+                <Grid item xs={6}>
+                    <TextField value={props.review} id="standard-basic" label="Review" variant="standard" sx={{minWidth:600, maxWidth:600}}  onChange={(event)=> {props.setReview(event.target.value)}}/>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button onClick={()=>{postReview(props.review, props.propertyDetails.property.propertyID )}}>Post review</Button>
+                </Grid>
+
+                {props.propertyDetails.reviews.length > 0 ? 
+                <Grid item xs={12}>
+                    <Typography variant="h6" sx={{mt:5}}>All review</Typography>
+                </Grid>: <div></div>
+                }
+                {
+                props.propertyDetails.reviews.map((review) => {
+                    return(
+                        <Grid item xs={6}>
+                            <Card sx={{mt:1}}>
+                                <CardContent>
+                                    <Typography variant='h6' component='div'>
+                                        {review.username}
+                                    </Typography>
+                                    <Typography variant='body1' component='div'>
+                                        {review.review}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    );
+                })
+                } */}
+                
+
+                <Grid item xs={12}>
+                    <Typography variant="h6" sx={{mt:5}}>Where you'll stay?</Typography>
+                </Grid>
+                <Grid item xs={12} sx={{mt:5, ml:15}}>
+                    <LocationMap 
+                        latlng = {{lat: props.propertyDetails.property.latitude, lng: props.propertyDetails.property.longitude}}
+                       
+                        title = {props.propertyDetails.property.title}
+                    />
+                </Grid>
+                
+
+                <Grid item xs={12}>
+                    <Typography variant="h6" sx={{mt:10}}>Things you should know</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container>
+                        <Grid item xs={6}>
+                        
+                            <Typography variant="h6" sx={{mt:2}}>Some rules you should follow:</Typography>
+                            {props.propertyDetails.dos.map((rule) => {
+                                return(
+                                    <Typography variant='body1'>{rule}</Typography>
+                                )
+                            })}
+                        
+                        </Grid>
+
+                        <Grid item xs={6}>
+                        
+                            <Typography variant="h6" sx={{mt:2}}>Some things you should avoid:</Typography>
+                            {props.propertyDetails.donts.map((rule) => {
+                                return(
+                                    <Typography variant='body1'>{rule}</Typography>
+                                )
+                            })}
+                        
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid item xs={12}>
+                    {/* <Divider sx={{mt:10, fontWeight:'bold'}}/> */}
+                    <hr style={{marginTop:50}}/>
+                </Grid>
+
+                <Grid item xs={6}>
+                    {/* <Typography sx={{mt:5}} variant='h6'>Hosted by {props.propertyDetails.property.ownerName}</Typography> */}
+                    <Button size='large' sx={{mt:5, fontSize:20}} color='inherit' startIcon={<AccountCircleOutlinedIcon  fontSize='large'/>}>Hosted by {props.propertyDetails.property.ownerName}</Button>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button size='large' sx={{mt:5}} variant='contained' onClick={() => {props.navigate("/booking/property/contacthost")}}>Contact host</Button>
+                </Grid>
+
                 <Grid item xs={3}>
                     <Typography variant='h6' sx={{mt:5}}>Want to rate this property?</Typography>
                 </Grid>
                 <Grid item xs={9}>
                     <Rating readOnly name="half-rating" defaultValue={0} precision={0.5} sx={{mt:5.5}} onChange={(event) => {handleRating(event.target.value)}}/>
                 </Grid>
-                
+
                 <Grid item xs={12}>
                     <Typography variant="h6" sx={{mt:5}}>Have any review?</Typography>
                 </Grid>
@@ -749,19 +838,6 @@ function PropertyDetails(props){
                     );
                 })
                 }
-                <Grid item xs={12}>
-                    {/* <Divider sx={{mt:10, fontWeight:'bold'}}/> */}
-                    <hr style={{marginTop:50}}/>
-                </Grid>
-
-                <Grid item xs={6}>
-                    {/* <Typography sx={{mt:5}} variant='h6'>Hosted by {props.propertyDetails.property.ownerName}</Typography> */}
-                    <Button size='large' sx={{mt:5, fontSize:20}} color='inherit' startIcon={<AccountCircleOutlinedIcon  fontSize='large'/>}>Hosted by {props.propertyDetails.property.ownerName}</Button>
-                </Grid>
-                <Grid item xs={6}>
-                    <Button size='large' sx={{mt:5}} variant='contained' onClick={() => {props.navigate("/booking/property/contacthost")}}>Contact host</Button>
-                </Grid>
-                
             </Grid>
         );
     }
@@ -816,7 +892,9 @@ export default function PropertyDetailsForBooking(props){
     return(
     
     <Box sx={{ flexGrow: 1 }}>
-      <ShowNavBar />
+      <ShowNavBar 
+        isLoggedin={props.isLoggedin}
+      />
       <ShowOffer
         propertyDetails = {propertyDetails}
       />

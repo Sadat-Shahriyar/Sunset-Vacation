@@ -14,6 +14,10 @@ import datetime
 from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
+from Hosting.models import *
+from Hosting.serializer import *
+from Booking.models import *
+from Booking.serializers import *
 
 
 @api_view(['POST'])
@@ -26,6 +30,12 @@ def signup(request):
         return Response({"message": serializer.errors, "success": False},
                         status=status.HTTP_201_CREATED)
     user = serializer.save()
+
+    userValue = UserSerializer(user).data
+    userData = User.objects.get(id=userValue['id'])
+    userData.photo =  request.data['image']
+    userData.save()
+    
     token = str(Token.objects.get_or_create(user=user)[0])
     return Response({"email": serializer.data['email'], "token": token, "success": True}, status=status.HTTP_201_CREATED)
     # return Response({"success": True}, status=status.HTTP_201_CREATED)
@@ -61,6 +71,42 @@ def login(request):
     returnToken = str(token)
     user = UserSerializer(user).data
     return Response({"email": email, "token":returnToken, "isAdmin":user["isAdmin"], "success": True}, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def adminLogin(request):
+    """Return a message"""
+    print(request.data)
+    email = request.data["email"]
+    password =hashlib.sha256(request.data['password'].encode('utf-8')).hexdigest()
+    print(password)
+    # email = request.POST.get('email', '')
+    # password = hashlib.sha256(request.POST.get('password', '').encode('utf-8')).hexdigest()
+    # print(request.POST)
+    # print(email)
+    # password = request.data['password']
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "No user exists with provided user email"}, status=status.HTTP_404_NOT_FOUND)
+    if user.password != password:
+        return Response({"error": "Password did not match"}, status=status.HTTP_401_UNAUTHORIZED)
+    # token = str(Token.objects.get_or_create(user=user)[0])
+    # print(token)
+    token,_ = Token.objects.get_or_create(user=user)
+    # print(token.created)
+    if is_token_expired(token):
+        token.delete()
+        token = Token.objects.create(user=user)
+    
+    returnToken = str(token)
+    user = UserSerializer(user).data
+    if user["isAdmin"]:
+        return Response({"email": email, "token":returnToken, "isAdmin":user["isAdmin"], "success": True}, status=status.HTTP_200_OK)
+    else:
+        return Response({"success": False}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @authentication_classes([TokenAuthentication])
@@ -114,3 +160,25 @@ def verifyToken(request):
         return Response({"token": str(token), "valid": True, "id":user["id"]}, status=status.HTTP_200_OK)
     else:
         return Response({"token": "", "valid": False}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getProfileInfo(request):
+    user = UserSerializer(request.user).data
+    # print(user)
+
+    return Response(data=user, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getGiftCardList(request):
+    print(request.user)
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+
+    userGiftCardList = UserGiftCardList.objects.filter(user_id_id=user).select_related().values()
+    print(userGiftCardList)
+    return Response({"hello"})

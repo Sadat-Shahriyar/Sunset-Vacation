@@ -22,7 +22,7 @@ export default function MainSection(props){
                {/* <button className="btns" onClick={()=>{console.log("button")}}>I'm flexible</button> */}
            </div>
            <div className="main-btns">
-           <Button variant="outlined" color='inherit' onMouseOver={mouseOver} onMouseOut={mouseOut} sx={{fontSize: "18px",mt:2}} onClick={()=>{navigate('/qahome')}}>Create a Forum</Button>
+           <Button variant="outlined" color='inherit' onMouseOver={mouseOver} onMouseOut={mouseOut} sx={{fontSize: "18px",mt:2}} onClick={()=>{navigate('/forumHome')}}>Create a Forum</Button>
 
            </div>
              </div>

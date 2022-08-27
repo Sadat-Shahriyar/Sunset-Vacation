@@ -18,6 +18,8 @@ import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LocalOfferRoundedIcon from '@mui/icons-material/LocalOfferRounded';
 import CardGiftcardRoundedIcon from '@mui/icons-material/CardGiftcardRounded';
+import { Grid } from '@mui/material';
+import Content from './ManagementDashboardContent';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -187,7 +189,7 @@ export default function ManagementDashboard(props) {
                         Home</Button>
                 </Toolbar>
             </AppBar>
-
+            
         </Box>
     );
 

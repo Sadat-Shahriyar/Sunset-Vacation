@@ -96,7 +96,7 @@ export default function CheckoutForm(props){
 
         console.log(paymentMethod);
 
-        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount-totalOfferAmount, discount:0,
+        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount-totalOfferAmount, discount:totalOfferAmount,
                        checkInDate:props.checkInDate.toISOString().split('.')[0] + 'Z', 
                         checkOutDate:props.checkOutDate.toISOString().split('.')[0] + 'Z',
                          noOfGuests:props.adults+props.children,
@@ -125,7 +125,9 @@ export default function CheckoutForm(props){
 
     let offerIdx = 0;
 
-    
+    if(props.propertyDetails === null){
+      return (<div></div>);
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -162,8 +164,8 @@ export default function CheckoutForm(props){
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>{props.checkOutDate.getFullYear() + '-' + (props.checkOutDate.getMonth() + 1) + '-' + props.checkOutDate.getDate()}</Typography>
                     </Grid>
                   
-                  {props.propertyDetails === null ? null : 
-                  <div> {/*this div causing prolem in aligment need to fix it */}
+                  
+                   {/*this div causing prolem in aligment need to fix it */}
                     <Grid item xs={6}>
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>Per night cost: </Typography>
                     </Grid>
@@ -204,7 +206,7 @@ export default function CheckoutForm(props){
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>{(props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost - totalOfferAmount}</Typography> 
                     </Grid>
 
-                  </div>}
+                  
                   </Grid>
                 </CardContent>
               </Card>

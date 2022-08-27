@@ -23,6 +23,8 @@ export default function Redirect(props){
         navigate('/showOffers');
        }else if(flag === 'homepagesearchresult'){
         navigate('/homepagesearchresult');
+       }else if(flag === 'forumMyhome'){
+        navigate('/forumMyhome');
        }
       },[])
     return(

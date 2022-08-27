@@ -9,4 +9,8 @@ urlpatterns = [
     path('getMessages/', views.getMessages),
     path('sendMessage/',views.senMessage),
     # path('getmessages/', views.getMessages),
+    path('getNotifications/',views.getNotification),
+    path('getUserInfo/',views.getUserInfo),
+    path('getGiftcards/',views.getGiftcards),
+    
 ]

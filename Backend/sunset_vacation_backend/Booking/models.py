@@ -34,6 +34,13 @@ class Payment(models.Model):
         null=True
     )
 
+    payment_intent=models.CharField(
+        max_length=500,
+        default=None,
+        blank=False,
+        null=True
+    )
+
 
 class Booking(models.Model):
     booking_id=models.AutoField(
@@ -74,5 +81,7 @@ class Booking(models.Model):
     )
 
     arrived=models.BooleanField(default=False)
+
+    cancelled = models.BooleanField(default=False)
 
     

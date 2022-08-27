@@ -70,6 +70,7 @@ export default function SearchResult(props) {
       setHomepagesearch={(val)=>{props.setHomepagesearch(val)}}
       isLoggedin={props.isLoggedin}
       setflags={(val)=>{props.setflags(val)}}
+      token={props.token}
       />
     {SearchNav(props)}
     <Typography sx={{ marginTop: "30px", marginLeft: "110px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">

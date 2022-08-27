@@ -14,7 +14,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { axios_api } from '../../App';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { Button, Card, CardActions, CardContent, CardMedia, Grid, Divider, Paper, responsiveFontSizes } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Divider, Paper, responsiveFontSizes, TextareaAutosize } from '@mui/material';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import Badge from '@mui/material/Badge';
@@ -93,8 +93,37 @@ export default function NavBar(props) {
                 alert(err);
             }
         }
-
+        
+       if(props.isLoggedin === true & props.token != null){
+        
+        fetch(`http://localhost:8000/message/getNotifications/`, {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json' ,
+                'Authorization' : `Bearer ${props.token}`
+            }
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response
+                }
+                else {
+                    let err = new Error(response.status + ": " + response.text);
+                    throw err;
+                }
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                setNotifications(response.notifications)
+                setNotificationCount(response.len)
+            })
+            .catch((err) => {
+                alert(err.message);
+            })
+       }
+        
         fetchProperties();
+
     }, [])
 
     const [anchorEl1, setAnchorEl1] = React.useState(null);
@@ -112,6 +141,7 @@ export default function NavBar(props) {
     const [area, setArea] = React.useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [notificationCount,setNotificationCount]=React.useState(0);
+    const [notifications,setNotifications]=React.useState();
     const [msgCount,setMsgCount]=React.useState(0);
     const open1 = Boolean(anchorEl1);
     const open2 = Boolean(anchorEl2);
@@ -156,6 +186,11 @@ export default function NavBar(props) {
         navigate("/hosting");
     }
     const isMenuOpen = Boolean(anchorEl); 
+    const goToProfile = () =>{
+        setAnchorEl(null);
+        navigate('/profile');
+        
+    };
     const handleLogin = () => {
         setAnchorEl(null);
         navigate('/Login');
@@ -192,6 +227,41 @@ export default function NavBar(props) {
         <MenuItem sx={{fontFamily:'Lucida Handwriting'}}  onClick={handleLogOut}>Logout</MenuItem>
       </Menu>
     );
+    const renderMenuLoggedIN = (
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          id={menuId}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={isMenuOpen}
+          onClose={handleMenuClose}
+          sx={{mt:5}}
+        >
+          <MenuItem sx={{fontFamily:'Lucida Handwriting'}} onClick={handleLogin}>Login</MenuItem>
+          <MenuItem sx={{fontFamily:'Lucida Handwriting'}}  onClick={handleLogOut}>Profile</MenuItem>
+          <MenuItem sx={{fontFamily:'Lucida Handwriting'}} onClick={(event)=>{navigate('/showUserGiftcard')}}>GiftCard</MenuItem>
+          <MenuItem sx={{fontFamily:'Lucida Handwriting'}}  onClick={handleLogOut}>Logout</MenuItem>
+        </Menu>
+      );
+
+      function showMenu(props){
+        if(props.isLoggedin === true){
+            return (
+                <div>{renderMenuLoggedIN}</div>
+            )
+        }else{
+            return (
+                <div>{renderMenu}</div>
+            )
+        }
+      }
    function showNotificationMessage(props){
     console.log(props.isLoggedin)
     if(props.isLoggedin === true){
@@ -224,10 +294,10 @@ export default function NavBar(props) {
                   </Badge>
                 </IconButton>
                 <IconButton aria-label={notificationsLabel(msgCount)}>
-      <Badge badgeContent={msgCount}  sx={{color:'black'}} max={9}>
-        <MailIcon />
-      </Badge>
-    </IconButton>
+                <Badge badgeContent={msgCount}  sx={{color:'black'}} max={9}>
+                    <MailIcon />
+                </Badge>
+                </IconButton>
                 </Box>
            </div>
         )
@@ -328,8 +398,11 @@ export default function NavBar(props) {
                         flexDirection: 'column',
                         alignItems: 'center',
                         '& > *': {
-                            ml: 15,
+                            //ml: 15,
+                            
                         },
+                        ml:30,
+                        mr:'auto'
                     }}
                 >
                     <ButtonGroup color='inherit' variant='text' size="large" aria-label="large button group">
@@ -519,7 +592,7 @@ export default function NavBar(props) {
 
             </Toolbar>
            
-      {renderMenu}
+      {showMenu(props)}
             <Divider />
 
 
