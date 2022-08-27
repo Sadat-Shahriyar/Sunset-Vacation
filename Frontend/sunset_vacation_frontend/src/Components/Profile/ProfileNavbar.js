@@ -13,6 +13,8 @@ import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MailIcon from '@mui/icons-material/Mail'
 import Menu from '@mui/material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+
 const StyledMenu = styled((props) => (
     <Menu
         elevation={3}
@@ -67,10 +69,49 @@ function notificationsLabel(count) {
 export default function ProfileNavbar(props) {
     
     let navigate = useNavigate();
-    
+    const fetchNotification=async()=>{
+       
+  
+            fetch(`http://localhost:8000/message/getNotifications/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${props.token}`
+                }
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        return response
+                    }
+                    else {
+                        let err = new Error(response.status + ": " + response.text);
+                        throw err;
+                    }
+                })
+                .then((response) => response.json())
+                .then((response) => {
+                    setNotificationNew(response.notifications.new)
+                    console.log(response.notifications)
+                    setNotificationRead(response.notifications.read)
+                    setNotificationCount(response.len)
+                })
+                .catch((err) => {
+                    alert(err.message);
+                })
+        
+    }
+    React.useEffect(() => {      
+        fetchNotification();
+  
+    }, [])
+      
    
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEln, setAnchorEln] = React.useState(null);
+
     const [notificationCount,setNotificationCount]=React.useState(0);
+    const [notificationNew,setNotificationNew]=React.useState([]);
+    const [notificationRead,setNotificationRead]=React.useState([]);
     const [msgCount,setMsgCount]=React.useState(0);
     
     function mouseOver(event) {
@@ -83,10 +124,15 @@ export default function ProfileNavbar(props) {
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
+    const handleProfileMenuOpenN = (event) => {
+        setAnchorEln(event.currentTarget);
+    };
     const becomeAHostButton = (event) => {
         navigate("/hosting");
     }
     const isMenuOpen = Boolean(anchorEl); 
+    const isMenuOpenN = Boolean(anchorEln); 
+
     const goToMyBookings = () =>{
         setAnchorEl(null);
         navigate('/my-bookings');
@@ -103,6 +149,9 @@ export default function ProfileNavbar(props) {
     };
     const handleMenuClose = () => {
         setAnchorEl(null);
+      };
+      const handleMenuCloseN = () => {
+        setAnchorEln(null);
       };
     const menuId = 'primary-search-account-menu';
     const renderMenu = ()=>{
@@ -152,47 +201,156 @@ export default function ProfileNavbar(props) {
             );
         }
     }
-   function showNotificationMessage(props){
-    console.log(props.isLoggedin)
-    if(props.isLoggedin === true){
+    const markNotification= async (notification) => {
         
-        return(
-           <div>
-            
-             <Box
-             sx={{
-                display: 'block',
-                flexDirection: 'row',
-                //alignItems: 'right',
-                //position:'fixed',
-                '& > *': {
-                   m:0
-                },
-                ml:15,
-                              
-                mt:-3
-               
-            }}>
-                <IconButton
-                  size="large"
-                  color="inherit"
-                  aria-label={notificationsLabel(notificationCount)}
-                  onClick={()=>{navigate("/login");}}
-                >
-                  <Badge badgeContent={notificationCount} >
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton aria-label={notificationsLabel(msgCount)}>
-                <Badge badgeContent={msgCount}  sx={{color:'black'}} max={9}>
-                    <MailIcon />
-                </Badge>
-                </IconButton>
-                </Box>
-           </div>
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json',
+            'Authorization':  `Bearer ${props.token}` },
+            body: JSON.stringify(notification)
+          };
+          fetch(`http://localhost:8000/message/markNotification/`+`${notification.id}/` , requestOptions)
+            .then(response => response.json())
+            .then(data => {
+              navigate(notification.link);
+            });
+
+    }
+    function notificationCardNew(notification) {
+        return (
+
+            <Card  sx={{ boxShadow: 2, fontSize: 12, p: 1, width: 500, bgcolor: "#FDF2E9" }}>
+                <Grid container>
+                    <Grid onClick={(event) => {markNotification(notification)}} item xs={11}>{notification.title}</Grid>
+                    <Grid item xs={1}><CloseIcon onClick={(event) => { removeNotification(notification.id) }} sx={{ fontSize: 15 }} /></Grid>
+                </Grid>             </Card>
+
         )
     }
-   }
+    function notificationCardRead(notification) {
+        return (
+
+            <Card  sx={{ boxShadow: 2, fontSize: 12, p: 1, width: 500 }}>
+                <Grid container>
+                    <Grid onClick={(event) => { navigate(notification.link) }} item xs={11}>{notification.title}</Grid>
+                    <Grid item xs={1}><CloseIcon onClick={(event) => { removeNotification(notification.id) }} sx={{ fontSize: 15 }} /></Grid>
+                </Grid>             </Card>
+
+        )
+    }
+    const removeNotification=async(id)=>{
+        if (props.isLoggedin === true & props.token != null) {
+
+            fetch(`http://localhost:8000/message/deleteNotification/`+`${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${props.token}`
+                }
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        return response
+                    }
+                    else {
+                        let err = new Error(response.status + ": " + response.text);
+                        throw err;
+                    }
+                })
+                .then((response) => response.json())
+                .then((response) => {
+                  
+                    fetchNotification();
+                })
+                .catch((err) => {
+                    alert(err.message);
+                })
+        }
+    }
+
+    function showNoti(props) {
+        if (props.isLoggedin === true) {
+            return (
+                <div>
+                    {notificationNew.map((n) => (
+                        <MenuItem sx={{ fontFamily: 'Lucida Handwriting' }}>{notificationCardNew(n)}</MenuItem>
+
+                    ))}
+                    {notificationRead.map((n) => (
+                        <MenuItem sx={{ fontFamily: 'Lucida Handwriting' }}>{notificationCardRead(n)}</MenuItem>
+
+                    ))}
+                </div>
+            )
+        }
+    }
+    function showNotificationMessage(props) {
+            
+            const menuid = 'primary-search-account-menu';
+            const renderNMenu = (
+                <Menu
+                    anchorEl={anchorEln}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    id={menuid}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={isMenuOpenN}
+                    onClose={handleMenuCloseN}
+                    sx={{ mt: 5 }}
+                >
+
+                    {showNoti(props)}
+                </Menu>
+            );
+            return (
+                <div>
+
+                    <Box
+                        sx={{
+                            display: 'block',
+                            flexDirection: 'row',
+                            //alignItems: 'right',
+                            //position:'fixed',
+                            '& > *': {
+                                m: 0
+                            },
+                            ml: 15,
+
+                            mt: -3
+
+                        }}>
+
+                        <IconButton
+                            size="large"
+                            color="inherit"
+                            aria-label={notificationsLabel(notificationCount)}
+                            aria-controls={menuid}
+                            aria-haspopup="true"
+                            onClick={handleProfileMenuOpenN}
+
+                        >
+                            <Badge badgeContent={notificationCount} >
+                                <NotificationsIcon />
+                            </Badge>
+                        </IconButton>
+                        {renderNMenu}
+                        <IconButton aria-label={notificationsLabel(msgCount)}>
+                            <Badge badgeContent={msgCount} sx={{ color: 'black' }} max={9}>
+                                <MailIcon />
+                            </Badge>
+                        </IconButton>
+                    </Box>
+                </div>
+            )
+     }
+  
+   
     
     
     return (

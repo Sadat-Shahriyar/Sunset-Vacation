@@ -9,11 +9,12 @@ from .serializer import *
 from Authentication.models import *
 from Authentication.serializers import *
 from Booking.models import *
+from Booking.serializers import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.postgres.search import  SearchQuery, SearchRank, SearchVector,TrigramSimilarity
 from psycopg2.extras import NumericRange
-import datetime
+from datetime import timedelta
 from django.db.models import Q
 
 @api_view(["GET"])
@@ -1194,25 +1195,75 @@ def getGuestList(request):
         if g == 'All guests':
             booking=Booking.objects.filter(property_id_id=property_id)
             print('len:',len(booking))
-            print(booking._meta.fields[1])
-            # bs=sorted(booking, key=lambda d: d['checkout_date'],reverse=True)
-            # print(bs)
-            # list=[]
-            # tempList=[]
-            # for b in bs:
-            #     user=User.objects.get(b['user_id'])
-            #     user=UserSerializer(user,many=True)
-            #     user=user[0]
-            #     user['last visited']=b['checkout_date']
-            #     if user['id'] not in tempList:
-            #         list.append(user)
-            #         tempList.append(user['id'])
-            # dict={"guest":g,"list":list}
-            # guestList.append(dict)
+            booking=BookingSerializer(booking,many=True).data
+            bs=sorted(booking, key=lambda d: d['checkout_date'],reverse=True)
+           
+            list=[]
+            tempList=[]
+            for b in bs:               
+                user=User.objects.get(id=b['user_id'])
+                user=UserSerializer(user).data              
+            
+                user['lastVisited']=b['checkout_date'][0:10]
+               
+                if user['id'] not in tempList:
+                    list.append(user)
+                    tempList.append(user['id'])
+            dict={"guest":g,"list":list}
+            guestList.append(dict)
         elif g == 'Recently visited':
-            print('recent')
+            lastyear=datetime.now() - timedelta(days=365)
+            booking=Booking.objects.filter(property_id=property_id).filter(Q(checkout_date__gte=lastyear))
+            booking=BookingSerializer(booking,many=True).data
+            bs=sorted(booking, key=lambda d: d['checkout_date'])
+            list=[]
+            tempList=[]
+            for b in bs:               
+                user=User.objects.get(id=b['user_id'])
+                user=UserSerializer(user).data              
+            
+                user['lastVisited']=b['checkout_date'][0:10]
+               
+                if user['id'] not in tempList:
+                    list.append(user)
+                    tempList.append(user['id'])
+            dict={"guest":g,"list":list}
+            guestList.append(dict)
         elif g == 'Most frequently visted':
-            print('most')
+            booking=Booking.objects.filter(property_id_id=property_id)
+            booking=BookingSerializer(booking,many=True).data
+            bs=sorted(booking, key=lambda d: d['checkout_date'],reverse=True)
+           
+            if len(bs) > 0 :
+                list=[]
+                tempList=[]
+                for b in bs:               
+                    user=User.objects.get(id=b['user_id'])
+                    user=UserSerializer(user).data              
+                
+                    user['lastVisited']=b['checkout_date'][0:10]
+                    
+                    if user['id'] not in tempList:
+                        user['count']=1
+                        list.append(user)
+                        tempList.append(user['id'])
+                        
+                    else:
+                        idx=next((index for (index,d) in enumerate(list) if d['id'] == user['id']),None)
+                        list[idx]['count']=list[idx]['count']+1
+                
+                list=sorted(list,key=lambda d:d['count'],reverse=True)
+                count=list[0]['count'] -2
+                frequentGuestList=[]
+                for user in list:
+                    c=user['count']
+                    if c < count:                        
+                        break
+                    else:
+                        frequentGuestList.append(user)
+                
+                dict={"guest":g,"list":frequentGuestList}
+                guestList.append(dict)                
         else:
             rating=Ratings.objects.filter(propertyID=property_id)
             rating=RatingsSerializer(rating,many=True)
@@ -1241,7 +1292,7 @@ def getGuestList(request):
            
             dict={"guest":g,"list":list}
             guestList.append(dict)
-    print(guestList)
+    # print(guestList)
             
     
     return Response({"list":guestList},status=status.HTTP_200_OK)
@@ -1250,7 +1301,8 @@ def getGuestList(request):
 @permission_classes([IsAuthenticated])
 def insertGiftcard(request):
     print(request.data)
-    propertyInfo = Property.objects.get(propertyID=request.data["property_id"]);
+    propertyInfo = Property.objects.get(propertyID=request.data["property_id"])
+    p=PropertySerializer(propertyInfo).data
     
    
     
@@ -1274,6 +1326,12 @@ def insertGiftcard(request):
                 giftcard_id= giftcard
             )
 
+            Notification.objects.create(
+                title="You got a giftcard",
+                link='/showUserGiftcard',
+                user_id=user[0],
+                text=''
+            )
 
     return Response({"data": "sent"}, status=status.HTTP_200_OK)
 
@@ -1375,11 +1433,12 @@ def getHomepagesearchResult(request):
                 photoSerializer = PropertyPhotoSerializer(photos, many=True)
                 property['images'] = photoSerializer.data
                 idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+                property['rating']=propertyRating[idx]['rating']
                 if not property in propertyList:
                     propertyList.append(property)
     elif location == '' and guest >0:
-        print('guest:',guest)
-        s=Property.objects.filter(noOfGuests>=guest,approved=True)
+        
+        s=Property.objects.filter(Q(noOfGuests__gte=guest) & Q(approved=True))
         p =PropertySerializer(s, many=True)
         for x in p.data:
             properties=Property.objects.filter(propertyID=x["propertyID"],approved=True)
@@ -1389,11 +1448,12 @@ def getHomepagesearchResult(request):
                 photoSerializer = PropertyPhotoSerializer(photos, many=True)
                 property['images'] = photoSerializer.data
                 idx= next((index for (index, d) in enumerate(propertyRating) if d['propertyID'] == property['propertyID']), None)
+                property['rating']=propertyRating[idx]['rating']                
                 if not property in propertyList:
                     propertyList.append(property)
     elif location != '' and guest==0:
-        print('location: ',location )
-        s=Property.objects.filter(address__search=location ,approved=True)
+        
+        s=Property.objects.filter(Q(address__search=location) & Q(approved=True) )
         p =PropertySerializer(s, many=True)
         for x in p.data:
             properties=Property.objects.filter(propertyID=x["propertyID"],approved=True)
@@ -1407,17 +1467,20 @@ def getHomepagesearchResult(request):
                 property['rating']=propertyRating[idx]['rating']
                 if not property in propertyList:
                     propertyList.append(property)
-
-    # if checkInDate != None and endDate != None:
-    #     s=Booking.objects.filter(Q(checkin_date__lte!=checkInDate) & Q(checkout_date__gte!=checkInDate) | 
+    available=propertyList
+    # available=[]
+    # if checkInDate != None and checkOutDate != None:      
+    #     for property in propertyList:
+    #         booking = Booking.objects.filter(property_id=property['propertyID']).filter(Q(checkin_date__lte=checkInDate) & Q(checkout_date__gte=checkInDate) | 
     #                                                                             Q(checkin_date__gte=checkInDate) & Q(checkout_date__lte=checkOutDate)|
     #                                                                             Q(checkin_date__lte=checkOutDate) & Q(checkout_date__gte=checkOutDate)|
     #                                                                             Q(checkin_date__lte=checkInDate) & Q(checkout_date__gte=checkOutDate)).values()
-    #     if len(s) == 0:
 
+    #         # booking=BookingSerializer(booking,many=True).data
+    #         if len(booking) == 0: 
+    #             available.append(property)
 
-
-    return Response({"propertyList":propertyList},status=status.HTTP_200_OK)
+    return Response({"propertyList":available},status=status.HTTP_200_OK)
 
     
 

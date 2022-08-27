@@ -13,6 +13,29 @@ import ReplyMessage from './ReplyMessage';
 import {fontWeight} from "@mui/system";
 function ViewMessages(props){
 
+    // const [reply, setReply] = React.useState(false);
+    const fetchMessages = async()=>{
+        try{
+            let response = await axios_api.get('message/getMessages/', {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization' : `Bearer ${props.token}`
+                }
+            })
+
+            if(response.status === 200){
+                console.log(response.data.messages);
+                props.setMessages(response.data.messages);
+            }
+        }
+        catch(error){
+            alert(error.message);
+        }
+    }
+    React.useEffect(()=>{
+        fetchMessages()
+    }, [])
+
     const handleReply = async(message)=>{
 
         const requestOptions = {
@@ -43,7 +66,7 @@ function ViewMessages(props){
                     <Table sx={{ minWidth: 650,  }} aria-label="simple table">
                         <TableHead sx={{background:'pink', }}>
                             <TableRow >
-                                <TableCell align="center" colSpan={3} sx={{fontFamily: "Lucida Handwriting"}}>Messages</TableCell>
+                                <TableCell align="center" colSpan={2} sx={{fontFamily: "Lucida Handwriting"}}>Messages</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -52,11 +75,11 @@ function ViewMessages(props){
                                     <TableRow
                                         key={message.msg_id}
                                         hover
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 }, paddingRight:5}}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 }, paddingRight:5,}}
                                         onClick={() => {handleReply(message)}}
                                     >
-                                        <TableCell  sx={{ paddingLeft:5, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15}}>{message.name}</TableCell>
-                                        <TableCell  sx={{ paddingLeft:2, fontFamily: "Lucida Handwriting", fontSize:13,  fontWeight: message.marked  ? "light": "bold"}} >{message.sender_name} {message.message}</TableCell>
+                                        <TableCell sx={{width:'25%', paddingLeft:5,fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15,}}>{message.name}</TableCell>
+                                        <TableCell align="left"  sx={{ paddingLeft:2, fontFamily: "Lucida Handwriting", fontSize:13, fontWeight: message.marked  ? "light": "bold"}} >{message.sender_name} {message.message}</TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -69,31 +92,8 @@ function ViewMessages(props){
 }
 
 export default function Inbox(props){
-
     const [messages, setMessages] = React.useState([])
     const [messageToReply, setMessageToReply] = React.useState(null);
-    // const [reply, setReply] = React.useState(false);
-    const fetchMessages = async()=>{
-        try{
-            let response = await axios_api.get('message/getMessages/', {
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization' : `Bearer ${props.token}`
-                }
-            })
-
-            if(response.status === 200){
-                console.log(response.data.messages);
-                setMessages(response.data.messages);
-            }
-        }
-        catch(error){
-            alert(error.message);
-        }
-    }
-    React.useEffect(()=>{
-        fetchMessages()
-    }, [])
 
     if(props.reply){
         return(
@@ -116,6 +116,7 @@ export default function Inbox(props){
                     token = {props.token}
                     setMessageToReply = {(val) => {setMessageToReply(val)}}
                     setReply = {(val) => {props.setReply(val)}}
+                    setMessages = {(val)=>{setMessages(val)}}
                 />
             </div>
         );

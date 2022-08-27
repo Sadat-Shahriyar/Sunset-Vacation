@@ -104,7 +104,8 @@ export default function ForumHome(props){
       function getDate(d){
         let date = new Date(d);
         let today = new Date();
-        
+        console.log(date.getTime())
+        console.log(today.getTime());
         let dateString = ""
         
         
@@ -225,7 +226,7 @@ function ViewSelectedProperties(selectedProperty){
               <Card sx={{ minWidth:200 ,m:1,p:0,bgcolor:'antiquewhite'}}>
                 <CardHeader
         avatar={
-          <Avatar size="small" src="/broken-image.jpg" />
+          <Avatar size="small" src={a.image} />
         }
         
        title= {buildTilte(a)}
@@ -248,6 +249,7 @@ function ViewSelectedProperties(selectedProperty){
        })
         var body={
           qid: reply.qid,
+          questionair: reply.questionair,
           answer: reply.comment,
           propertyList: propertyList
         }
@@ -283,7 +285,7 @@ function ViewSelectedProperties(selectedProperty){
           <InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="write comment"
-            onChange={(event)=>{setReply({'qid':question,'comment':event.target.value})}}
+            onChange={(event)=>{setReply({'qid':question.questions_id,'comment':event.target.value,'questionair': question.questionair_id})}}
           />
            <IconButton  sx={{ p: '10px',color:'black' }} aria-label="directions">
             <InsertLinkIcon onClick={(event)=>{setDisplay('block')}} />
@@ -472,9 +474,10 @@ function ViewSelectedProperties(selectedProperty){
         <CardHeader
         sx={{ fontFamily: 'Lucida Handwriting' }}
           avatar={
-            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-              R
-            </Avatar>
+            // <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+            //   R
+            // </Avatar>
+            <Avatar src={q.question.image}/>
           }
           // action={
           //   <IconButton aria-label="settings">
@@ -506,7 +509,7 @@ function ViewSelectedProperties(selectedProperty){
         <Collapse in={expanded[q.question.index]} timeout="auto" unmountOnExit>
           <CardContent>
             {showComments(q.answers)}
-            {comment(q.question.questions_id)}
+            {comment(q.question)}
             
           </CardContent>
         </Collapse>

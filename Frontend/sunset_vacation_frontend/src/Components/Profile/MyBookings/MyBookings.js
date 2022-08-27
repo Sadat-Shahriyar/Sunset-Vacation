@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { axios_api } from '../../../App';
 import BookingList from './BookingList';
 import MyBookingsNavbar from './MyBookingNavbar';
+import StaticNavBar from '../../Homepage/StaticNavBar';
 
 export default function MyBookings(props){
     let navigate = useNavigate();
@@ -43,9 +44,11 @@ export default function MyBookings(props){
 
     return(
         <Box sx={{ flexGrow: 1 }}>
-            <MyBookingsNavbar
-                isLoggedin={props.isLoggedin}
-            />
+             <StaticNavBar
+      
+      isLoggedin={props.isLoggedin}
+      token={props.token}
+      />
             <BookingList 
                 isLoggedin={props.isLoggedin}
                 token={props.token}

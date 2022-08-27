@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
-import { Button, Grid } from '@mui/material';
+import { Button, Grid,Box } from '@mui/material';
 import SearchNav from './SearchNav';
 import ViewProperty from './ViewProperty';
 import NavBar from './NavBar';
@@ -16,21 +16,23 @@ export default function ShowMore(props) {
   }, [])
 
  
-      function showProperties(props){
+  function showProperties(props){
 
-        return(
-          <Grid container>
-             {properties.map((property)=>(
-                <Grid item xs={2.5} key={property.propertyID}>
-               <ViewProperty
-                    setSelectedPropertyForDetails={(val)=>{props.setSelectedPropertyForDetails(val)}}
-                    property={property}
-                  />
-              </Grid>
-             ))}
+    return(
+      <Box position="static" sx={{ flexGrow: 1 ,m:10,mt:2}}>
+      <Grid container>
+         {properties.map((property)=>(
+            <Grid item xs={3} key={property.propertyID}>
+            <ViewProperty
+                setSelectedPropertyForDetails={(val)=>{props.setSelectedPropertyForDetails(val)}}
+                property={property}
+              />
           </Grid>
-        );
-      }
+         ))}
+      </Grid>
+      </Box>
+    );
+  }
     function NoResultFound(props){
         return(
             <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
@@ -56,7 +58,7 @@ export default function ShowMore(props) {
       token={props.token}
       />
     {SearchNav(props)}
-    <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
+    <Typography sx={{ marginTop: "30px", marginLeft: "110px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
             View more result for "{props.showMore.title}"
           </Typography>
     {CheckResult(props)}

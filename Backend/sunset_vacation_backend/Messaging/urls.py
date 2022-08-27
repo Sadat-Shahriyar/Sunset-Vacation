@@ -12,5 +12,7 @@ urlpatterns = [
     path('getNotifications/',views.getNotification),
     path('getUserInfo/',views.getUserInfo),
     path('getGiftcards/',views.getGiftcards),
+    path('deleteNotification/<int:id>/',views.deleteNotification),
+    path('markNotification/<int:id>/',views.markNotification)
     
 ]

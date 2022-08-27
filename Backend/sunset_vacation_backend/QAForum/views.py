@@ -91,6 +91,7 @@ def getAllQuestionDetails(questions,user):
         user1 = User.objects.filter(id=question['questionair_id'])
         user1=UserSerializer(user1,many=True).data
         ques['name']=user1[0]['name']
+        ques['image']=user1[0]['photo']
         qp= QuestionProperty.objects.filter(questionID=question['questions_id'])
         qp=QuestionPropertySerializer(qp,many=True)
         # print(qp.data)
@@ -125,7 +126,8 @@ def getAllQuestionDetails(questions,user):
             answerer=User.objects.filter(id=answers['answerer_id'])
             answerer=UserSerializer(answerer,many=True).data
             name=answerer[0]['name']
-            answers['answerer']=name       
+            answers['answerer']=name 
+            answers['image']=answerer[0]['photo']      
             dict=getAnswerReactCount(answers['answer_id'])
             answers['likecount']=dict['like']
             answers['dislikecount']=dict['dislike']
@@ -317,8 +319,10 @@ def insertQuestion(request):
 @permission_classes([IsAuthenticated])
 def insertComment(request):
     user = UserSerializer(request.user).data
+    userName=user['name']
     user = User.objects.get(id=user['id'])
     q=Question.objects.get(questions_id=request.data['qid'])
+    qs=QuestionSerializer(q).data
     answer=Answer.objects.create(
         answer= request.data['answer'],
         answerer_id= user,
@@ -333,4 +337,25 @@ def insertComment(request):
             answerID = answer,
             propertyID = property
         )
+    str1='/viewPost/'+str(qs['questions_id'])+'/'
+    title= userName+ ' has commented on your post'
+    notiUser=User.objects.get(id=int(request.data['questionair']))
+    n=UserSerializer(notiUser).data
+    if not n['name'] == userName:
+        Notification.objects.create(
+            link = str1,
+            title = title,
+            user_id = notiUser,
+            text=''
+        )
     return Response({'msg':'successfully inserted'},status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getPost(request,id):
+    user=UserSerializer(request.user).data
+    question_objects = Question.objects.filter(questions_id=id)
+    qurstionSerializer = QuestionSerializer(question_objects, many=True)
+    questions=sorted(qurstionSerializer.data, key=lambda d:d['question_date'],reverse=True)
+    allQuestions=getAllQuestionDetails(questions,user)
+    return Response(data={"all_questions": allQuestions} )

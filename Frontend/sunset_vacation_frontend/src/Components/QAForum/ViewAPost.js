@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Card, CardContent, Grid, List,Box, Button, Typography, Divider } from '@mui/material';
 import Sidebar from './Sidebar';
 import QAnavbar from './QAnavbar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useParams } from 'react-router-dom';
 import { axios_api } from '../../App';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CardHeader from '@mui/material/CardHeader';
@@ -15,6 +15,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import { red } from '@mui/material/colors';
 import CommentIcon from '@mui/icons-material/Comment';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import SendIcon from '@mui/icons-material/Send';
@@ -22,26 +23,28 @@ import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import ThumbDownOffAlt from '@mui/icons-material/ThumbDownOffAlt';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
+
 import SelectLink from './SelectLink';
+import SearchPost from './SearchPost';
+import { useNow } from '@mui/x-date-pickers/internals/hooks/useUtils';
 
 const drawerWidth = 340;
 
 
-export default function MyPost(props){
+
+
+export default function ViewAPost(props){
+  let params = useParams();
   let navigate=useNavigate();
   const [questions, setQuestions] = React.useState([]);
-  const [expanded, setExpanded] = React.useState([]);
+  const [expanded, setExpanded] = React.useState(true);
   const [reply,setReply]=React.useState({});
   const [display,setDisplay]=React.useState('none');   
   const [selectedProperty,setSelectedProperty]=React.useState([]);
  
- 
- 
 
     const fetchQuestions = async() => {
-      fetch(`http://localhost:8000/qa/getMyquestions/`, {
+      fetch(`http://localhost:8000/qa/getPost/`+`${params.id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -60,8 +63,7 @@ export default function MyPost(props){
         })
         .then((response) => response.json())
         .then((response) => {
-          setQuestions(response.all_questions);
-          
+          setQuestions(response.all_questions);        
             
         })
         .catch((err) => {
@@ -71,38 +73,22 @@ export default function MyPost(props){
     }
 
 
-    const setExpand = async() => {
-      var l=questions.length;
-      var t=[]
-      var a=[]
-      var o=[]
-      for(var i=0;i<l;i++){
-       t[i]=false;       
-      }
-     setExpanded(t);   
-     
-    }
+   
 
     React.useEffect(()=>{
       
       fetchQuestions();
-      setExpand();
     },[]);
 
-    const handleExpandClick = (id) => {     
-    
-      var t=[...expanded];
-      t[id]=!t[id];     
-      setExpanded(t);
+    const handleExpandClick = (event) => {
+      setExpanded(!expanded);
+      
       
     };
-  
-      
   
       function getDate(d){
         let date = new Date(d);
         let today = new Date();
-        console.log(today.getTime())
         
         let dateString = ""
         
@@ -116,8 +102,8 @@ export default function MyPost(props){
         else if(today.getDate() - date.getDate() > 0){
           dateString = (today.getDate() - date.getDate()).toString() + " days ago";
         }
-        else if(today.getHours() - date.getHours()+6 >0) {
-          dateString = (today.getHours() - date.getHours()+6).toString() + " hours ago";
+        else if(today.getHours() - date.getHours() >0) {
+          dateString = (today.getHours() - date.getHours()).toString() + " hours ago";
         }else if(today.getMinutes() - date.getMinutes() > 0){
           dateString = (today.getMinutes() - date.getMinutes()).toString() + " minute ago";
         }else{
@@ -146,7 +132,7 @@ function ViewALLProperties(selectedProperty){
            <Grid container columns={12}>
        {selectedProperty.map((property)=>(
            <Grid item xs={3} key={property.propertyID}>
-           <Card onClick={() => { goToDetailsPage(property.propertyID) }}  sx={{ maxWidth: 200, maxHeight:100, mt:0,mr:2,mb:1,ml:1}}>
+           <Card onClick={() => { goToDetailsPage(property.propertyID) }} sx={{ maxWidth: 200, maxHeight:100, mt:0,mr:2,mb:1,ml:1}}>
            <CardMedia
                component="img"
                height="60"
@@ -216,7 +202,6 @@ function ViewSelectedProperties(selectedProperty){
     return str;
   }
       function showComments(answers){
-       
         return (
          <div>
           <Divider/>
@@ -225,7 +210,7 @@ function ViewSelectedProperties(selectedProperty){
               <Card sx={{ minWidth:200 ,m:1,p:0,bgcolor:'antiquewhite'}}>
                 <CardHeader
         avatar={
-          <Avatar size="small" src="/broken-image.jpg" />
+          <Avatar size="small" src={a.image} />
         }
         
        title= {buildTilte(a)}
@@ -248,11 +233,11 @@ function ViewSelectedProperties(selectedProperty){
        })
         var body={
           qid: reply.qid,
+          questionair: reply.questionair,
           answer: reply.comment,
           propertyList: propertyList
         }
-        setExpand();        
-        
+     
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json',
@@ -283,7 +268,7 @@ function ViewSelectedProperties(selectedProperty){
           <InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder="write comment"
-            onChange={(event)=>{setReply({'qid':question,'comment':event.target.value})}}
+            onChange={(event)=>{setReply({'qid':question.questions_id,'comment':event.target.value,'questionair': question.questionair_id})}}
           />
            <IconButton  sx={{ p: '10px',color:'black' }} aria-label="directions">
             <InsertLinkIcon onClick={(event)=>{setDisplay('block')}} />
@@ -465,33 +450,6 @@ function ViewSelectedProperties(selectedProperty){
         )
       }
       
-      function EditPost(qid){
-      
-        props.setSelectedQuestionForEdit(qid);
-        navigate('/editPost');
-
-      }
-
-      function DeletePost(qid){         
-      
-        const requestOptions = {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json',
-          'Authorization':  `Bearer ${props.token}` 
-        },
-          
-        
-        };
-        fetch(`http://localhost:8000/qa/deletePost/`+`${qid}` , requestOptions)
-          .then(response => response.json())
-          .then(data => {
-            console.log("updated successsfully")
-            fetchQuestions();
-            setSelectedProperty([]);
-            setReply({});
-          });
-      }
-
       function showQuestion(q){
         
           return(
@@ -499,22 +457,16 @@ function ViewSelectedProperties(selectedProperty){
         <CardHeader
         sx={{ fontFamily: 'Lucida Handwriting' }}
           avatar={
-            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-              R
-            </Avatar>
+            // <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+            //   R
+            // </Avatar>
+            <Avatar src={q.question.image}/>
           }
-          action={
-           <div>
-             <IconButton onClick={(event)=>{EditPost(q.question.questions_id)}} aria-label="settings">
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={(event)=>{DeletePost(q.question.questions_id)}} aria-label="settings">
-            <DeleteForeverIcon/>
-          </IconButton>
-           </div>
-            
-           
-          }
+          // action={
+          //   <IconButton aria-label="settings">
+          //     <MoreVertIcon />
+          //   </IconButton>
+          // }
           title={q.question.name}
           subheader={getDate(q.question.question_date)}
         />
@@ -529,18 +481,18 @@ function ViewSelectedProperties(selectedProperty){
          {showReact(q.question.react,q.question)}     
             
             <Button  
-             expand={expanded[q.question.index]}
-             onClick={(event)=>{handleExpandClick(q.question.index)}}
-             aria-expanded={expanded[q.question.index]}
+             expand={expanded}
+             onClick={handleExpandClick}
+             aria-expanded={expanded}
              aria-label="show more"
             variant='text' color='inherit' sx={{fontFamily:'Lucida Handwriting',ml:"70%"}} startIcon={<CommentIcon/>}> {q.ansCount} comment</Button>
   
         
         </CardActions>
-        <Collapse in={expanded[q.question.index]} timeout="auto" unmountOnExit>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
             {showComments(q.answers)}
-            {comment(q.question.questions_id)}
+            {comment(q.question)}
             
           </CardContent>
         </Collapse>
@@ -577,15 +529,31 @@ function ViewSelectedProperties(selectedProperty){
        <Box
          component="main"
          sx={{ position:'relative',flexGrow: 1, p: 3,zIndex:1, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-     >
-       <Typography sx={{ marginTop: "30px",mb:3, marginLeft: "10px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
-   Your home
+     >  
+   
+        
+         <Grid container sx={{m:1}} >
+          <Grid item xs={6}>
+          <Typography sx={{ mb:3,fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
+   Sunset Vacation 
    </Typography>
-         {show(props)}
-        </Box>
+          </Grid>
+          <Grid item xs={6} sx={{mb:3}}>
+          <SearchPost
+     setQuestions={setQuestions}
+     token={props.token}
+   />
+          </Grid>
+          <Grid item xs={12}>
+          {show(props)}
+          </Grid>
+         </Grid>
+         </Box>
+        
          </Grid>
      </Grid>
       </Grid>
+     
       <Box
             display="flex"
             justifyContent="center"
