@@ -19,11 +19,13 @@ from datetime import timedelta
 @permission_classes([IsAuthenticated])
 def markMessage(request,messageId):
     try:
-        # user = UserSerializer(request.user).data
-        # print(user["id"])
+        user = UserSerializer(request.user).data
+        print(user["id"])
         message = Messaging.objects.get(msg_id=messageId)
-        message.marked = True
-        message.save()
+        messageSerializer = MessagingSerializer(message)
+        if messageSerializer["sender_id"] != user["id"]:
+            message.marked = True
+            message.save()
         return Response({"message": "okay"}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -87,6 +89,7 @@ def getMessages(request):
             else:
                 lastMessageSerializer["name"] = uniqueUserName[i]
                 lastMessageSerializer['sender_name'] = "You: "
+                lastMessageSerializer['marked'] = True
             lastMessageSerializer["orgMessage"] = lastMessageSerializer["message"]
             if len(lastMessageSerializer["message"]) > 60:
                 lastMessageSerializer["message"] = lastMessageSerializer["message"][:60]+"..."
@@ -118,7 +121,7 @@ def senMessage(request):
         sender_id=sender,
         receiver_id=receiver,
         message=data['message'],
-        marked=True,
+        marked=False,
     )
     print(message)
 

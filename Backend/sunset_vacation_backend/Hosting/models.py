@@ -276,8 +276,8 @@ class Messaging(models.Model):
         blank=True,
         null=True
     )
-    marked=models.BooleanField(
-      default=False
+    marked = models.BooleanField(
+        default=False
     )
 
 class GiftCard(models.Model):
