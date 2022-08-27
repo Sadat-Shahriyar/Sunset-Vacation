@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
-import { Button, IconButton } from '@mui/material';
+import { Button, IconButton, Paper } from '@mui/material';
 import Box from '@mui/material/Box';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -105,7 +105,7 @@ function handleSubmit(){
       >
         <Grid container spacing={3} columns={12} >
           <Grid item xs={4} >
-          <Card sx={{ width: "100%", height: "100vh",background: 'linear-gradient(to right bottom, pink,#C4036C)' }}>
+          <Card sx={{ width: "100%", height: "88vh",background: 'linear-gradient(to right bottom, pink,#C4036C)' }}>
         <CardContent>
         <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h1" component="h2">
                   Create
@@ -122,6 +122,7 @@ function handleSubmit(){
       </Card>
         </Grid>
         <Grid item xs={8} >
+          <Paper elevation={10} sx={{ml:'auto',mr:'auto',mt:5,width:"80%",padding:3}}>
           <Grid container  spacing={10} columns={12} >
             <Grid item xs={4}>
             <Box sx={{ minWidth: 120 }}>
@@ -175,15 +176,15 @@ function handleSubmit(){
             id="outlined-adornment-amount"
             
             onChange={(event)=>{setAmount(event.target.value);}}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            startAdornment={<InputAdornment position="start">%</InputAdornment>}
             label="Amount"
           />
         </FormControl>
                       </Box>
                
             </Grid>
-            <Grid item xs={4}>
-            <Box sx={{ minWidth: 200,mt: 22.5 }}>
+            <Grid item xs={4} sx={{ml:15}}>
+            <Box sx={{ mt: 22.5 }}>
                   <Typography sx={{ marginTop: "30px", marginLeft: "20px", marginBottom: "20px", fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
                     Select&nbsp;EndDate
                   </Typography>
@@ -191,7 +192,7 @@ function handleSubmit(){
 
                     <DesktopDatePicker
                       label="End date"
-                      sx={{ mt: 50,ml:20 }}
+                      sx={{ mt: 10}}
                       value={EndDate}
                       minDate={new Date('2017-01-01')}
                       onChange={(newValue) => {
@@ -204,12 +205,12 @@ function handleSubmit(){
                 </Box>
             </Grid>
             <Grid item xs={8}>
-            <Button variant="outlined" color='inherit' sx={{ml:50}} onClick={handleSubmit}>Publish</Button>
+            <Button variant="outlined" color='inherit' sx={{ml:"65%"}} onClick={handleSubmit}>Publish</Button>
             </Grid>
           </Grid>
-
+          </Paper>
           </Grid>
-          
+         
         </Grid>
        
       </Box>

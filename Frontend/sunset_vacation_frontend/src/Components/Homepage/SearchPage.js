@@ -112,13 +112,20 @@ function showProperties(props){
   
   return (
    <div >
-      <NavBar
+   
+        <NavBar
       setHomepagesearch={(val)=>{props.setHomepagesearch(val)}}
       isLoggedin={props.isLoggedin}
       setflags={(val)=>{props.setflags(val)}}
+      token={props.token}
       />
-     {SearchNav(props)} 
-    {showProperties(props)}
+       
+       {SearchNav(props)} 
+      
+          {showProperties(props)}
+       
+    
+    
    </div>
   );
 }

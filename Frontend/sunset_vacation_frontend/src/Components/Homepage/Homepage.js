@@ -13,6 +13,7 @@ export default function Homepage(props) {
       setHomepagesearch={(val)=>{props.setHomepagesearch(val)}}
       isLoggedin={props.isLoggedin}
       setflags={(val)=>{props.setflags(val)}}
+      token={props.token}
       />
       <MainSection/>
      

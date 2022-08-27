@@ -37,13 +37,17 @@ import PropertyReservation from './Components/Booking/PropertyReservation';
 import BookingConfirm from './Components/Booking/BookingConfirm';
 
 import ShowGiftcard from './Components/Hosting/Offer&Giftcard/ShowGiftcard';
-import AskQuestion from './Components/QAForum/AskQuestion';
-import ViewTags from './Components/QAForum/ViewTags';
-import ViewAnswer from './Components/QAForum/ViewAnswer';
-import QaHome from './Components/QAForum/QaHome';
 import HomePageSearchResult from './Components/Homepage/HomePageSearchResult';
 import ContactHost from './Components/Booking/ContactHost';
 import Inbox from './Components/Messaging/Inbox';
+
+import ForumAccessControl from './Components/QAForum/ForumAccessControl';
+import ForumHome from './Components/QAForum/ForumHome';
+import CreatePost from './Components/QAForum/CreatePost';
+import MyPost from './Components/QAForum/MyPost';
+import EditPost from './Components/QAForum/EditPost';
+
+import ShowUserGiftCard from './Components/Homepage/ShowUserGiftCard';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -72,7 +76,7 @@ function App() {
   const [showMore,setShowMore]=useState({});
   const [homepagesearch,setHomepagesearch]=useState({});
 
-  
+  const [selectedQuestionForEdit,setSelectedQuestionForEdit]=useState();
 
 // ************************* For booking details page *********************
   const [selectedPropertyForDetails, setSelectedPropertyForDetails] = useState(-1);
@@ -147,7 +151,7 @@ function App() {
   return (
    <BrowserRouter>
      <Routes>
-        <Route path='/' element={<Homepage isLoggedin={loggedIn} setflags={(val)=>{setFlags(val)}}  setHomepagesearch={(val)=>{setHomepagesearch(val)}} setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} />
+        <Route path='/' element={<Homepage token={token} isLoggedin={loggedIn} setflags={(val)=>{setFlags(val)}}  setHomepagesearch={(val)=>{setHomepagesearch(val)}} setLoginRedirection={(val) => {setLoginRedirection(val)}}/>} />
         <Route path='/login' element={<Login setAdmin={(val)=>{setAdmin(val)}} loginRedirection={loginRedirection} isLoggedin={loggedIn}  setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
@@ -197,8 +201,8 @@ function App() {
         <Route path='/confirmOffer' element={<OfferConfirmation/>}/>
 
         <Route path='/search' element={<SearchPage isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token}/>}/>
-        <Route path='/searchResult' element={<SearchResult isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
-        <Route path='/userStaticSearch' element={<UserStaticSearch isLoggedin={loggedIn} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} />}/>
+        <Route path='/searchResult' element={<SearchResult isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}}  token={token} />}/>
+        <Route path='/userStaticSearch' element={<UserStaticSearch isLoggedin={loggedIn} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}}  token={token} />} />
         <Route path='/showmore'  element={<ShowMore isLoggedin={loggedIn} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} setflags={(val)=>{setFlags(val)}} setSelectedFac={(f)=>{setSelectedFac(f)}} display={display} setDisplay={(val)=>{setDisplay(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} token={token} showMore={showMore}/>}/>
         <Route path='/giftcard' element={<GiftCard token={token}/>}/>
                   
@@ -288,12 +292,16 @@ function App() {
 
         <Route  path='/showGiftcard'  element={<ShowGiftcard setflags={(val)=>{setFlags(val)}} token={token}/>}/>
 
-        <Route path='askquestion' element={<AskQuestion setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}}  />}/>
-        <Route path='viewtags' element={<ViewTags />}/>
-        <Route path='viewanswer' element={<ViewAnswer />}/>
-        <Route path='qahome' element={<QaHome />}/>
+        <Route path='/forum' element={<ForumAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
 
+        <Route  path='/showUserGiftcard'  element={<ShowUserGiftCard setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} isLoggedin={loggedIn}  token={token}/>}/>
+
+        <Route path='/forumHome' element={<ForumHome token={token} setflags={(val)=>{setFlags(val)}}   setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} />}/>
+        <Route path='/createPost' element={<CreatePost token={token} />}/>
+        <Route path='/editPost' element={<EditPost selectedQuestionForEdit={selectedQuestionForEdit} token={token} />}/>
+        <Route path='/forumMyhome' element={<MyPost token={token} setSelectedQuestionForEdit={(val)=>{setSelectedQuestionForEdit(val)}} setflags={(val)=>{setFlags(val)}}   setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} />}/>
         <Route path='/homepagesearchresult' element={<HomePageSearchResult isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} homepagesearch={homepagesearch}/>}/>
+       
         <Route 
           path='/inbox' 
           element={

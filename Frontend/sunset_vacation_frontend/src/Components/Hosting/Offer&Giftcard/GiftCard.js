@@ -36,6 +36,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Paper from '@mui/material/Paper';
 import InputAdornment from '@mui/material/InputAdornment';
 import { id } from 'date-fns/locale';
+import OutlinedInput from '@mui/material/OutlinedInput';
 
 const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
     ({ theme, checked }) => ({
@@ -65,7 +66,11 @@ export default function GiftCard (props) {
     //discountype same or different
     const [discountType,setDiscountType]=React.useState('');
     //discount values
-    const [discount,setDiscount]=React.useState([]);
+    const [discount,setDiscount]=React.useState([{'type':'same',discount:0},
+    {'type':'All guests',discount:0},
+    {'type':'Recently visited',discount:0},
+    {'type':'Most frequently visited',discount:0},
+    {'type':'Best rating giver',discount:0}]);
     const [d,setD]=React.useState('');
     const [checked,setChecked]=React.useState([false,false,false,false]);
     React.useEffect(() => {
@@ -235,6 +240,7 @@ export default function GiftCard (props) {
     
         var list=[]
         console.log('-----------------');
+        console.log(discount);
         if(discountType === 'same'){
             var guestList=[]
             for(var i=0;i<allGuest.length;i++){
@@ -262,35 +268,36 @@ export default function GiftCard (props) {
             }
             var l=discount.find(element => element['type'] === 'same');  
             var dict={'list': guestList,'discount': l.discount };
-            list.push(dict)
+            if (guestList.length > 0) list.push(dict);
         }else{
             for (var j=0;j<discount.length;j++){
                 var l=discount[j]
+                console.log(l)
                 var guestList=[]
-                if(l.type === 'All guests'){
+                if(l.type === 'All guests' & l.discount > 0){
                     for(var i=0;i<allGuest.length;i++){
                         guestList.push(allGuest[i].id);
                     }
                     var dict={'list': guestList,'discount': l.discount };
-                    list.push(dict);
-                }else if(l.type === 'Recently visited'){
+                    if (guestList.length > 0) list.push(dict);
+                }else if(l.type === 'Recently visited' & l.discount > 0){
                     for(var i=0;i< RecentlyVisited.length;i++){
                         guestList.push(RecentlyVisited[i].id);
                     }
                     var dict={'list': guestList,'discount': l.discount };
-                    list.push(dict);
-                }else if(l.type === 'Most frequently visited'){
+                    if (guestList.length > 0) list.push(dict);
+                }else if(l.type === 'Most frequently visited' & l.discount > 0){
                     for(var i=0;i< mostFrequentlyVisited.length;i++){
                         guestList.push(mostFrequentlyVisited[i].id);
                     }
                     var dict={'list': guestList,'discount': l.discount };
-                    list.push(dict);
-                }else if(l.type === 'Best rating giver'){
+                    if (guestList.length > 0) list.push(dict);
+                }else if(l.type === 'Best rating giver' & l.discount > 0){
                     for(var i=0;i< bestRatingGiver.length;i++){
                         guestList.push(bestRatingGiver[i].id);
                     }
                     var dict={'list': guestList,'discount': l.discount };
-                    list.push(dict);
+                    if (guestList.length > 0) list.push(dict);
                 }
                 
             }
@@ -328,22 +335,22 @@ export default function GiftCard (props) {
         }
     }
     function handleDiscount  (type,value){
-        setD(value);        
-        console.log(d);
+        console.log(discount);
+        
+        var t=[...discount];
         if (type === 'same'){
-            setDiscount([{'type':'same','discount':d}]);
+            t[0].discount=value;
+        }else if(type === 'All guests'){
+            t[1].discount=value;
+        }else if(type === 'Recently visited'){
+            t[2].discount=value;
+        }else if(type === 'Most frequently visited'){
+            t[3].discount=value;
         }else{
-            var t=[...discount]
-            var p=t.find(element => element['type'] === type); 
-            if (p != null ){
-                t[type]=d;
-                
-            } else{
-                t.push({'type':type,'discount': d});
-            }
-            setDiscount(t);
+            t[4].discount=value;
         }
 
+        setDiscount(t);
         }
     
     function showAllGuestList(props){
@@ -514,43 +521,10 @@ function showGuestList(props){
         </div>
     )
 }
-
-    function showGiftCard(props) {
-        return (
-            <Box
-                component="form"
-                sx={{
-                    '& .MuiTextField-root': { width: '40ch' },
-                }}
-                display='flex'
-                noValidate
-                mt={0}
-                ml={0}
-                //p={2}
-                autoComplete="off"
-            >
-                <Grid container spacing={3} columns={12} >
-
-                    <Grid item xs={4} >
-                        <Card sx={{ width: "100%", height: "100vh", background: 'linear-gradient(to right bottom, pink,#C4036C)' }}>
-                            <CardContent>
-                                <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h1" component="h2">
-                                    Create
-                                </Typography>
-                                <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h1" component="h2">
-                                    Gift <CardGiftcardRoundedIcon sx={{ marginLeft: "20px", fontSize: 100 }} />
-                                </Typography>
-                                <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h1" component="h2">
-                                    Card
-                                </Typography>
-
-
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-                    <Grid item xs={8}>
-                        <Grid container >
+    function showGiftCardpage(props){
+        return(
+           <Paper sx={{width:"80%",ml:'auto',mr:'auto',mt:3,padding:3}} elevation={10}>
+<Grid container >
                             <Grid item xs={6}>
                                 <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
                                     Select&nbsp;Property
@@ -638,6 +612,46 @@ function showGuestList(props){
                             </Grid>
 
                         </Grid>
+           </Paper>
+            
+        )
+    }
+    function showGiftCard(props) {
+        return (
+            <Box
+            component="form"
+            sx={{
+                '& .MuiTextField-root': { width: '40ch' },
+            }}
+            display='flex'
+            noValidate
+            mt={0}
+            ml={0}
+            //p={2}
+            autoComplete="off"
+        >
+                <Grid container spacing={3} columns={12} >
+
+                    <Grid item xs={4} >
+                        <Card sx={{ width: "100%",height: "100%", background: 'linear-gradient(to right bottom, pink,#C4036C)' }}>
+                            <CardContent>
+                                <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h1" component="h2">
+                                    Create
+                                </Typography>
+                                <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h1" component="h2">
+                                    Gift <CardGiftcardRoundedIcon sx={{ marginLeft: "20px", fontSize: 100 }} />
+                                </Typography>
+                                <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h1" component="h2">
+                                    Card
+                                </Typography>
+
+
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    <Grid item xs={8}>
+                        {showGiftCardpage(props)}
                     </Grid>
                 </Grid>
 
@@ -660,7 +674,7 @@ function showGuestList(props){
                 InputProps={{
                   startAdornment: <InputAdornment position="start">%</InputAdornment>,
                 }}
-                onChange={(event)=>{handleDiscount("same",event.target.value)}}
+                onChange={(event)=>{handleDiscount('same',event.target.value)}}
               />
                 
             </Box>
@@ -671,23 +685,34 @@ function showGuestList(props){
           
             return(
                 <Box>
+                    <Grid container >
                     {guest.map((g)=>(
-                        <div>
-                             <Typography sx={{ marginTop: "30px", marginLeft: "20px", marginBottom: "20px", fontFamily: "Lucida Handwriting" }} variant="h6" component="h6">
-                                    Enter&nbsp;Discount&nbsp;for&nbsp;{g}
+                        <Grid item xs={4}>
+                             <Typography sx={{ marginTop: "30px", marginLeft: "1px", marginBottom: "20px", fontFamily: "Lucida Handwriting" }} variant="h6" component="h6">
+                                    {g}
                 </Typography>
-                <TextField
+                <FormControl  sx={{ m: 1 ,maxWidth: '18ch'}}>
+          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            onChange={(event)=>{handleDiscount(g,event.target.value)}}
+            startAdornment={<InputAdornment position="start">%</InputAdornment>}
+            label="Amount"
+          />
+        </FormControl>
+                {/* <TextField
                 label="Discount"
                 defaultValue={d}
                 id="outlined-start-adornment"
-                sx={{ m: 1, width: '25ch' }}
+                sx={{ m: 1, maxWidth: '10ch' }}
                 InputProps={{
-                  startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                  startAdornment: <InputAdornment  position="start">%</InputAdornment>,
                 }}
                 onChange={(event)=>{handleDiscount(g,event.target.value)}}
-              />
-                        </div>
+              /> */}
+                        </Grid>
                     ))}
+                    </Grid>
                 </Box>
             )
          
@@ -716,7 +741,7 @@ function showGuestList(props){
                 <Grid container spacing={3} columns={12} >
 
                     <Grid item xs={4} >
-                        <Card sx={{ width: "100%", height: "100vh", background: 'linear-gradient(to right bottom, pink,#C4036C)' }}>
+                        <Card sx={{ width: "100%", minHeight: "87vh",height:'100%', background: 'linear-gradient(to right bottom, pink,#C4036C)' }}>
                             <CardContent>
                                 <Typography sx={{ marginTop: "30px", marginLeft: "20px", fontFamily: "Lucida Handwriting" }} variant="h1" component="h2">
                                     Create
@@ -732,8 +757,9 @@ function showGuestList(props){
                             </CardContent>
                         </Card>
                     </Grid>
-
+                    
                     <Grid item xs={8}>
+                    <Paper elevation={10} sx={{width:"80%",ml:'auto',mr:'auto',mt:3,padding:3}}>
                         <Grid container columns={12}>
                         <Grid item xs={12}>
                         <Button variant='outlined' color='inherit' onClick={Change} >Back</Button>
@@ -745,7 +771,7 @@ function showGuestList(props){
                                     <MyFormControlLabel1 sx={{fontFamily:'Lucida Handwriting'}} color='inherit' value="different" label="Different for selected guests" control={<Radio />} />
                                 </RadioGroup>
                                 <Box>{inputDiscount(props)}</Box>
-                                <Button variant='outlined' color='inherit' onClick={handleSubmit} >Confirm</Button>
+                                <Button variant='outlined' color='inherit' sx={{ml:"40%",mt:3}} onClick={handleSubmit} >Confirm</Button>
 
                         </Grid>
                         
@@ -755,7 +781,8 @@ function showGuestList(props){
                                 {showGuestList(props)}
                             </Grid>
                         </Grid>
-                    </Grid>
+                        </Paper>
+                    </Grid>                  
                 </Grid>
             </Box>
         )

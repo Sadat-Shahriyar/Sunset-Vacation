@@ -6,4 +6,8 @@ urlpatterns = [
     #path('<int:user_id>/', views.getProperties),
     path('sendmessage/',views.senMessage),
     path('getmessages/', views.getMessages),
+    path('getNotifications/',views.getNotification),
+    path('getUserInfo/',views.getUserInfo),
+    path('getGiftcards/',views.getGiftcards),
+    
 ]
