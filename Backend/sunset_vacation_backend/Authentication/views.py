@@ -168,7 +168,8 @@ def verifyToken(request):
 def getProfileInfo(request):
     user = UserSerializer(request.user).data
     # print(user)
-
+    if user['photo'] == None:
+        user['photo'] = "http://localhost:8000/media/defaultprofileimage/defaultprofileimage.png"
     return Response(data=user, status=status.HTTP_200_OK)
 
 

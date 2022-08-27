@@ -56,6 +56,7 @@ import MyPost from './Components/QAForum/MyPost';
 import EditPost from './Components/QAForum/EditPost';
 import ViewAPost from './Components/QAForum/ViewAPost';
 import ShowUserGiftCard from './Components/Homepage/ShowUserGiftCard';
+import AdminViewPropertyDetails from './Components/Admin/AdminViewPropertyDetails';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -173,7 +174,7 @@ function App() {
         <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
-        <Route path='/admin' element={<AdminControl setLoggedIn = {(value)=>{setLoggedIn(value)}}  setToken = {(t) => {setToken(t)}}  setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setProperty={(p)=>{setProperty(p)}}/>}/>
+        <Route path='/admin' element={<AdminControl isLoggedin = {loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}}  setToken = {(t) => {setToken(t)}}  setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/notification' element={<Notification token={token} setNotification={(notification)=>setNotification(notification)}/>}/>
         <Route path='/showNotification' element={<ShowNotification notification={notification} setNotification={(notification)=>setNotification(notification)} token={token}/>}/>
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
@@ -386,6 +387,16 @@ function App() {
           path='/hosting/propertydetails/:property_id' 
           element={
             <SeePropertyDetails 
+              token = {token}
+              isLoggedin={loggedIn}
+            />
+          }
+        />
+
+        <Route 
+          path='/admin/propertydetails/:property_id' 
+          element={
+            <AdminViewPropertyDetails 
               token = {token}
               isLoggedin={loggedIn}
             />

@@ -15,4 +15,5 @@ urlpatterns = [
     path('getCurrentReservations/', views.getCurrentReservations),
     path('getNextSevenDaysReservations/', views.getNextSevenDaysReservations),
     path('getAllFutureReservations/', views.getAllFutureReservations),
+    path('getUserGiftCardList/',views.getUserGiftCardList),
 ]

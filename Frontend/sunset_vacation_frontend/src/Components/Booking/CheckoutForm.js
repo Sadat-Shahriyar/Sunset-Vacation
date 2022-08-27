@@ -1,5 +1,5 @@
 import {CardElement, PaymentElement, useElements, useStripe} from "@stripe/react-stripe-js";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { axios_api } from "../../App";
 
 import Avatar from '@mui/material/Avatar';
@@ -28,11 +28,15 @@ export default function CheckoutForm(props){
     const [error, setError] = useState(null);
     const [email, setEmail] = useState('');
     const [cardholderName, setCardHolderName] = useState('');
+    const [giftCards, setGiftCards] = useState(null);
+    const [chosenGiftCard, setChosenGiftCard] = useState(null);
+    const [chosenGiftCardId, setChosenGiftCardId] = useState(-1);
+    const [chosenGiftcardDiscountAmount, setChosenGiftCardDiscountAmount] = useState(0);
     const stripe = useStripe();
     const elements = useElements();// Handle real-time validation errors from the CardElement.
     // const [totalOffer, setTotalOffer] = useState(0);
 
-    console.log(props.propertyDetails);
+    // console.log(props.propertyDetails);
     let totalOfferAmount = 0;
 
     // React.useEffect(()=>{
@@ -47,7 +51,35 @@ export default function CheckoutForm(props){
     //       }
     //     }
     // },[props])
-    
+
+
+    const fetchGiftCardList = async() => {
+      if(giftCards === null){
+        try{
+          let body = {checkoutdate: props.checkOutDate, propertyID: props.propertyDetails.property.propertyID};
+          let response = await axios_api.post("booking/getUserGiftCardList/", body,
+          {
+              headers: {
+                  'Authorization' : `Bearer ${props.token}`
+              }
+          });
+  
+          if(response.status === 200){
+            console.log("giftcards", response.data);
+            setGiftCards(response.data);
+          }
+          else{
+            let error = new Error(response.statusText);
+            throw error;
+          }
+        }
+        catch(error){
+          alert(error.message);
+        }
+      }
+      
+    }
+
     const handleChange = (event) => {
         if (event.error) {
             setError(event.error.message);
@@ -66,8 +98,7 @@ export default function CheckoutForm(props){
                 }
             });
 
-            console.log(response.data);
-
+            // console.log(response.data);
             if(response.status === 200){
                 alert("Booking complete");
                 props.setReceipt(response.data.receipt)
@@ -84,7 +115,7 @@ export default function CheckoutForm(props){
     }
 
     const handleSubmit = async (event) => {
-        let paymentAmount = (props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost;
+        let paymentAmount = Math.abs(props.checkOutDate - props.checkInDate)/(1000 * 60 * 60 * 24) * props.propertyDetails.property.perNightCost
         event.preventDefault();
         const card = elements.getElement(CardElement);
 
@@ -94,14 +125,16 @@ export default function CheckoutForm(props){
             card: card
         });
 
-        console.log(paymentMethod);
+        let totalOffer = paymentAmount * totalOfferAmount/100 + paymentAmount * chosenGiftcardDiscountAmount / 100;
 
-        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount-totalOfferAmount, discount:totalOfferAmount,
+        // console.log(paymentMethod);
+
+        saveStripInfo({email:email, payment_method_id: paymentMethod.id, amount: paymentAmount-totalOffer, discount:totalOffer,
                        checkInDate:props.checkInDate.toISOString().split('.')[0] + 'Z', 
                         checkOutDate:props.checkOutDate.toISOString().split('.')[0] + 'Z',
                          noOfGuests:props.adults+props.children,
                           propertyID:props.propertyDetails.property.propertyID,
-                        name_on_card: cardholderName});
+                        name_on_card: cardholderName, userGiftCardListId: chosenGiftCardId});
 
     };
 
@@ -128,6 +161,55 @@ export default function CheckoutForm(props){
     if(props.propertyDetails === null){
       return (<div></div>);
     }
+
+    fetchGiftCardList();
+
+    const handleChooseGiftCard = (giftCard, discountAmount) =>{
+      if(chosenGiftCardId === -1){
+        setChosenGiftCard(giftCard);
+        setChosenGiftCardDiscountAmount(discountAmount);
+        setChosenGiftCardId(giftCard.giftcard.id);
+      }
+      else{
+        setChosenGiftCard(null);
+        setChosenGiftCardDiscountAmount(0);
+        setChosenGiftCardId(-1);
+      }
+      
+    }
+
+    const getGiftCards = () => {
+      if(giftCards === null) {return(<div></div>);}
+      else{
+        console.log(giftCards);
+        // return(<div></div>);
+        return(
+          <Grid container  sx={{ml:19, mt:3}}>
+            <Grid item xs={12}>
+              <Typography variant='h6'>Availale giftcards:</Typography>
+            </Grid>
+            {giftCards.giftcards.map((giftcard) => {
+              let bg = 'white';
+              if(giftcard.giftcard.id === chosenGiftCardId){
+                bg = "#c7a9be";
+              }
+              return(
+                <Grid item xs={4}>
+                  <Card sx={{background: bg}} onClick={() => {handleChooseGiftCard(giftcard, giftcard.giftcardDetails.discount)}}>
+                    <CardContent>
+                      <Typography sx={{ fontSize: 40 }}>{giftcard.giftcardDetails.discount}% off</Typography>
+                      <Typography variant="body1">{giftcard.giftcardDetails.customMsg}</Typography>
+                      <Typography variant="body1">Expiry date: {giftcard.giftcardDetails.expiry_date.split("T")[0]}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        );
+      }
+    }
+
 
     return (
         <ThemeProvider theme={theme}>
@@ -177,9 +259,19 @@ export default function CheckoutForm(props){
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>Total cost: </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{(props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost}</Typography>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{Math.abs(props.checkOutDate - props.checkInDate)/(1000 * 60 * 60 * 24) * props.propertyDetails.property.perNightCost}</Typography>
                     </Grid>
-                    <List sx={{width:1000, alignContent:'start'}}>
+                    {chosenGiftCardId === -1? null:
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>Gift card amount: </Typography> 
+                    </Grid>
+                    }
+
+                    {chosenGiftCardId === -1? null:
+                    <Grid item xs={6}>
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{(Math.abs(props.checkOutDate - props.checkInDate)/(1000 * 60 * 60 * 24) * props.propertyDetails.property.perNightCost * chosenGiftcardDiscountAmount / 100)}</Typography> 
+                    </Grid>
+                    }
                       {props.propertyDetails.offers.map((off) => {
                         offerIdx++;
                         let offerStartDate = new Date(off.startDate);
@@ -187,9 +279,14 @@ export default function CheckoutForm(props){
                         if( props.checkInDate.getTime() - offerStartDate.getTime() >= 0 && offerEndDate.getTime() - props.checkOutDate.getTime()>= 0){
                           totalOfferAmount = totalOfferAmount + off.amount;
                           return(
-                            <ListItem id={offerIdx} sx={{width:500, fontSize:16}}>
-                                <Typography variant="body1" sx={{width:500, fontSize:16}}>offer {offerIdx}: {off.amount}</Typography>
-                            </ListItem>
+                            <>
+                            <Grid item xs={6}  sx={{width:500, fontSize:16}}>
+                                <Typography variant="body1" sx={{width:500, fontSize:16}}>offer {offerIdx}:</Typography>
+                            </Grid>
+                            <Grid item xs={6}  sx={{width:500, fontSize:16}}>
+                                <Typography variant="body1" sx={{width:500, fontSize:16}}>{off.amount}%</Typography>
+                            </Grid>
+                            </>
                           );
                         } 
                         else{
@@ -197,19 +294,20 @@ export default function CheckoutForm(props){
                         }
                         
                       })}
-                    </List>
-
+                    
+                    
                     <Grid item xs={6}>
                       <Typography variant="body1" sx={{width:500, fontSize:16}}>Final amount: </Typography> 
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{(props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost - totalOfferAmount}</Typography> 
+                      <Typography variant="body1" sx={{width:500, fontSize:16}}>{Math.abs(props.checkOutDate - props.checkInDate)/(1000 * 60 * 60 * 24) * props.propertyDetails.property.perNightCost - (Math.abs(props.checkOutDate - props.checkInDate)/(1000 * 60 * 60 * 24) * props.propertyDetails.property.perNightCost) * totalOfferAmount/100 - (Math.abs(props.checkOutDate - props.checkInDate)/(1000 * 60 * 60 * 24) * props.propertyDetails.property.perNightCost * chosenGiftcardDiscountAmount / 100)}</Typography> 
                     </Grid>
 
                   
                   </Grid>
                 </CardContent>
               </Card>
+              {getGiftCards()}
               <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
                   margin="normal"
