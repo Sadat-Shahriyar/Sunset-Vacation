@@ -50,13 +50,14 @@ def getMessagesById(request,userId):
 @permission_classes([IsAuthenticated])
 def getMessages(request):
     try:
+        print('inside get message ----------------------------')
         print(request.user)
         user = UserSerializer(request.user).data
         userName = user["name"]
         # messages = Messaging.objects.filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id']))
-        uniqueSender = Messaging.objects.filter(~Q(sender_id_id=user['id'])).values("sender_id_id").distinct()
+        uniqueSender = Messaging.objects.filter(~Q(sender_id_id=user['id'])).filter(Q(receiver_id_id=user['id'])).values("sender_id_id").distinct()
         print(uniqueSender)
-        uniqueReceiver = Messaging.objects.filter(~Q(receiver_id_id=user['id'])).values("receiver_id_id").distinct()
+        uniqueReceiver = Messaging.objects.filter(~Q(receiver_id_id=user['id'])).filter(Q(sender_id_id=user['id'])).values("receiver_id_id").distinct()
         print(uniqueReceiver)
         # messagesSerializer = MessagingSerializer(messages, many=True)
         uniqueUser = []
@@ -72,11 +73,11 @@ def getMessages(request):
             filteredUserSerializer = UserSerializer(filteredUser).data
             uniqueUserName.append(filteredUserSerializer['name'])
         lastMessageArray = []
+        print('before final for loop ----------------------------')
+        print('len unique user ----------------------------'+str(len(uniqueUser)))
         for i in range(len(uniqueUser)):
             lastMessage = Messaging.objects.filter((Q(sender_id_id=uniqueUser[i]) & Q(receiver_id_id=user["id"])) | (Q(receiver_id_id=uniqueUser[i]) & Q(sender_id_id=user["id"]))).order_by("-time")
-            print("hi")
             lastMessageSerializer = MessagingSerializer(lastMessage[0]).data
-            print("hi")
             print(lastMessageSerializer)
             print(lastMessageSerializer["sender_id"])
             print(lastMessageSerializer["receiver_id"])
@@ -86,11 +87,15 @@ def getMessages(request):
             else:
                 lastMessageSerializer["name"] = uniqueUserName[i]
                 lastMessageSerializer['sender_name'] = "You: "
-            lastMessageSerializer["orgMssage"] = lastMessageSerializer["message"]
+            lastMessageSerializer["orgMessage"] = lastMessageSerializer["message"]
             if len(lastMessageSerializer["message"]) > 60:
                 lastMessageSerializer["message"] = lastMessageSerializer["message"][:60]+"..."
+            print('before  print ----------------------------')
             print(lastMessageSerializer)
+            print('after  print ----------------------------')
             lastMessageArray.append(lastMessageSerializer)
+            print('after  append i ----------------------------'+str(i))
+        print('after final for loop ----------------------------')
         messages = sorted(lastMessageArray, key=lambda d: d['time'], reverse=True)
         # messagesWithName = []
         # print("hi0")

@@ -74,6 +74,19 @@ export default function Inbox(props){
     const [messageToReply, setMessageToReply] = React.useState(null);
     // const [reply, setReply] = React.useState(false);
     const fetchMessages = async()=>{
+        // const requestHeader = {
+        //     method: 'GET',
+        //     headers: { 'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${props.token}` },
+        // };
+        // fetch('message/getMessages/', requestHeader)
+        //     .then(response => response.json())
+        //     .then(response => {
+        //         console.log(response.messages);
+        //         setMessages(response.data.messages);
+        //     }).catch((err) => {
+        //     console.log(err);
+        // });
         try{
             let response = await axios_api.get('message/getMessages/', {
                 headers: {
