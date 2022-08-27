@@ -44,6 +44,8 @@ import QaHome from './Components/QAForum/QaHome';
 import HomePageSearchResult from './Components/Homepage/HomePageSearchResult';
 import ContactHost from './Components/Booking/ContactHost';
 import Inbox from './Components/Messaging/Inbox';
+import ReplyMessage from "./Components/Messaging/ReplyMessage";
+import InboxNavbar from "./Components/Messaging/InboxNavbar";
 import Profile from './Components/Profile/Profile';
 import MyBookings from './Components/Profile/MyBookings/MyBookings';
 import BookingDetails from './Components/Profile/MyBookings/BookingDetails';
@@ -85,6 +87,7 @@ function App() {
   const [searchresults, setSearchResults] = useState([]);
   const [showMore,setShowMore]=useState({});
   const [homepagesearch,setHomepagesearch]=useState({});
+  const [reply, setReply] = useState(false);
 
   
 
@@ -314,9 +317,21 @@ function App() {
             <Inbox 
               token = {token}
               isLoggedin={loggedIn}
+              setReply={(val)=>{setReply(val)}}
+              reply={reply}
             />
           }
         />
+         {/*<Route*/}
+         {/*    path='/messageThread'*/}
+         {/*    element={*/}
+         {/*        <ReplyMessage*/}
+         {/*            token = {token}*/}
+         {/*            isLoggedin={loggedIn}*/}
+         {/*            setMessageToReply={(val)=>{setMessageToReply(val)}}*/}
+         {/*        />*/}
+         {/*    }*/}
+         {/*/>*/}
 
         <Route 
           path='/profile' 

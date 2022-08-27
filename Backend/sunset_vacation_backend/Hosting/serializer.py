@@ -174,10 +174,7 @@ class MessagingSerializer(serializers.ModelSerializer):
     sender_id=serializers.PrimaryKeyRelatedField(read_only=True)
     receiver_id=serializers.PrimaryKeyRelatedField(read_only=True)
     message=serializers.CharField(
-        max_length=100,
-        required=False
-    )
-    time=serializers.DateTimeField(
+        max_length=200,
         required=False
     )
     marked = serializers.BooleanField(
