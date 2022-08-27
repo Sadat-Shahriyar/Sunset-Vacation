@@ -10,43 +10,60 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Grid } from '@mui/material';
 import ReplyMessage from './ReplyMessage';
-
+import {fontWeight} from "@mui/system";
 function ViewMessages(props){
 
-    const handleReply = (message) => {
-        props.setMessageToReply(message);
-        props.setReply(true);
+    const handleReply = async(message)=>{
+
+        const requestOptions = {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${props.token}` },
+        };
+
+        fetch('http://localhost:8000/message/markMessage/'+message.msg_id, requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                props.setMessageToReply(message);
+                props.setReply(true);
+            }).catch((err) => {
+            console.log(err);
+          });
     }
 
+    // const handleReply = (message) => {
+    //     props.setMessageToReply(message);
+    //     props.setReply(true);
+    // }
+
     return (
-        <Grid container sx={{maxWidth:1000, ml:40, mt:5}}>
+        <Grid container sx={{maxWidth:900, ml:40, mt:5}}>
             <Grid item xs={12}>
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead sx={{background:'pink'}}>
+                    <Table sx={{ minWidth: 650,  }} aria-label="simple table">
+                        <TableHead sx={{background:'pink', }}>
                             <TableRow >
-                                <TableCell align="center" colSpan={2}>Messages</TableCell>
+                                <TableCell align="center" colSpan={3} sx={{fontFamily: "Lucida Handwriting"}}>Messages</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {props.messages.map((message) => {
                                 return(
                                     <TableRow
-                                        key={message.message_id}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        
+                                        key={message.msg_id}
+                                        hover
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 }, paddingRight:5}}
+                                        onClick={() => {handleReply(message)}}
                                     >
-                                        <TableCell align="center">{message.sender_name}: {message.message}</TableCell>
-                                        <TableCell align="center">
-                                            <Button onClick={() => {handleReply(message)}}>Reply</Button>
-                                        </TableCell>
+                                        <TableCell  sx={{ paddingLeft:5, fontWeight:"bold", fontFamily: "Lucida Handwriting", fontSize:15}}>{message.name}</TableCell>
+                                        <TableCell  sx={{ paddingLeft:2, fontFamily: "Lucida Handwriting", fontSize:13,  fontWeight: message.marked  ? "light": "bold"}} >{message.sender_name} {message.message}</TableCell>
                                     </TableRow>
                                 );
                             })}
                         </TableBody>
                     </Table>
                 </TableContainer>
-        </Grid>
+            </Grid>
         </Grid>
     );
 }
@@ -55,10 +72,10 @@ export default function Inbox(props){
 
     const [messages, setMessages] = React.useState([])
     const [messageToReply, setMessageToReply] = React.useState(null);
-    const [reply, setReply] = React.useState(false);
+    // const [reply, setReply] = React.useState(false);
     const fetchMessages = async()=>{
         try{
-            let response = await axios_api.get('message/getmessages/', {
+            let response = await axios_api.get('message/getMessages/', {
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization' : `Bearer ${props.token}`
@@ -69,7 +86,7 @@ export default function Inbox(props){
                 console.log(response.data.messages);
                 setMessages(response.data.messages);
             }
-        }   
+        }
         catch(error){
             alert(error.message);
         }
@@ -78,28 +95,30 @@ export default function Inbox(props){
         fetchMessages()
     }, [])
 
-    if(reply){
+    if(props.reply){
         return(
-            <ReplyMessage 
+            <ReplyMessage
                 messageToReply = {messageToReply}
                 token = {props.token}
                 isLoggedin={props.isLoggedin}
                 setMessageToReply={(val) => {setMessageToReply(val)}}
-                setReply = {(val) => {setReply(val)}}
+                reply={props.reply}
+                setReply = {(val) => {props.setReply(val)}}
             />
         );
     }
     else{
         return(
             <div>
-                <InboxNavbar />
-                <ViewMessages 
+                <InboxNavbar reply={props.reply} setReply = {(val) => {props.setReply(val)}}/>
+                <ViewMessages
                     messages = {messages}
+                    token = {props.token}
                     setMessageToReply = {(val) => {setMessageToReply(val)}}
-                    setReply = {(val) => {setReply(val)}}
+                    setReply = {(val) => {props.setReply(val)}}
                 />
             </div>
         );
     }
-    
+
 }

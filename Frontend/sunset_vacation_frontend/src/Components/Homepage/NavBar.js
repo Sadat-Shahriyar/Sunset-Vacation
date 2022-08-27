@@ -14,7 +14,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { axios_api } from '../../App';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { Button, Card, CardActions, CardContent, CardMedia, Grid, Divider, Paper, responsiveFontSizes } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Divider, Paper, responsiveFontSizes, TextareaAutosize } from '@mui/material';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import Badge from '@mui/material/Badge';
@@ -186,6 +186,11 @@ export default function NavBar(props) {
         navigate("/hosting");
     }
     const isMenuOpen = Boolean(anchorEl); 
+    const goToProfile = () =>{
+        setAnchorEl(null);
+        navigate('/profile');
+        
+    };
     const handleLogin = () => {
         setAnchorEl(null);
         navigate('/Login');
@@ -289,10 +294,10 @@ export default function NavBar(props) {
                   </Badge>
                 </IconButton>
                 <IconButton aria-label={notificationsLabel(msgCount)}>
-      <Badge badgeContent={msgCount}  sx={{color:'black'}} max={9}>
-        <MailIcon />
-      </Badge>
-    </IconButton>
+                <Badge badgeContent={msgCount}  sx={{color:'black'}} max={9}>
+                    <MailIcon />
+                </Badge>
+                </IconButton>
                 </Box>
            </div>
         )

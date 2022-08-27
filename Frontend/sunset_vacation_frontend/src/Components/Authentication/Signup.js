@@ -54,24 +54,44 @@ export default function Signup(props) {
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
-      password: data.get('password'),
-      name: data.get('name'),
-      Address: data.get('Address'),
-      PhoneNo: data.get('Phone no'),
-      country: data.get('Country'),
-      city: data.get('City'),      
+        password: data.get('password'),
+        name: data.get('name'),
+        address: data.get('Address'),
+        phone_no: data.get('Phone no'),
+        country: data.get('country'),
+        city: data.get('City'),   
+        image: data.get('image-upload'),      
     });
 
     try{
+      let imageUrl = "";
+      let imageData = data.get('image-upload');
+      let imageFormData = new FormData();
+      imageFormData.append("image", imageData, imageData.name);
+      let res = await axios_api.post("hosting/photouploadhelper/", imageFormData, {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        })
+
+      if(res.status === 201){
+        imageUrl = "http://127.0.0.1:8000" + res.data.uploaded_photo.image;
+      }
+
+
       let body = {
         email: data.get('email'),
         password: data.get('password'),
         name: data.get('name'),
-        Address: data.get('Address'),
-        PhoneNo: data.get('Phone no'),
-        country: data.get('Country'),
-        city: data.get('City'),      
+        address: data.get('Address'),
+        phone_no: data.get('Phone no'),
+        country: data.get('country'),
+        city: data.get('City'),   
+        image: imageUrl,   
       };
+
+      console.log(body);
+
       let response = await axios_api.post("users/signup/", body);
 
       console.log(response)
@@ -172,15 +192,15 @@ export default function Signup(props) {
               <TextField
                 margin="normal"
                 required
-                id="Country"
-                label="Country"
-                name="Country"
-                autoComplete="Country"
+                id="country"
+                label="country"
+                name="country"
+                autoComplete="country"
                 sx={{
                   width: 270,
                 }}
               />
-              {/* <CountrySelector /> */}
+              {/* <countrySelector /> */}
               <TextField
                 margin="normal"
                 required
@@ -203,6 +223,26 @@ export default function Signup(props) {
                 id="password"
                 autoComplete="current-password"
               />
+              <Button
+                variant="contained"
+                color='inherit'
+                component="label"
+                fullWidth
+                sx={{
+                  mt:1.5
+                }}
+              >
+                Upload Image
+                <input
+                  type="file"
+                  id='image-upload'
+                  name="image-upload"
+                  label="image-upload"
+                  multiple
+                  accept="image/*"
+                  hidden
+                />
+              </Button>
               <Button
                 type="submit"
                 fullWidth

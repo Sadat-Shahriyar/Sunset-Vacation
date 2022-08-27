@@ -208,8 +208,9 @@ export default function AdminDashboard(props) {
     }
 
     function showProperty(property) {
-        props.setSelectedPropertyForDetails(property.propertyID);
-        navigate('/booking/property/details');
+        // props.setSelectedPropertyForDetails(property.propertyID);
+        // navigate('/booking/property/details');
+        navigate(`/hosting/propertydetails/${property.propertyID}`);
     }
     function editStatus(property) {
         setPropertyId(property.propertyID);
@@ -487,7 +488,7 @@ export default function AdminDashboard(props) {
                     </Typography>
                     {/* <Button disabled></Button> */}
 
-                   <Button variant='text' color='inherit' sx={{fontFamily: 'Lucida Handwriting',ml:10,fontSize:20}} onClick={(event)=>{navigate('/')}} >Home</Button>
+                   {/* <Button variant='text' color='inherit' sx={{fontFamily: 'Lucida Handwriting',ml:10,fontSize:20}} onClick={(event)=>{navigate('/')}} >Home</Button> */}
                 </Toolbar>
             </AppBar>
             {showAdmin(props)}

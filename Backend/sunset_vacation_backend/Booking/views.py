@@ -1,3 +1,4 @@
+from asyncio import proactor_events
 from django.shortcuts import render
 from .models import Booking, Payment
 from rest_framework.response import Response
@@ -7,6 +8,7 @@ from Hosting.models import *
 from Hosting.serializer import *
 from Authentication.models import *
 from Authentication.serializers import *
+from .serializers import *
 import stripe
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
@@ -19,7 +21,11 @@ stripe.api_key = "sk_test_51LVZhXCVpdZK1diloh5K4b3nAIcYc1QLkR0TFOabMF52sO1TNOoKS
 def getPropertyDetails(request, property_id):
     property = Property.objects.get(propertyID=property_id)
     propertySerializer = PropertySerializer(property)
-    propertyInfo = propertySerializer.data;
+    propertyInfo = propertySerializer.data
+
+    propertyInfo['latitude'] = float(propertyInfo['latitude'])
+    propertyInfo['longitude'] = float(propertyInfo['longitude'])
+
     ownername = User.objects.filter(id=propertyInfo["owner_id"]).values("name")
     propertyInfo["ownerName"] = ownername[0]["name"]
     dos = House_Rules.objects.filter(propertyID=property).filter(do_dont_flag=1).values_list('rule')
@@ -223,13 +229,16 @@ def reserve(request):
 
     # print(intent)
     # print(intent.charges.data[0].receipt_url)
+    # print(intent.charges.data[0].payment_intent)
 
     propertyToBeBooked = Property.objects.get(propertyID= data['propertyID'])
 
     newPayment = Payment.objects.create(
         amount=data['amount'],
         method='card',
-        receipt_url=intent.charges.data[0].receipt_url
+        discount=data['discount'],
+        receipt_url=intent.charges.data[0].receipt_url,
+        payment_intent=intent.charges.data[0].payment_intent
     )
 
     checkInDate =  datetime.strptime(data['checkInDate'],'%Y-%m-%dT%H:%M:%SZ')
@@ -248,3 +257,338 @@ def reserve(request):
         data={'success':True,'receipt':intent.charges.data[0].receipt_url, 'data': {
         'customer_id': customer.id, 'extra_msg': extra_msg}
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getBookingList(request):
+    print(request.user)
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+
+    AllBookings = Booking.objects.filter(user_id_id = user)
+
+    properties = AllBookings.values_list('property_id').distinct()
+
+    allBookingSerializer = BookingSerializer(AllBookings, many=True)
+
+    sortedBookings=sorted(allBookingSerializer.data, key=lambda d:d['checkin_date'],reverse=True)
+
+    # print(AllBookings)
+    # print(sortedBookings)
+    # print(properties)
+
+    uniquePropertyList = []
+
+    for property in properties:
+        prop = Property.objects.get(propertyID=property[0])
+        propSerializer = PropertySerializer(prop)
+        uniquePropertyList.append({"id": property[0], "title": propSerializer.data['title']})
+
+    
+    for booking in sortedBookings:
+        payment = booking['payment_id']
+        paymentInfo = Payment.objects.get(payment_id=payment)
+        paymentSerializer = PaymentSerializer(paymentInfo)
+        booking['payment'] = paymentSerializer.data
+
+        property_id = booking['property_id']
+        prop = Property.objects.get(propertyID=property_id)
+        propSerializer = PropertySerializer(prop)
+        booking['property'] = propSerializer.data
+        # print(payment, property_id)
+
+    return Response({"bookings": sortedBookings, 'properties': uniquePropertyList}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getbookinglistusingpropertyid(request, property_id):
+    print(request.user)
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+
+    property = Property.objects.get(propertyID = property_id)
+
+    AllBookings = Booking.objects.filter(user_id_id = user)
+
+    AllBookingsWithPropertyID = AllBookings.filter(property_id=property)
+
+    properties = AllBookings.values_list('property_id').distinct()
+
+    allBookingSerializer = BookingSerializer(AllBookingsWithPropertyID, many=True)
+
+    sortedBookings=sorted(allBookingSerializer.data, key=lambda d:d['checkin_date'],reverse=True)
+
+    # print(AllBookings)
+    # print(sortedBookings)
+    # print(properties)
+
+    uniquePropertyList = []
+
+    for property in properties:
+        prop = Property.objects.get(propertyID=property[0])
+        propSerializer = PropertySerializer(prop)
+        uniquePropertyList.append({"id": property[0], "title": propSerializer.data['title']})
+
+    
+    for booking in sortedBookings:
+        payment = booking['payment_id']
+        paymentInfo = Payment.objects.get(payment_id=payment)
+        paymentSerializer = PaymentSerializer(paymentInfo)
+        booking['payment'] = paymentSerializer.data
+
+        property_id = booking['property_id']
+        prop = Property.objects.get(propertyID=property_id)
+        propSerializer = PropertySerializer(prop)
+        booking['property'] = propSerializer.data
+        # print(payment, property_id)
+
+    return Response({"bookings": sortedBookings, 'properties': uniquePropertyList}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getbookingdetails(request, booking_id):
+
+    bookingInfo = Booking.objects.get(booking_id=booking_id)
+    bookingInforSerializer = BookingSerializer(bookingInfo)
+    bookingData = bookingInforSerializer.data
+
+    paymentInfo = Payment.objects.get(payment_id=bookingData['payment_id'])
+    paymentInfoSerializer = PaymentSerializer(paymentInfo)
+    paymentdata = paymentInfoSerializer.data
+
+    propertyInfo = Property.objects.get(propertyID=bookingData['property_id'])
+    propertyInfoSerializer = PropertySerializer(propertyInfo)
+    propertyData = propertyInfoSerializer.data
+
+    ownerInfo = User.objects.get(id=propertyData['owner_id'])
+    ownerInfoSerializer = UserSerializer(ownerInfo)
+    ownerData = ownerInfoSerializer.data
+
+    userInfo = User.objects.get(id=bookingData['user_id'])
+    userInfoSerializer = UserSerializer(userInfo)
+    userData = userInfoSerializer.data
+
+    # print(bookingData, propertyData, paymentdata, userData)
+
+    return Response({"BookingData":bookingData, "PaymentData":paymentdata, "PropertyData":propertyData, "UserData":userData, "OwnerData":ownerData}, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def cancelReservation(request, booking_id):
+    bookingInfo = Booking.objects.get(booking_id=booking_id)
+    bookingInfoSerializer = BookingSerializer(bookingInfo)
+    bookingData = bookingInfoSerializer.data
+
+    bookingInfo.cancelled = True
+    bookingInfo.save()
+    
+    propertyInfo = Property.objects.get(propertyID=bookingData['property_id'])
+    propertyInfoSerializer = PropertySerializer(propertyInfo)
+    propertyData = propertyInfoSerializer.data
+
+    paymentInfo = Payment.objects.get(payment_id = bookingData['payment_id'])
+    paymentInfoSerializer = PaymentSerializer(paymentInfo)
+    paymentData = paymentInfoSerializer.data
+
+    paymentIntent = paymentData['payment_intent']
+    paymentAmount = paymentData['amount']
+
+    maxDaysRefund = propertyData['maxDaysRefund']
+
+    today = datetime.now() 
+    checkInDate = bookingData['checkin_date']
+    checkInDate = datetime.strptime(checkInDate,'%Y-%m-%dT%H:%M:%SZ')
+    print((checkInDate - today).days)
+
+    if (checkInDate - today).days > int(maxDaysRefund):
+        refund = stripe.Refund.create(payment_intent=paymentIntent, amount=int(paymentAmount*50)) #payment amount is considered in cents in stripe. thats why paymentAmount*100*0.5 = paymentAmount*50
+        print(refund)
+        # print("hello")
+        message = "You got 50% refund"
+    elif (checkInDate - today).days < 0:
+        message = f"You can't cancel this reservation. Your check in date is already {-1*((checkInDate - today).days)} days over"
+    else:
+        message = "You didn't get any refund"
+
+    return Response({"message": message})
+
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getPreviousReservations(request):
+    print(request.user)
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+
+    propertyInfo = Property.objects.filter(owner_id_id = user)
+    propertyData = PropertySerializer(propertyInfo, many=True).data
+
+    allBooking = []
+    # today = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d').timestamp()
+
+    today = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+
+    for property in propertyData:
+        bookingInfo = Booking.objects.filter(property_id = property['propertyID']).filter(Q(checkout_date__lt=today))
+        bookingData = BookingSerializer(bookingInfo, many=True).data
+        allBooking.extend(bookingData)
+
+    for booking in allBooking:
+        propertyInfo = Property.objects.get(propertyID=booking['property_id'])
+        properttyInfoSerializer = PropertySerializer(propertyInfo)
+        propertyData = properttyInfoSerializer.data
+        booking['property'] = propertyData
+
+        paymentInfo = Payment.objects.get(payment_id = booking['payment_id'])
+        paymentSerializer = PaymentSerializer(paymentInfo)
+        paymentData = paymentSerializer.data
+        booking['payment'] = paymentData
+
+        userInfo = User.objects.get(id=booking['user_id'])
+        userSerializer = UserSerializer(userInfo)
+        userData = userSerializer.data
+        booking['userData'] = userData
+        
+
+    # print(allBooking)
+
+    return Response({"allbooking": allBooking})
+
+
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getCurrentReservations(request):
+    print(request.user)
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+
+    propertyInfo = Property.objects.filter(owner_id_id = user)
+    propertyData = PropertySerializer(propertyInfo, many=True).data
+
+    allBooking = []
+    # today = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d').timestamp()
+
+    today = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+
+    for property in propertyData:
+        bookingInfo = Booking.objects.filter(property_id = property['propertyID']).filter(Q(checkin_date__lte=today) & Q(checkout_date__gte=today))
+        bookingData = BookingSerializer(bookingInfo, many=True).data
+        allBooking.extend(bookingData)
+
+    for booking in allBooking:
+        propertyInfo = Property.objects.get(propertyID=booking['property_id'])
+        properttyInfoSerializer = PropertySerializer(propertyInfo)
+        propertyData = properttyInfoSerializer.data
+        booking['property'] = propertyData
+
+        paymentInfo = Payment.objects.get(payment_id = booking['payment_id'])
+        paymentSerializer = PaymentSerializer(paymentInfo)
+        paymentData = paymentSerializer.data
+        booking['payment'] = paymentData
+
+        userInfo = User.objects.get(id=booking['user_id'])
+        userSerializer = UserSerializer(userInfo)
+        userData = userSerializer.data
+        booking['userData'] = userData
+        
+
+    # print(allBooking)
+
+    return Response({"allbooking": allBooking})
+
+
+   
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getNextSevenDaysReservations(request):
+    print(request.user)
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+
+    propertyInfo = Property.objects.filter(owner_id_id = user)
+    propertyData = PropertySerializer(propertyInfo, many=True).data
+
+    allBooking = []
+    # today = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d').timestamp()
+
+    today = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+
+    for property in propertyData:
+        bookingInfo = Booking.objects.filter(property_id = property['propertyID']).filter(Q(checkin_date__gte=today) & Q(checkin_date__lte=today+timedelta(days=7)))
+        bookingData = BookingSerializer(bookingInfo, many=True).data
+        allBooking.extend(bookingData)
+
+    for booking in allBooking:
+        propertyInfo = Property.objects.get(propertyID=booking['property_id'])
+        properttyInfoSerializer = PropertySerializer(propertyInfo)
+        propertyData = properttyInfoSerializer.data
+        booking['property'] = propertyData
+
+        paymentInfo = Payment.objects.get(payment_id = booking['payment_id'])
+        paymentSerializer = PaymentSerializer(paymentInfo)
+        paymentData = paymentSerializer.data
+        booking['payment'] = paymentData
+
+        userInfo = User.objects.get(id=booking['user_id'])
+        userSerializer = UserSerializer(userInfo)
+        userData = userSerializer.data
+        booking['userData'] = userData
+        
+
+    # print(allBooking)
+
+    return Response({"allbooking": allBooking})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getAllFutureReservations(request):
+    print(request.user)
+    user = UserSerializer(request.user).data
+    user = User.objects.get(id=user['id'])
+
+    propertyInfo = Property.objects.filter(owner_id_id = user)
+    propertyData = PropertySerializer(propertyInfo, many=True).data
+
+    allBooking = []
+    # today = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d').timestamp()
+
+    today = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+
+    for property in propertyData:
+        bookingInfo = Booking.objects.filter(property_id = property['propertyID']).filter(Q(checkin_date__gte=today))
+        bookingData = BookingSerializer(bookingInfo, many=True).data
+        allBooking.extend(bookingData)
+
+    for booking in allBooking:
+        propertyInfo = Property.objects.get(propertyID=booking['property_id'])
+        properttyInfoSerializer = PropertySerializer(propertyInfo)
+        propertyData = properttyInfoSerializer.data
+        booking['property'] = propertyData
+
+        paymentInfo = Payment.objects.get(payment_id = booking['payment_id'])
+        paymentSerializer = PaymentSerializer(paymentInfo)
+        paymentData = paymentSerializer.data
+        booking['payment'] = paymentData
+
+        userInfo = User.objects.get(id=booking['user_id'])
+        userSerializer = UserSerializer(userInfo)
+        userData = userSerializer.data
+        booking['userData'] = userData
+        
+
+    # print(allBooking)
+
+    return Response({"allbooking": allBooking})

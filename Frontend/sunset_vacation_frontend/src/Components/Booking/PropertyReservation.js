@@ -44,7 +44,9 @@ export default function PropertyReservation(props){
 
     return(
         <Box sx={{ flexGrow: 1 }}>
-            <ShowNavBar />
+            <ShowNavBar 
+                isLoggedin={props.isLoggedin}
+            />
             <Elements stripe={stripePromise}>
                 <CheckoutForm 
                     token = {props.token}
