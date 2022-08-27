@@ -93,7 +93,7 @@ export default function ShowOffer(props) {
                     </TableCell>
                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{offer.startDate}</TableCell>
                     <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{offer.endDate}</TableCell>
-                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{offer.amount}</TableCell>
+                    <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right">{offer.amount}%</TableCell>
 
                     <TableCell><Tooltip title="Delete">
                         <IconButton value={offer.offer_id} onClick={()=>DeleteOffer(offer)} >

@@ -433,7 +433,7 @@ export default function NavBar(props) {
                         {renderNMenu}
                         <IconButton aria-label={notificationsLabel(msgCount)}>
                             <Badge badgeContent={msgCount} sx={{ color: 'black' }} max={9}>
-                                <MailIcon />
+                                <MailIcon onClick={()=>{navigate('/inbox')}}/>
                             </Badge>
                         </IconButton>
                     </Box>

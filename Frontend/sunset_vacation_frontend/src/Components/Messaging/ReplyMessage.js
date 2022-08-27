@@ -8,7 +8,7 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
-
+import StaticNavBar from '../Homepage/StaticNavBar';
 
 export default function ReplyMessage(props) {
     const [message, setMessage] = React.useState("");
@@ -96,7 +96,7 @@ export default function ReplyMessage(props) {
                 }
             })
             setReplyMessage("");
-            fetchMessages()
+            fetchMessages();
         } catch (error) {
             alert(error.message);
         }
@@ -107,6 +107,11 @@ export default function ReplyMessage(props) {
             <InboxNavbar reply={props.reply} setReply={(val) => {
                 props.setReply(val)
             }}/>
+              {/* <StaticNavBar
+      
+      isLoggedin={props.isLoggedin}
+      token={props.token}
+      /> */}
             <Grid container sx={{maxWidth: 1400, ml: 10, mt: 5}}>
                 <Grid item xs={2}>
                 </Grid>

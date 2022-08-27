@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import { Button, Grid } from '@mui/material';
 import ReplyMessage from './ReplyMessage';
 import {fontWeight} from "@mui/system";
+import StaticNavBar from '../Homepage/StaticNavBar';
 function ViewMessages(props){
 
     // const [reply, setReply] = React.useState(false);
@@ -110,7 +111,12 @@ export default function Inbox(props){
     else{
         return(
             <div>
-                <InboxNavbar reply={props.reply} setReply = {(val) => {props.setReply(val)}}/>
+                {/* <InboxNavbar reply={props.reply} setReply = {(val) => {props.setReply(val)}}/> */}
+                <StaticNavBar
+      
+      isLoggedin={props.isLoggedin}
+      token={props.token}
+      />
                 <ViewMessages
                     messages = {messages}
                     token = {props.token}
