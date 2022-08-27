@@ -57,6 +57,7 @@ import EditPost from './Components/QAForum/EditPost';
 import ViewAPost from './Components/QAForum/ViewAPost';
 import ShowUserGiftCard from './Components/Homepage/ShowUserGiftCard';
 import AdminViewPropertyDetails from './Components/Admin/AdminViewPropertyDetails';
+import NotificationMessage from './Components/Hosting/NewProperty/NotificationMessage';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -177,8 +178,8 @@ function App() {
         <Route path='/admin' element={<AdminControl isLoggedin = {loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}}  setToken = {(t) => {setToken(t)}}  setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/notification' element={<Notification token={token} setNotification={(notification)=>setNotification(notification)}/>}/>
         <Route path='/showNotification' element={<ShowNotification notification={notification} setNotification={(notification)=>setNotification(notification)} token={token}/>}/>
-        <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
-        <Route path='/showPropertyDetails' element={<ShowPropertyDetails token = {token} property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
+        <Route path='/showProperties' element={<ShowPropertyList  setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
+        <Route path='/showPropertyDetails' element={<ShowPropertyDetails isLoggedin={loggedIn} token = {token} property={property}  setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/showPropertyDetails/location' element={<ShowLocation property={property}/>}/>
         <Route path='/showPropertyDetails/description' element={<ShowDescription property={property}/>}/>
         <Route path='/showPropertyDetails/faq' element={<ShowFaq property={property} setflags={(val)=>{setFlags(val)}}  token={token}/>}/>
@@ -320,6 +321,7 @@ function App() {
         <Route path='/forumMyhome' element={<MyPost token={token} setSelectedQuestionForEdit={(val)=>{setSelectedQuestionForEdit(val)}} setflags={(val)=>{setFlags(val)}}   setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} />}/>
         <Route path='/homepagesearchresult' element={<HomePageSearchResult isLoggedin={loggedIn} setHomepagesearch={(val)=>{setHomepagesearch(val)}} setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setShowMore={(val)=>{setShowMore(val)}} searchresults={searchresults} setSearchResults={(val)=>{setSearchResults(val)}} userStaticSearch={userStaticSearch} selectedFac={selectedFac} display={display} setDisplay={(val)=>{setDisplay(val)}}  setflags={(val)=>{setFlags(val)}} setStaticUserSearch={(v)=>{setStaticUserSearch(v)}} setSelectedFac={(f)=>{setSelectedFac(f)}} homepagesearch={homepagesearch}/>}/>
         <Route path='/viewpost/:id' element={<ViewAPost token={token} setSelectedQuestionForEdit={(val)=>{setSelectedQuestionForEdit(val)}} setflags={(val)=>{setFlags(val)}}   setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} />}/>
+        <Route path='/showNotificationMessage/:id' element={<NotificationMessage token={token} isLoggedin={loggedIn} notification={notification}/>}/>
 
         <Route 
           path='/inbox' 

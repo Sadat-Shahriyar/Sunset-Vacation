@@ -115,15 +115,22 @@ def approveProperty(request, propertyId):
     try:
         # change delete this portion
         property = Property.objects.get(propertyID=propertyId)
-        property.approved = True
+        property.approved=True
         property.save()
         print(request.data)
         user = User.objects.get(id=property.owner_id_id)
         notification = Notification.objects.create(
             user_id=user,
             title="Published property with title- " + property.title,
-            text=request.data["message"]
+            text=request.data["message"],
+            link=''
         )
+        
+        n=NotificationSerializer(notification).data
+        n['link']='/showNotificationMessage/'+str(n['id'])
+        serializer=  NotificationSerializer(notification,n)
+        if serializer.is_valid():
+            serializer.save()
         property = Property.objects.filter(published=True).filter(approved=False)
         propertySerializer = PropertySerializer(property, many=True)
         # change add code for fetching booking here by user
@@ -136,16 +143,24 @@ def approveProperty(request, propertyId):
 def rejectProperty(request, propertyId):
     try:
         # change delete this portion
+        
         property = Property.objects.get(propertyID=propertyId)
         property.published = False
         property.save()
+           
         print(request.data)
         user = User.objects.get(id=property.owner_id_id)
         notification = Notification.objects.create(
             user_id=user,
-            title=" Changes needed for property title- " + property.title,
-            text=request.data["message"]
+            title="Changes needed for property title- " + property.title,
+            text=request.data["message"],
+            link=''
         )
+        n=NotificationSerializer(notification).data
+        n['link']='/showNotificationMessage/'+str(n['id'])
+        serializer=  NotificationSerializer(notification,n)
+        if serializer.is_valid():
+            serializer.save()
         property = Property.objects.filter(published=True).filter(approved=False)
         propertySerializer = PropertySerializer(property, many=True)
         # change add code for fetching booking here by user

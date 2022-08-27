@@ -28,7 +28,7 @@ function MainView(props){
                 let body = {receiver_id:props.propertyDetails.property.owner_id, 
                     message: props.message}
 
-                let messageResponse = await axios_api.post('message/sendmessage/', body,{
+                let messageResponse = await axios_api.post('message/sendMessage/', body,{
                     headers: {
                         "Content-Type": "application/json",
                         'Authorization' : `Bearer ${props.token}`

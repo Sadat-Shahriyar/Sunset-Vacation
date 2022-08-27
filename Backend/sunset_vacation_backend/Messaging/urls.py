@@ -13,6 +13,7 @@ urlpatterns = [
     path('getUserInfo/',views.getUserInfo),
     path('getGiftcards/',views.getGiftcards),
     path('deleteNotification/<int:id>/',views.deleteNotification),
-    path('markNotification/<int:id>/',views.markNotification)
-    
+    path('markNotification/<int:id>/',views.markNotification),
+    path('getANotification/<int:id>/',views.getANotification),
+    path('rePublish/<int:id>/',views. ResendPropertyForApproval),
 ]

@@ -42,6 +42,7 @@ class PropertySerializer(serializers.ModelSerializer):
     published=serializers.BooleanField(required=False)
     owner_id=serializers.PrimaryKeyRelatedField(read_only=True)
     approved=serializers.BooleanField(required=False)
+    
 
     def create(self,validate_data):
         return Property.objects.create(
@@ -56,6 +57,7 @@ class PropertySerializer(serializers.ModelSerializer):
             latitude=validate_data.get('latitude'),
             longitude=validate_data.get('longitude'),
             address=validate_data.get('address'),
+
             # checkInTime=validate_data.get('checkInTime'),
             # checkOutTime=validate_data.get('checkOutTime'),
         )

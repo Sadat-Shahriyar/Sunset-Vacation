@@ -122,7 +122,6 @@ def getMessages(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def senMessage(request):
-
     data = request.data
     sender = UserSerializer(request.user).data
     sender = User.objects.get(id=sender['id'])
@@ -139,6 +138,7 @@ def senMessage(request):
     )
     print(message)
     return Response({'success':True},status=status.HTTP_200_OK)
+
 
 # # @api_view(['GET'])
 # # @permission_classes([IsAuthenticated])
@@ -243,3 +243,22 @@ def markNotification(request,id):
     notification.marked=True
     notification.save()
     return Response({'msg':'updated successfully'},status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getANotification(reuqest,id):
+    notification=Notification.objects.get(id=id)        
+    n=NotificationSerializer(notification).data
+   
+    return Response({'notification': n},status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def ResendPropertyForApproval(request,id):
+    property=Property.objects.get(propertyID=id)
+    p = PropertySerializer(property).data
+    p['published']=True
+    serializer = PropertySerializer (property,p)
+    if serializer.is_valid():
+        serializer.save()
+    
+    return Response({'msg':'sent for admin approval'})
