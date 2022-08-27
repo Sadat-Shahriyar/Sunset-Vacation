@@ -51,14 +51,14 @@ def getMessagesById(request,userId):
 def getMessages(request):
     try:
         print('inside get message ----------------------------')
-        print(request.user)
+        # print(request.user)
         user = UserSerializer(request.user).data
         userName = user["name"]
         # messages = Messaging.objects.filter(Q(sender_id_id=user['id'])|Q(receiver_id_id=user['id']))
         uniqueSender = Messaging.objects.filter(~Q(sender_id_id=user['id'])).filter(Q(receiver_id_id=user['id'])).values("sender_id_id").distinct()
-        print(uniqueSender)
+        # print(uniqueSender)
         uniqueReceiver = Messaging.objects.filter(~Q(receiver_id_id=user['id'])).filter(Q(sender_id_id=user['id'])).values("receiver_id_id").distinct()
-        print(uniqueReceiver)
+        # print(uniqueReceiver)
         # messagesSerializer = MessagingSerializer(messages, many=True)
         uniqueUser = []
         for i in uniqueSender:
@@ -73,14 +73,14 @@ def getMessages(request):
             filteredUserSerializer = UserSerializer(filteredUser).data
             uniqueUserName.append(filteredUserSerializer['name'])
         lastMessageArray = []
-        print('before final for loop ----------------------------')
-        print('len unique user ----------------------------'+str(len(uniqueUser)))
+        # print('before final for loop ----------------------------')
+        # print('len unique user ----------------------------'+str(len(uniqueUser)))
         for i in range(len(uniqueUser)):
             lastMessage = Messaging.objects.filter((Q(sender_id_id=uniqueUser[i]) & Q(receiver_id_id=user["id"])) | (Q(receiver_id_id=uniqueUser[i]) & Q(sender_id_id=user["id"]))).order_by("-time")
             lastMessageSerializer = MessagingSerializer(lastMessage[0]).data
-            print(lastMessageSerializer)
-            print(lastMessageSerializer["sender_id"])
-            print(lastMessageSerializer["receiver_id"])
+            # print(lastMessageSerializer)
+            # print(lastMessageSerializer["sender_id"])
+            # print(lastMessageSerializer["receiver_id"])
             if lastMessageSerializer["sender_id"] == uniqueUser[i]:
                 lastMessageSerializer['name'] = uniqueUserName[i]
                 lastMessageSerializer['sender_name'] = ""
@@ -90,24 +90,13 @@ def getMessages(request):
             lastMessageSerializer["orgMessage"] = lastMessageSerializer["message"]
             if len(lastMessageSerializer["message"]) > 60:
                 lastMessageSerializer["message"] = lastMessageSerializer["message"][:60]+"..."
-            print('before  print ----------------------------')
+            # print('before  print ----------------------------')
             print(lastMessageSerializer)
-            print('after  print ----------------------------')
+            # print('after  print ----------------------------')
             lastMessageArray.append(lastMessageSerializer)
-            print('after  append i ----------------------------'+str(i))
-        print('after final for loop ----------------------------')
+        #     print('after  append i ----------------------------'+str(i))
+        # print('after final for loop ----------------------------')
         messages = sorted(lastMessageArray, key=lambda d: d['time'], reverse=True)
-        # messagesWithName = []
-        # print("hi0")
-        # for i in range(len(uniqueUser)):
-        #     print("hello")
-        #     for message in messages:
-        #         print("hi1")
-        #         print(message)
-        #         if message["sender_id"] == uniqueUser[i]:
-        #             print("hi2")
-        #             message['sender_name'] = uniqueUserName[i]
-        #             print("hi3")
         return Response({"messages": messages, "userName":userName}, status=status.HTTP_200_OK)
     except Exception:
         return Response({"error": "404 not found"}, status=status.HTTP_404_NOT_FOUND)
