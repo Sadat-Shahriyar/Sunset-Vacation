@@ -21,7 +21,11 @@ stripe.api_key = "sk_test_51LVZhXCVpdZK1diloh5K4b3nAIcYc1QLkR0TFOabMF52sO1TNOoKS
 def getPropertyDetails(request, property_id):
     property = Property.objects.get(propertyID=property_id)
     propertySerializer = PropertySerializer(property)
-    propertyInfo = propertySerializer.data;
+    propertyInfo = propertySerializer.data
+
+    propertyInfo['latitude'] = float(propertyInfo['latitude'])
+    propertyInfo['longitude'] = float(propertyInfo['longitude'])
+
     ownername = User.objects.filter(id=propertyInfo["owner_id"]).values("name")
     propertyInfo["ownerName"] = ownername[0]["name"]
     dos = House_Rules.objects.filter(propertyID=property).filter(do_dont_flag=1).values_list('rule')

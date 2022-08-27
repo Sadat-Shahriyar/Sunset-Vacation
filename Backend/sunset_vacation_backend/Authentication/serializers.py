@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
             password=self.validated_data.get('password'),
             address=self.validated_data.get('address'),
             country=self.validated_data.get('country'),
-            city=self.validated_data.get('city')
+            city=self.validated_data.get('city'),
         )
 
         user.save()

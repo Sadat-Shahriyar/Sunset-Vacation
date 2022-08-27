@@ -65,9 +65,6 @@ const StyledMenu = styled((props) => (
 export default function ManagementDashboard(props) {
     const navigate = useNavigate();
 
-    const [bookingData, setBookingData] = React.useState([]);
-
-
     const useReservation = (event) => {
         navigate("/reservation");
     }
@@ -192,11 +189,7 @@ export default function ManagementDashboard(props) {
                         Home</Button>
                 </Toolbar>
             </AppBar>
-            <Grid container sx={{mt:8, ml:20, maxWidth:1300, mb:20}}>
-                <Grid item xs={12}>
-                    <Content setBookingData={(val) => {setBookingData(val)}} bookingData={bookingData} token={props.token}/>
-                </Grid>
-            </Grid>
+            
         </Box>
     );
 

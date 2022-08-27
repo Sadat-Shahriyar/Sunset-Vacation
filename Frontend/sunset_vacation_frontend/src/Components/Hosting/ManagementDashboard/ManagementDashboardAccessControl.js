@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { axios_api } from '../../../App';
 import ManagementDashboard from './ManagementDashboard';
+import ManagementDashboardView from './ManagementDashboardView';
 
 export default function ManagementDashboardAccessControl(props){
     let navigate = useNavigate();
@@ -40,6 +41,6 @@ export default function ManagementDashboardAccessControl(props){
 
     },[navigate, props])
    
-    return (<ManagementDashboard isLoggedin={props.isLoggedin} token={props.token}/>);
+    return (<ManagementDashboardView isLoggedin={props.isLoggedin} token={props.token}/>);
     
 }

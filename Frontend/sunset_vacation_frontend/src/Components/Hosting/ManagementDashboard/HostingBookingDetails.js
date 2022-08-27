@@ -74,8 +74,7 @@ export default function HostingBookingDetails(props){
     }
 
     const handleViewPropertyDetails = (val) => {
-        props.setSelectedPropertyForDetails(val);
-        navigate('/booking/property/details');
+        navigate(`/hosting/propertydetails/${val}`);
     }
 
     const handleCancelReservation = async(booking_id) => {

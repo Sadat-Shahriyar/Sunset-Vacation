@@ -24,7 +24,7 @@ import OfferConfirmation from './Components/Hosting/Offer&Giftcard/OfferConfirma
 import ShowOffer from './Components/Hosting/Offer&Giftcard/ShowOffer';
 import Notification from "./Components/Hosting/ManagementDashboard/Notifications";
 import ShowNotification from "./Components/Hosting/ManagementDashboard/ShowNotification";
-import AdminDashboard from "./Components/Hosting/ManagementDashboard/AdminDashboard";
+import AdminDashboard from "./Components/Admin/AdminDashboard";
 import SearchPage from './Components/Homepage/SearchPage';
 import SearchResult from './Components/Homepage/SearchResult';
 import UserStaticSearch from './Components/Homepage/UserStaticSearch';
@@ -48,6 +48,8 @@ import Profile from './Components/Profile/Profile';
 import MyBookings from './Components/Profile/MyBookings/MyBookings';
 import BookingDetails from './Components/Profile/MyBookings/BookingDetails';
 import HostingBookingDetails from './Components/Hosting/ManagementDashboard/HostingBookingDetails';
+import SeePropertyDetails from './Components/Hosting/ManagementDashboard/SeePropertyDetails';
+import AdminControl from './Components/Admin/AdminControl';
 
 export const axios_api = axios.create({
   baseURL: BASE_URL
@@ -164,7 +166,7 @@ function App() {
         <Route path='/signup' element={<Signup loginRedirection={loginRedirection} isLoggedin={loggedIn} setLoggedIn = {(value)=>{setLoggedIn(value)}} setUser = {(value) => {setUser(value)}} setToken = {(t) => {setToken(t)}}/>} />
         <Route path='/hosting' element={<ManagementDashboardAccessControl token = {token} isLoggedin={loggedIn} setLoginRedirection={(val) => {setLoginRedirection(val)}} />} />
         <Route path='/hostproperty' element={<HostNewProperty isLoggedin = {loggedIn} token = {token}/>} />
-        <Route path='/admin' element={<AdminDashboard  setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setProperty={(p)=>{setProperty(p)}}/>}/>
+        <Route path='/admin' element={<AdminControl setLoggedIn = {(value)=>{setLoggedIn(value)}}  setToken = {(t) => {setToken(t)}}  setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} setProperty={(p)=>{setProperty(p)}}/>}/>
         <Route path='/notification' element={<Notification token={token} setNotification={(notification)=>setNotification(notification)}/>}/>
         <Route path='/showNotification' element={<ShowNotification notification={notification} setNotification={(notification)=>setNotification(notification)} token={token}/>}/>
         <Route path='/showProperties' element={<ShowPropertyList setProperty={(p)=>{setProperty(p)}} setflags={(val)=>{setFlags(val)}}  token = {token}/>} />
@@ -352,7 +354,16 @@ function App() {
             <HostingBookingDetails 
               token = {token}
               isLoggedin={loggedIn}
-              setSelectedPropertyForDetails={(val)=>{setSelectedPropertyForDetails(val)}} 
+            />
+          }
+        />
+
+        <Route 
+          path='/hosting/propertydetails/:property_id' 
+          element={
+            <SeePropertyDetails 
+              token = {token}
+              isLoggedin={loggedIn}
             />
           }
         />
