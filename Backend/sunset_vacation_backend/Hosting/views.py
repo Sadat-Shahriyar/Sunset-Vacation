@@ -1482,18 +1482,19 @@ def getHomepagesearchResult(request):
                 property['rating']=propertyRating[idx]['rating']
                 if not property in propertyList:
                     propertyList.append(property)
-    available=propertyList
-    # available=[]
-    # if checkInDate != None and checkOutDate != None:      
-    #     for property in propertyList:
-    #         booking = Booking.objects.filter(property_id=property['propertyID']).filter(Q(checkin_date__lte=checkInDate) & Q(checkout_date__gte=checkInDate) | 
-    #                                                                             Q(checkin_date__gte=checkInDate) & Q(checkout_date__lte=checkOutDate)|
-    #                                                                             Q(checkin_date__lte=checkOutDate) & Q(checkout_date__gte=checkOutDate)|
-    #                                                                             Q(checkin_date__lte=checkInDate) & Q(checkout_date__gte=checkOutDate)).values()
+    # available=propertyList
+    available=[]
+    if checkInDate != None and checkOutDate != None:      
+        for property in propertyList:
+            booking = Booking.objects.filter(property_id=property['propertyID']).filter(Q(checkin_date__lte=checkInDate) & Q(checkout_date__gte=checkInDate) | 
+                                                                                Q(checkin_date__gte=checkInDate) & Q(checkout_date__lte=checkOutDate)|
+                                                                                Q(checkin_date__lte=checkOutDate) & Q(checkout_date__gte=checkOutDate)|
+                                                                                Q(checkin_date__lte=checkInDate) & Q(checkout_date__gte=checkOutDate)).values()
 
-    #         # booking=BookingSerializer(booking,many=True).data
-    #         if len(booking) == 0: 
-    #             available.append(property)
+            booking=BookingSerializer(booking,many=True).data
+            # print(booking)
+            if len(booking) == 0: 
+                available.append(property)
 
     return Response({"propertyList":available},status=status.HTTP_200_OK)
 

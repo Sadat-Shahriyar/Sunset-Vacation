@@ -188,6 +188,8 @@ def getNotification(request):
             read.append(n)
         else:
             new.append(n)
+    read=sorted(read, key=lambda d: d['time'], reverse=True)
+    new=sorted(new, key=lambda d: d['time'], reverse=True)
     # print(new)
     # print(read)
     dict={'new':new,'read':read}

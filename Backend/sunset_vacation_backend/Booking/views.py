@@ -266,6 +266,7 @@ def reserve(request):
 
     propertySerializer = PropertySerializer(propertyToBeBooked).data
     propertyHost = User.objects.get(id=propertySerializer['owner_id'])
+    
     message = userName + " has booked property "
     link = '/hosting/booking/details/' + str(newBookingSerializer['booking_id']) 
 
@@ -403,6 +404,10 @@ def getbookingdetails(request, booking_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def cancelReservation(request, booking_id):
+
+    user = UserSerializer(request.user).data
+    userName = user['name']
+   
     bookingInfo = Booking.objects.get(booking_id=booking_id)
     bookingInfoSerializer = BookingSerializer(bookingInfo)
     bookingData = bookingInfoSerializer.data
@@ -413,6 +418,8 @@ def cancelReservation(request, booking_id):
     propertyInfo = Property.objects.get(propertyID=bookingData['property_id'])
     propertyInfoSerializer = PropertySerializer(propertyInfo)
     propertyData = propertyInfoSerializer.data
+
+    owner=User.objects.get(id=propertyData['owner_id'])
 
     paymentInfo = Payment.objects.get(payment_id = bookingData['payment_id'])
     paymentInfoSerializer = PaymentSerializer(paymentInfo)
@@ -437,6 +444,16 @@ def cancelReservation(request, booking_id):
         message = f"You can't cancel this reservation. Your check in date is already {-1*((checkInDate - today).days)} days over"
     else:
         message = "You didn't get any refund"
+    
+    message = userName + " has cancelled booking "
+    link = '/hosting/booking/details/' + str(bookingData['booking_id']) 
+
+    notification = Notification.objects.create(
+        user_id=owner,
+        title=message,
+        link=link,
+        text=""
+    )
 
     return Response({"message": message})
 

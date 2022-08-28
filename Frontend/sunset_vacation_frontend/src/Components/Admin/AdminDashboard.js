@@ -405,12 +405,12 @@ export default function AdminDashboard(props) {
                                 </Select>
                             </FormControl>
                             <FormControl sx={{ m: 0.5, minWidth: 230 }}>
-                                <InputLabel id="demo-simple-select-label">Sub-category</InputLabel>
+                                <InputLabel id="demo-simple-select-label" label="subcategory">Sub-category</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     value={subcategory}
-                                    label="Category"
+                                    label="SubCategory"
                                     onChange={changeSubcategory}
                                 >
                                     {subcategories.map((item,index)=>{

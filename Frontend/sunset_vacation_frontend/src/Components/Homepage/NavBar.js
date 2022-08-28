@@ -539,8 +539,9 @@ export default function NavBar(props) {
                             //ml: 15,
 
                         },
-                        ml: "10%",
-                        mr: "10%"
+                        ml:"6%"
+                        // ml: "6%",
+                        // mr: "6%"
                     }}
                 >
                     <ButtonGroup color='inherit' variant='text' size="large" aria-label="large button group">

@@ -241,7 +241,7 @@ function AdminDashBoardNew(props) {
                         Add new facility
                     </Typography>
                     <FormControl sx={{minWidth:300}}>
-                        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                        <InputLabel id="demo-simple-select-label">Category</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
@@ -259,7 +259,7 @@ function AdminDashBoardNew(props) {
                     </FormControl>
 
                     <FormControl sx={{minWidth:300, ml: 5}}>
-                        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                        <InputLabel id="demo-simple-select-label">Subcategory</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"

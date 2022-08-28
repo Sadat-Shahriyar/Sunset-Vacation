@@ -267,12 +267,13 @@ export default function GiftCard (props) {
             }
             var l=discount.find(element => element['type'] === 'same');  
             var dict={'list': guestList,'discount': l.discount };
-            if (guestList.length > 0) {
-                list.push(dict);
-            }else{
-                valid=0;
-                alert('no guest for giftcard')
-            }
+            list.push(dict);
+            // if (guestList.length > 0) {
+            //     list.push(dict);
+            // }else{
+            //     valid=0;
+            //     alert('no guest for giftcard')
+            // }
         }else{
             for (var j=0;j<discount.length;j++){
                 var l=discount[j]
@@ -303,12 +304,13 @@ export default function GiftCard (props) {
                     var dict={'list': guestList,'discount': l.discount };
                     if (guestList.length > 0) list.push(dict);
                 }
-                if (guestList.length > 0) {
-                    list.push(dict);
-                }else{
-                    valid=0;
-                    alert('no guest for giftcard')
-                }
+                list.push(dict);
+                // if (guestList.length > 0) {
+                //     list.push(dict);
+                // }else{
+                //     valid=0;
+                //     alert('no guest for giftcard')
+                // }
             }
         }
         if(valid ===1){
