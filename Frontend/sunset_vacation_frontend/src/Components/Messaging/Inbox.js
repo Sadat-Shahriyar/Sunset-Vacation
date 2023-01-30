@@ -64,7 +64,7 @@ function ViewMessages(props){
             <Grid item xs={12}>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650,  }} aria-label="simple table">
-                        <TableHead sx={{background:'pink', }}>
+                        <TableHead sx={{background:'lightBlue', }}>
                             <TableRow >
                                 <TableCell align="center" colSpan={2} sx={{fontFamily: "Lucida Handwriting"}}>Messages</TableCell>
                             </TableRow>

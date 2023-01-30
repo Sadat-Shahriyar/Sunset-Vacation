@@ -123,7 +123,8 @@ export default function ReplyMessage(props) {
                                 <Card sx={{
                                     minWidth: 900,
                                     mb: 1,
-                                    backgroundColor: message.sender_id === userId ? 'pink' : 'white'
+                                    alignSelf: message.sender_id === userId ? 'right' : 'left',
+                                    backgroundColor: message.sender_id === userId ? 'lightBlue' : 'white'
                                 }} key={index}>
                                     <CardContent>
                                         <Typography sx={{
