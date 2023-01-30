@@ -91,6 +91,7 @@ export default function Profile(props){
         <Box sx={{ flexGrow: 1 }}>
             <ProfileNavbar 
                 isLoggedin={props.isLoggedin}
+                token={props.token}
             />
             <Grid container sx={{mt:10, ml:17, maxWidth:1300, mb:30}}>
                 <Grid item xs={12}>

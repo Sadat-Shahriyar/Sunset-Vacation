@@ -81,18 +81,18 @@ export default function ManagementDashboard(props) {
         navigate("/showOffers");
     }
     const useHostingRedirect = (event) => {
-        navigate("/hosting");
+        navigate("/");
     }
     const useShowProperties = (event) => {
         navigate("/showProperties")
     }
 
     function mouseOver(event) {
-        event.target.style.color = "black";
+        event.target.style.color = "#C4036C";
     }
 
     function mouseOut(event) {
-        event.target.style.color = "white";
+        event.target.style.color = "black";
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -109,7 +109,7 @@ export default function ManagementDashboard(props) {
     }
     return (
         <Box sx={{flexGrow: 1}}>
-            <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
+            <AppBar position="static" color='inherit'>
                 <Toolbar>
 
                     <Typography
@@ -118,17 +118,17 @@ export default function ManagementDashboard(props) {
                         component="div"
                         sx={{display: {xs: 'none', sm: 'block'}}}
                     >
-                        <p style={{"fontFamily": "Jokerman", "fontSize": "25px"}}>ManagementDashboard</p>
+                        <p onClick={() => { { navigate('/hosting'); } }} style={{"fontFamily": "Jokerman", "fontSize": "25px"}}>ManagementDashboard</p>
 
 
                     </Typography>
-                    {/* <Button disabled></Button> */}
-                    <Button color="inherit" onClick={useHostingRedirect}><HomeIcon/></Button>
-
-                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
+                 
+                    <Box sx={{ ml:"40%" }}>
+                    
+                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px",mr:3}}
                             onClick={useShowProperties} onMouseOver={mouseOver} onMouseOut={mouseOut}>Your
                         Listing</Button>
-                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
+                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px",mr:3}}
                             onClick={useHandleHostNewPropertyButton} onMouseOver={mouseOver} onMouseOut={mouseOut}>Create
                         Listing</Button>
 
@@ -138,7 +138,7 @@ export default function ManagementDashboard(props) {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                         variant="inherit"
-                        sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
+                        sx={{fontFamily: "Lucida Handwriting", fontSize: "15px",mr:3}}
                         disableElevation
                         onClick={handleClick}
                         endIcon={<KeyboardArrowDownIcon/>}
@@ -170,23 +170,24 @@ export default function ManagementDashboard(props) {
                             <CardGiftcardRoundedIcon/>
                             show all Giftcard
                         </MenuItem>
-                        <MenuItem onClick={useReservation} disableRipple>
+                        {/* <MenuItem onClick={useReservation} disableRipple>
                             <CollectionsBookmarkIcon/>
                             Reservation
-                        </MenuItem>
-                        <MenuItem onClick={useNotification} disableRipple>
+                        </MenuItem> */}
+                        {/* <MenuItem onClick={useNotification} disableRipple>
                             <NotificationsIcon/>
                             Notification
-                        </MenuItem>
-                        <MenuItem onClick={()=>{navigate('/inbox')}} disableRipple>
+                        </MenuItem> */}
+                        {/* <MenuItem onClick={()=>{navigate('/inbox')}} disableRipple>
                             <MailIcon/>
                             Inbox
-                        </MenuItem>
+                        </MenuItem> */}
                     </StyledMenu>
                     {/* {sessionStorage.getItem("isAdmin") && <Button variant="text" sx={{fontFamily:"Jokerman",color: "white"}} onClick={AdminButton}>Admin</Button>} */}
-                    <Button align="right" color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px"}}
-                            onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
-                        Home</Button>
+                                        {/* <Button color="inherit" onClick={useHostingRedirect}><HomeIcon/></Button> */}
+                    <Button color="inherit" onClick={useHostingRedirect}><HomeIcon/></Button>
+
+                   </Box>
                 </Toolbar>
             </AppBar>
             

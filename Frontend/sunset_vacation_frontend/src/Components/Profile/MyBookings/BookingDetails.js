@@ -4,6 +4,7 @@ import * as React from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { axios_api } from '../../../App';
 import MyBookingsNavbar from './MyBookingNavbar';
+import StaticNavBar from '../../Homepage/StaticNavBar';
 
 export default function BookingDetails(props){
     let params = useParams();
@@ -116,9 +117,14 @@ export default function BookingDetails(props){
 
     return(
         <Box sx={{ flexGrow: 1 }}>
-            <MyBookingsNavbar
+            {/* <MyBookingsNavbar
                 isLoggedin={props.isLoggedin}
-            />
+            /> */}
+             <StaticNavBar
+      
+      isLoggedin={props.isLoggedin}
+      token={props.token}
+      />
             <Grid container sx={{mt:8, ml:20, maxWidth:1300, mb:20}}>
                 <Grid item xs={12}>
                     <Card>

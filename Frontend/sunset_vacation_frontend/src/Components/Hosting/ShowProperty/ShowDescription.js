@@ -142,7 +142,7 @@ export default function ShowDescription(props) {
               id="outlined-textarea"
               multiline
               rows={10}
-              placeholder={props.property.description}
+              defaultValue={props.property.description}
               disabled={!edit}
               onChange={changeDescription}/>
             </Grid>
@@ -151,13 +151,13 @@ export default function ShowDescription(props) {
         <TextField
             id="outlined-disabled"
             disabled={!edit}
-            placeholder={props.property.perNightCost}
+            defaultValue={props.property.perNightCost}
             onChange={changePerNightCost}/>
           <label><p style={{ "fontFamily": "Lucida Handwriting", "fontSize": "15px", "color": "black" }}>Maximum Days for Refund</p></label>
           <TextField
               id="outlined-disabled"
               disabled={!edit}
-              placeholder={props.property.maxDaysRefund}
+              defaultValue={props.property.maxDaysRefund}
               onChange={changeMaxDaysRefund}/>
               <br></br>
               <Button variant="contained" onClick={handleSubmit} sx={{ bgcolor:'#282c34', marginTop:2, marginLeft: 15}}>Update</Button>

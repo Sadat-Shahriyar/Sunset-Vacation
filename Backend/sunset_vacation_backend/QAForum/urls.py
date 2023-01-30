@@ -14,4 +14,5 @@ urlpatterns = [
     path('deletePost/<int:qid>/',views.deletePost),
     path('updateQuestion/<int:qid>/',views.updateQuestion),
     path('getSearchPost/<str:keyword>/',views.getSearchPost),
+    path('getPost/<int:id>/',views.getPost)
 ]

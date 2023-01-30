@@ -102,6 +102,7 @@ export default function MyPost(props){
       function getDate(d){
         let date = new Date(d);
         let today = new Date();
+        console.log(today.getTime())
         
         let dateString = ""
         

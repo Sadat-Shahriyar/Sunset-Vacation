@@ -42,6 +42,7 @@ class PropertySerializer(serializers.ModelSerializer):
     published=serializers.BooleanField(required=False)
     owner_id=serializers.PrimaryKeyRelatedField(read_only=True)
     approved=serializers.BooleanField(required=False)
+    
 
     def create(self,validate_data):
         return Property.objects.create(
@@ -56,6 +57,7 @@ class PropertySerializer(serializers.ModelSerializer):
             latitude=validate_data.get('latitude'),
             longitude=validate_data.get('longitude'),
             address=validate_data.get('address'),
+
             # checkInTime=validate_data.get('checkInTime'),
             # checkOutTime=validate_data.get('checkOutTime'),
         )
@@ -170,19 +172,21 @@ class NotificationSerializer(serializers.ModelSerializer):
         model=Notification
         fields = '__all__'
 
-class MessagingSerializer(serializers.ModelSerializer):
-    sender_id=serializers.PrimaryKeyRelatedField(read_only=True)
-    receiver_id=serializers.PrimaryKeyRelatedField(read_only=True)
-    message=serializers.CharField(
-        max_length=200,
-        required=False
-    )
-    marked = serializers.BooleanField(
-        required=False
-    )
-    class Meta:
-        model=Messaging
-        fields = '__all__'
+# class MessagingSerializer(serializers.ModelSerializer):
+#     sender_id=serializers.PrimaryKeyRelatedField(read_only=True)
+#     receiver_id=serializers.PrimaryKeyRelatedField(read_only=True)
+#     message=serializers.CharField(
+#         max_length=200,
+#         required=False
+#     )
+#     marked = serializers.BooleanField(
+#         required=False
+#     )
+#     class Meta:
+#         model=Messaging
+#         fields = '__all__'
+
+
 
 class GiftCardSerializer(serializers.ModelSerializer):
     propertyID=serializers.PrimaryKeyRelatedField(read_only=True)

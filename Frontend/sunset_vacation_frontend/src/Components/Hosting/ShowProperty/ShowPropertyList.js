@@ -13,14 +13,14 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import './../../../App.css';
+import NotificationMessage from '../NewProperty/NotificationMessage';
 export default function ShowPropertyList(props) {
     let navigate = useNavigate();
 
     const [properties, setProperties] = React.useState([])
-
-    React.useEffect(() => {
-      
+    const fetchProperties = async ()=>{
         fetch(`http://localhost:8000/hosting/propertylist/`, {
             method: 'GET',
             headers: { 
@@ -45,6 +45,10 @@ export default function ShowPropertyList(props) {
             .catch((err) => {
                 alert(err.message);
             })
+    }
+    React.useEffect(() => {
+      fetchProperties();
+        
     }, []);
 
     function getSelectedProperty(property) {
@@ -69,15 +73,27 @@ export default function ShowPropertyList(props) {
 
 
       }
+   const resendPropertyForApproval = async (property)=>{
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json',
+    'Authorization': `Bearer ${props.token}` },
+     
+    };
+    fetch(`http://localhost:8000/message/rePublish/` + `${property.propertyID}/`, requestOptions)
+    .then(response => response.json())
+    .then(data => {
+        fetchProperties();
+    });
 
-    function showStatus(approved,published){
-        if(approved === true){
+   }
+    function showStatus(property){
+        if(property.approved === true){
             return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" >Approved</Button>
+        }else if(property.approved === false & property.published === false){
+            return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" endIcon={<ArrowCircleRightIcon onClick={(event)=>{resendPropertyForApproval(property)}} />}  >Rejected</Button>
 
-        }else if(approved === false & published === false){
-            return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" >Rejected</Button>
-
-        }else if(approved===false & published === true){
+        }else if(property.approved===false & property.published === true){
             return <Button  sx={{color: "black",fontFamily: "Lucida Handwriting", fontSize: "15px"}} variant="text" >waiting for approval</Button>
 
         }
@@ -95,7 +111,7 @@ export default function ShowPropertyList(props) {
 
                     </TableCell>
                     <TableCell component="th" scope="row">
-                        {showStatus(property.approved,property.published)}
+                        {showStatus(property)}
                         </TableCell>
                     {/* <TableCell  sx={{fontFamily:"Lucida Handwriting", fontSize:"15px"}}align="right"></TableCell> */}
                     <TableCell><Tooltip title="Delete">

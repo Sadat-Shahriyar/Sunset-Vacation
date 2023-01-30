@@ -38,9 +38,10 @@ export default function HomePageSearchResult(props) {
       function showProperties(props){
         
         return(
-          <Grid container>
+          <Box position="static" sx={{ flexGrow: 1 ,m:10,mt:2}}>
+          <Grid container >
              {properties.map((property)=>(
-                <Grid item xs={2.5} key={property.propertyID}>
+                <Grid item xs={3} key={property.propertyID}>
                   <ViewProperty
                     setSelectedPropertyForDetails={(val)=>{props.setSelectedPropertyForDetails(val)}}
                     property={property}
@@ -48,11 +49,12 @@ export default function HomePageSearchResult(props) {
               </Grid>
              ))}
           </Grid>
+          </Box>
         );
       }
     function NoResultFound(props){
         return(
-            <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
+            <Typography sx={{ marginTop: "30px", marginLeft: "5%",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
            No result found
           </Typography>
         )
@@ -74,7 +76,7 @@ export default function HomePageSearchResult(props) {
       setflags={(val)=>{props.setflags(val)}}
       />
     {SearchNav(props)}
-    <Typography sx={{ marginTop: "30px", marginLeft: "30px",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
+    <Typography sx={{ marginTop: "30px", marginLeft: "5%",fontFamily: "Lucida Handwriting" }} variant="h5" component="h2">
             Search result  
           </Typography>
     {CheckResult(props)}

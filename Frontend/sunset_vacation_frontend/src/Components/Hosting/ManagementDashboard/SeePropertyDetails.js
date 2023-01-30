@@ -610,28 +610,6 @@ function PropertyDetails(props){
                         }
                     </Grid>
                 </Grid>
-                {/* <Grid item xs={5} sx={{mt:5}}>
-                    <ReservationCard 
-                        propertyDetails={props.propertyDetails}
-                        checkInDate = {props.checkInDate}
-                        checkOutDate = {props.checkOutDate}
-                        setCheckInDate = {(val) => {props.setCheckInDate(val)}}
-                        setCheckOutDate = {(val) => {props.setCheckOutDate(val)}}
-                        adults = {props.adults}
-                        setAdults = {(val) => {props.setAdults(val)}}
-                        children = {props.children}
-                        setChildren = {(val) => {props.setChildren(val)}}
-                        infants = {props.infants}
-                        setInfants = {(val) => {props.setInfants(val)}}
-                        navigate = {(val) => {props.navigate(val)}}
-                        token = {props.token}
-                        isLoggedin = {props.isLoggedin}
-                        setLoginRedirection={(val) => {props.setLoginRedirection(val)}}
-                        setLoggedIn = {(value)=>{props.setLoggedIn(value)}}
-                        setUser = {(value) => {props.setUser(value)}}
-                        setToken = {(t) => {props.setToken(t)}}
-                    />
-                </Grid> */}
 
                 <Grid item xs={12}>
                     <Typography sx={{mt:3}} variant='h6'> What this place offers?</Typography>
@@ -648,23 +626,43 @@ function PropertyDetails(props){
                         </Grid>
                     );
                 })}
-                {/* <Grid item xs={3}>
-                    <Typography variant='h6' sx={{mt:5}}>Want to rate this property?</Typography>
-                </Grid>
-                <Grid item xs={9}>
-                    <Rating readOnly name="half-rating" defaultValue={0} precision={0.5} sx={{mt:5.5}} onChange={(event) => {handleRating(event.target.value)}}/>
-                </Grid> */}
-                
-                {/* <Grid item xs={12}>
-                    <Typography variant="h6" sx={{mt:5}}>Have any review?</Typography>
-                </Grid>
 
-                <Grid item xs={6}>
-                    <TextField value={props.review} id="standard-basic" label="Review" variant="standard" sx={{minWidth:600, maxWidth:600}}  onChange={(event)=> {props.setReview(event.target.value)}}/>
-                </Grid>
-                <Grid item xs={6}>
-                    <Button onClick={()=>{postReview(props.review, props.propertyDetails.property.propertyID )}}>Post review</Button>
-                </Grid> */}
+{props.propertyDetails.dos[0][0].length === 1 ? <div></div>:
+                <Grid item xs={12} sx={{mt:5}}><Typography variant='h6'>Rules to follow:</Typography></Grid>
+                }
+
+                {props.propertyDetails.dos[0][0].length === 1 ? <div></div>:
+                    props.propertyDetails.dos.map((rule) => {
+                        return(
+                            <Grid item xs={12} sx={{mt:1}}>
+                                <Card>
+                                    <CardContent>
+                                        {rule[0]}
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        );
+                    })
+                }
+                
+                {props.propertyDetails.donts[0][0].length === 1 ? <div></div>:
+                <Grid item xs={12} sx={{mt:5}}><Typography variant='h6'>Things to avoid:</Typography></Grid>
+                }
+
+                {props.propertyDetails.donts[0][0].length === 1 ? <div></div>:
+                    props.propertyDetails.donts.map((rule) => {
+                        return(
+                            <Grid item xs={12} sx={{mt:1}}>
+                                <Card>
+                                    <CardContent>
+                                        {rule[0]}
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        );
+                    })
+                }
+                
 
                 {props.propertyDetails.reviews.length > 0 ? 
                 <Grid item xs={12}>

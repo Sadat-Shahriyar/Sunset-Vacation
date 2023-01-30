@@ -8,6 +8,34 @@ from datetime import datetime
 
 # Create your models here.
 
+class Notification(models.Model):
+
+    user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
+    title = models.CharField(
+        max_length=200,
+        default=None,
+        blank=True,
+        null=True
+    )
+    text=models.CharField(
+        max_length=200,
+        default=None,
+        blank=True,
+        null=True
+    )
+    link=models.CharField(
+        max_length=100,
+        default=None,
+        blank=True,
+        null=True
+    )
+    time=models.DateTimeField(
+        default=datetime.now,
+        null=True
+    )
+    marked=models.BooleanField(default=False)
+
+
 
 class Property(models.Model):
     propertyID=models.AutoField(
@@ -109,7 +137,7 @@ class Property(models.Model):
     published = models.BooleanField(default=False)
 
     approved = models.BooleanField(default=False)
-
+    
 
 # class FacilityCategory(models.Model):
 #     id = models.AutoField(
@@ -234,51 +262,10 @@ class Reviews(models.Model):
         blank=False,
         null=True
     )
-class Notification(models.Model):
 
-    user_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
-    title = models.CharField(
-        max_length=200,
-        default=None,
-        blank=True,
-        null=True
-    )
-    text=models.CharField(
-        max_length=200,
-        default=None,
-        blank=True,
-        null=True
-    )
-    link=models.CharField(
-        max_length=100,
-        default=None,
-        blank=True,
-        null=True
-    )
-    time=models.DateTimeField(
-        default=datetime.now,
-        null=True
-    )
-    marked=models.BooleanField(default=False)
 
-class Messaging(models.Model):
-    msg_id=models.AutoField(primary_key=True)
-    sender_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE,related_name="sender")
-    receiver_id=models.ForeignKey(get_user_model(),on_delete=models.CASCADE,related_name="receiver")
-    message=models.CharField(
-        max_length=200,
-        default=None,
-        blank=False,
-        null=True
-    )
-    time=models.DateTimeField(
-        default=datetime.now,
-        blank=True,
-        null=True
-    )
-    marked = models.BooleanField(
-        default=False
-    )
+    
+
 
 class GiftCard(models.Model):
     giftcard_id=models.AutoField(primary_key=True)
@@ -326,3 +313,4 @@ class PropertyPhotoUploadHelper(models.Model):
     
     def __str__(self):
         return self.title
+

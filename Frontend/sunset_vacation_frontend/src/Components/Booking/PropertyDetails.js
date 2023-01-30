@@ -195,6 +195,7 @@ function ReservationCard(props){
 
         let checkIn = new Date(props.checkInDate);
         let checkOut = new Date(props.checkOutDate);
+        console.log(Math.abs(checkOut - checkIn)/(1000 * 60 * 60 * 24));
         if(checkOut.getTime() - checkIn.getTime() < 1){
             alert("Check in date must be smaller than check out date");
         }
@@ -463,7 +464,7 @@ function ReservationCard(props){
                                 <ClearIcon />
                             </Grid>
                             <Grid item xs={3}>
-                                <Typography>{props.checkOutDate.getDate() - props.checkInDate.getDate()}  Nights</Typography>
+                                <Typography>{Math.round(Math.abs(props.checkOutDate - props.checkInDate)/(1000 * 60 * 60 * 24))}  Nights</Typography>
                             </Grid>
                             <Grid item xs={2}>
                                 <Button disabled color='inherit' variant='text'></Button>
@@ -472,7 +473,7 @@ function ReservationCard(props){
                                 <AttachMoneyIcon /> 
                             </Grid>
                             <Grid item xs={2}>
-                                <Typography >{(props.checkOutDate.getDate() - props.checkInDate.getDate()) * props.propertyDetails.property.perNightCost}</Typography>
+                                <Typography >{Math.round(Math.abs(props.checkOutDate - props.checkInDate)/(1000 * 60 * 60 * 24)) * props.propertyDetails.property.perNightCost}</Typography>
                             </Grid>
                         </Grid>
                     </Stack>
@@ -743,7 +744,7 @@ function PropertyDetails(props){
                 } */}
                 
 
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                     <Typography variant="h6" sx={{mt:5}}>Where you'll stay?</Typography>
                 </Grid>
                 <Grid item xs={12} sx={{mt:5, ml:15}}>
@@ -752,7 +753,7 @@ function PropertyDetails(props){
                        
                         title = {props.propertyDetails.property.title}
                     />
-                </Grid>
+                </Grid> */}
                 
 
                 <Grid item xs={12}>
@@ -801,7 +802,7 @@ function PropertyDetails(props){
                     <Typography variant='h6' sx={{mt:5}}>Want to rate this property?</Typography>
                 </Grid>
                 <Grid item xs={9}>
-                    <Rating readOnly name="half-rating" defaultValue={0} precision={0.5} sx={{mt:5.5}} onChange={(event) => {handleRating(event.target.value)}}/>
+                    <Rating  name="half-rating" defaultValue={0} precision={0.5} sx={{mt:5.5}} onChange={(event) => {handleRating(event.target.value)}}/>
                 </Grid>
 
                 <Grid item xs={12}>

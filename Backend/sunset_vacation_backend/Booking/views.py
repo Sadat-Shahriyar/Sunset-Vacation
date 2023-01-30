@@ -1,4 +1,7 @@
 from asyncio import proactor_events
+from cgitb import text
+from traceback import print_tb
+from turtle import title
 from django.shortcuts import render
 from .models import Booking, Payment
 from rest_framework.response import Response
@@ -201,10 +204,12 @@ def checkAvailabilityOfDate(request):
 def reserve(request):
     print(request.user)
     user = UserSerializer(request.user).data
+    userName = user['name']
     user = User.objects.get(id=user['id'])
 
     data = request.data
-    print(data['email'],data['payment_method_id'],data['amount'], data['discount'], data['checkInDate'], data['checkOutDate'], data['noOfGuests'], data['propertyID'],data['payment_method_id'],data['name_on_card'])
+    # print(data['email'],data['payment_method_id'],data['amount'], data['discount'], data['checkInDate'], data['checkOutDate'], data['noOfGuests'], data['propertyID'],data['payment_method_id'],data['name_on_card'])
+    print(data["userGiftCardListId"])
     email = data['email']
     payment_method_id = data['payment_method_id']
     extra_msg = '' # add new variable to response message  # checking if customer with provided email already exists
@@ -223,7 +228,7 @@ def reserve(request):
         customer=customer, 
         payment_method=payment_method_id,  
         currency='USD', # you can provide any currency you want
-        amount=data['amount']*100,
+        amount=int(data['amount']*100),
         confirm=True
     )    
 
@@ -251,6 +256,25 @@ def reserve(request):
         checkin_date=checkInDate,
         checkout_date=checkOutDate,
         noOfGuests=data['noOfGuests']
+    )
+
+    if data["userGiftCardListId"] != -1:
+        userGiftCard = UserGiftCardList.objects.get(id=data["userGiftCardListId"])
+        userGiftCard.delete()
+
+    newBookingSerializer = BookingSerializer(newBooking).data
+
+    propertySerializer = PropertySerializer(propertyToBeBooked).data
+    propertyHost = User.objects.get(id=propertySerializer['owner_id'])
+    
+    message = userName + " has booked property "
+    link = '/hosting/booking/details/' + str(newBookingSerializer['booking_id']) 
+
+    notification = Notification.objects.create(
+        user_id=propertyHost,
+        title=message,
+        link=link,
+        text=""
     )
 
     return Response(status=status.HTTP_200_OK, 
@@ -380,6 +404,10 @@ def getbookingdetails(request, booking_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def cancelReservation(request, booking_id):
+
+    user = UserSerializer(request.user).data
+    userName = user['name']
+   
     bookingInfo = Booking.objects.get(booking_id=booking_id)
     bookingInfoSerializer = BookingSerializer(bookingInfo)
     bookingData = bookingInfoSerializer.data
@@ -390,6 +418,8 @@ def cancelReservation(request, booking_id):
     propertyInfo = Property.objects.get(propertyID=bookingData['property_id'])
     propertyInfoSerializer = PropertySerializer(propertyInfo)
     propertyData = propertyInfoSerializer.data
+
+    owner=User.objects.get(id=propertyData['owner_id'])
 
     paymentInfo = Payment.objects.get(payment_id = bookingData['payment_id'])
     paymentInfoSerializer = PaymentSerializer(paymentInfo)
@@ -414,6 +444,16 @@ def cancelReservation(request, booking_id):
         message = f"You can't cancel this reservation. Your check in date is already {-1*((checkInDate - today).days)} days over"
     else:
         message = "You didn't get any refund"
+    
+    message = userName + " has cancelled booking "
+    link = '/hosting/booking/details/' + str(bookingData['booking_id']) 
+
+    notification = Notification.objects.create(
+        user_id=owner,
+        title=message,
+        link=link,
+        text=""
+    )
 
     return Response({"message": message})
 
@@ -592,3 +632,59 @@ def getAllFutureReservations(request):
     # print(allBooking)
 
     return Response({"allbooking": allBooking})
+
+
+
+
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def getUserGiftCardList(request):
+#     user = UserSerializer(request.user).data 
+#     giftcardList= UserGiftCardList.objects.filter(user_id=user['id'])
+#     giftcardList=UserGiftCardListSerializer(giftcardList,many=True)
+#     giftcardLists=[]
+#     for giftcard in giftcardList.data:
+#         g=GiftCard.objects.get(giftcard_id=giftcard['giftcard_id'])
+#         g=GiftCardSerializer(g).data       
+        
+#         property=Property.objects.get(propertyID=g['propertyID'])
+#         property = PropertySerializer(property).data
+#         photos = PropertyPhotos.objects.filter(property_id=property['propertyID'])
+#         photoSerializer = PropertyPhotoSerializer(photos, many=True)
+#         property['images'] = photoSerializer.data
+
+#         property['discount']=g['discount']
+#         property['type']=g['type']
+#         property['expiryDate']=g['expiry_date'][0:10]
+#         property['customMsg']=g['customMsg']
+#         property['id']=g['giftcard_id']
+#         giftcardLists.append(property)
+#     return Response({'giftcards':giftcardLists},status=status.HTTP_200_OK)
+
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def getUserGiftCardList(request):
+    user = UserSerializer(request.user).data 
+    giftcardList= UserGiftCardList.objects.filter(user_id=user['id'])
+    giftcardList=UserGiftCardListSerializer(giftcardList,many=True)
+
+    print(request.data)
+    propertyID = request.data["propertyID"]
+    checkoutDateString = request.data["checkoutdate"].split("T")[0]
+    checkoutdate = datetime.strptime(checkoutDateString, '%Y-%m-%d')
+    availaleGiftCards = []
+
+    giftcardLists=[]
+    for giftcard in giftcardList.data:
+        g=GiftCard.objects.get(giftcard_id=giftcard['giftcard_id'])
+        g=GiftCardSerializer(g).data 
+        expiryDateString = g["expiry_date"].split("T")[0]
+        expirydate = datetime.strptime(expiryDateString, '%Y-%m-%d')
+        # print(checkoutdate, expirydate)
+        # print(checkoutdate< expirydate)
+        # print(g["expiry_date"])
+
+        if checkoutdate < expirydate and g['propertyID']==propertyID:
+            availaleGiftCards.append({"giftcard": giftcard, "giftcardDetails": g})
+    return Response({"giftcards": availaleGiftCards},status=status.HTTP_200_OK)

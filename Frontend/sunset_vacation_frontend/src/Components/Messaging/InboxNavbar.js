@@ -64,12 +64,13 @@ export default function InboxNavbar(props) {
     const navigate = useNavigate();
 
     function mouseOver(event) {
-        event.target.style.color = "black";
+        event.target.style.color = "#C4036C";
     }
 
     function mouseOut(event) {
-        event.target.style.color = "white";
+        event.target.style.color = "black";
     }
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -88,20 +89,19 @@ export default function InboxNavbar(props) {
 
    
     return (
-        <Box sx={{flexGrow: 1}}>
-            <AppBar position="static" sx={{bgcolor: "#C4036C"}}>
+        <Box sx={{flexGrow: 1,boxShadow:3}}>
+            <AppBar position="static" color='inherit'>
                 <Toolbar>
                     <Typography
                         variant="h6"
                         noWrap
                         component="div"
+                        ml="50px"
                         sx={{display: {xs: 'none', sm: 'block'}}}
                     >
-                        <p style={{"fontFamily": "Jokerman", "fontSize": "25px"}}>Inbox</p>
+                        <p style={{"fontFamily": "Jokerman", "fontSize": "25px"}}>SUNSET VACATION </p>
                     </Typography>
-                    <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={(event)=>{navigate('/')}} onMouseOver={mouseOver} onMouseOut={mouseOut}>
-                        Home
-                    </Button>
+                   
                     {props.reply && <Button color="inherit" sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", ml:5}} onClick={showInbox} disableRipple onMouseOver={mouseOver} onMouseOut={mouseOut}>
                         All Messages
                     </Button>}

@@ -109,7 +109,7 @@ export default function CommonNavbar(props){
         <MenuItem>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
             <Badge badgeContent={4} color="error">
-                <MailIcon />
+                <MailIcon onClick={()=>{navigate('/inbox')}}/>
             </Badge>
             </IconButton>
             <p>Messages</p>

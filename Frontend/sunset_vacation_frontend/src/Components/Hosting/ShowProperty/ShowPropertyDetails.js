@@ -26,11 +26,9 @@ import axios from "axios";
 
 export default function ShowPropertyDetails(props) {
     const [prop, setProp] = React.useState({});
-    const [title, setTitle] = React.useState('new title');
     const [edit, setEdit] = React.useState(false);
     const [photos, setPhotos] = React.useState([]);
-
-    React.useEffect(() => {
+    const fetchProperty = async () =>{
         fetch(`http://localhost:8000/hosting/getProperty/` + `${props.property.propertyID}`,{
             method: 'GET',
             headers: { 
@@ -52,6 +50,9 @@ export default function ShowPropertyDetails(props) {
             .catch((err) => {
                 alert(err.message);
             })
+    }
+
+    const fetchPropertyPhoto = async () =>{
         fetch(`http://localhost:8000/hosting/getPropertyPhoto/` + `${props.property.propertyID}`,{
             method: 'GET',
             headers: { 
@@ -74,7 +75,12 @@ export default function ShowPropertyDetails(props) {
             .catch((err) => {
                 alert(err.message);
             })
-    })
+    }
+    React.useEffect(() => {
+        fetchProperty();
+        fetchPropertyPhoto();
+      
+    },[])
 
     let navigate = useNavigate();
 
@@ -115,7 +121,8 @@ export default function ShowPropertyDetails(props) {
         fetch(`http://localhost:8000/hosting/photos/` + id, requestOptions)
             .then(response => response.json())
             .then(data => {
-                navigate('/showPropertyDetails')
+                fetchProperty();
+                fetchPropertyPhoto();
             });
     }
     function fileUpload(event){
@@ -126,26 +133,12 @@ export default function ShowPropertyDetails(props) {
         axios.post(`http://localhost:8000/hosting/updatephotouploadhelper/`, sendObject)
             .then(response => response)
             .then(data => {
-                navigate('/showPropertyDetails')
+                fetchProperty();
+                fetchPropertyPhoto();
             });
     }
 
-    function handleSubmit(event) {
-        prop.title = title;
-
-        const requestOptions = {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(prop)
-        };
-        fetch(`http://localhost:8000/hosting/updateProperty/` + `${props.property.propertyID}`, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                props.setProperty(props.property)
-                navigate('/showPropertyDetails')
-            });
-
-    }
+   
 
     function showPropertyNavbar(props) {
         return (
@@ -180,11 +173,11 @@ export default function ShowPropertyDetails(props) {
                             fontSize: "15px",
                             color: "black"
                         }}>Catagory</Button><IconButton><DetailsIcon sx={{color: 'black'}}/></IconButton>
-                        <Button onClick={useLocation} color="inherit" sx={{
+                        {/* <Button onClick={useLocation} color="inherit" sx={{
                             fontFamily: "Lucida Handwriting",
                             fontSize: "15px",
                             color: "black"
-                        }}>Location</Button><IconButton><LocationOnIcon sx={{color: 'black'}}/></IconButton>
+                        }}>Location</Button><IconButton><LocationOnIcon sx={{color: 'black'}}/></IconButton> */}
                         <Button onClick={useFacility} color="inherit"
                                 sx={{fontFamily: "Lucida Handwriting", fontSize: "15px", color: "black"}}>Facilities &
                             Safety Items</Button><IconButton><DesktopMacIcon sx={{color: 'black'}}/></IconButton>
